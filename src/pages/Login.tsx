@@ -7,7 +7,7 @@ import { SignUp } from "@/components/auth/SignUp";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Users } from "lucide-react";
-import schoolBuilding from "@/assets/v3-copy-scaled.jpg";
+import schoolBuilding from "@/assets/sisb-new-building.jpg";
 import sisbLogo from "@/assets/sisb-logo-new.png";
 
 interface LoginProps {

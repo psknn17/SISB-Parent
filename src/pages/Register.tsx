@@ -33,21 +33,6 @@ export const Register = ({ onRegister, onBackToLogin }: RegisterProps) => {
     { value: "prof", label: t('auth.titles.prof') }
   ];
 
-  const grades = [
-    { value: "kindergarten", label: t('auth.grades.kindergarten') },
-    { value: "grade1", label: t('auth.grades.grade1') },
-    { value: "grade2", label: t('auth.grades.grade2') },
-    { value: "grade3", label: t('auth.grades.grade3') },
-    { value: "grade4", label: t('auth.grades.grade4') },
-    { value: "grade5", label: t('auth.grades.grade5') },
-    { value: "grade6", label: t('auth.grades.grade6') },
-    { value: "grade7", label: t('auth.grades.grade7') },
-    { value: "grade8", label: t('auth.grades.grade8') },
-    { value: "grade9", label: t('auth.grades.grade9') },
-    { value: "grade10", label: t('auth.grades.grade10') },
-    { value: "grade11", label: t('auth.grades.grade11') },
-    { value: "grade12", label: t('auth.grades.grade12') }
-  ];
 
   const registerSchema = z.object({
     title: z.string().min(1, t('auth.errors.titleRequired')),
@@ -60,7 +45,7 @@ export const Register = ({ onRegister, onBackToLogin }: RegisterProps) => {
     children: z.array(z.object({
       firstName: z.string().min(1, t('auth.errors.firstNameRequired')),
       lastName: z.string().min(1, t('auth.errors.lastNameRequired')),
-      grade: z.string().min(1, "Grade is required"),
+      dateOfBirth: z.string().min(1, "Date of birth is required"),
       interestedPrograms: z.array(z.string()).min(1, "Please select at least one program"),
     })).min(1, "At least one child is required"),
     agreeTerms: z.boolean().refine(val => val === true, {
@@ -87,7 +72,7 @@ export const Register = ({ onRegister, onBackToLogin }: RegisterProps) => {
   } = useForm<RegisterData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      children: [{ firstName: "", lastName: "", grade: "", interestedPrograms: [] }],
+      children: [{ firstName: "", lastName: "", dateOfBirth: "", interestedPrograms: [] }],
       agreeTerms: false,
       agreePDPA: false,
     },
@@ -129,7 +114,7 @@ export const Register = ({ onRegister, onBackToLogin }: RegisterProps) => {
 
   const addChild = () => {
     if (fields.length < 5) {
-      append({ firstName: "", lastName: "", grade: "", interestedPrograms: [] });
+      append({ firstName: "", lastName: "", dateOfBirth: "", interestedPrograms: [] });
     }
   };
 
@@ -382,19 +367,14 @@ export const Register = ({ onRegister, onBackToLogin }: RegisterProps) => {
                     </div>
 
                     <div className="space-y-1">
-                      <Label>{t('auth.grade')}*</Label>
-                      <Select onValueChange={(value) => setValue(`children.${index}.grade`, value)}>
-                        <SelectTrigger className={errors.children?.[index]?.grade ? "border-red-500" : ""}>
-                          <SelectValue placeholder={t('auth.selectGrade')} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {grades.map((grade) => (
-                            <SelectItem key={grade.value} value={grade.value}>{grade.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      {errors.children?.[index]?.grade && (
-                        <p className="text-xs text-red-500">{errors.children[index]?.grade?.message}</p>
+                      <Label>{t('auth.dateOfBirth')}*</Label>
+                      <Input
+                        type="date"
+                        {...register(`children.${index}.dateOfBirth`)}
+                        className={errors.children?.[index]?.dateOfBirth ? "border-red-500" : ""}
+                      />
+                      {errors.children?.[index]?.dateOfBirth && (
+                        <p className="text-xs text-red-500">{errors.children[index]?.dateOfBirth?.message}</p>
                       )}
                     </div>
 

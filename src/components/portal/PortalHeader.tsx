@@ -1,19 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Menu, LogOut, Bell, DollarSign, Clock, Sun, Receipt, ShoppingCart } from "lucide-react";
+import { GraduationCap, Menu, LogOut, Bell, DollarSign, Clock, Sun, Receipt, ShoppingCart, ChevronDown } from "lucide-react";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { ParentAccountSelector } from "./ParentAccountSelector";
 import { useState } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CountdownTimer } from "./CountdownTimer";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PortalHeaderProps {
   onLogout?: () => void;
@@ -38,7 +39,15 @@ export const PortalHeader = ({
 }: PortalHeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
+  const [selectedCampus, setSelectedCampus] = useState("SISB");
   const { t, language } = useLanguage();
+
+  const campusOptions = [
+    { value: "SISB", label: "SISB" },
+    { value: "CM", label: "CM" },
+    { value: "SV", label: "SV" },
+    { value: "TR", label: "TR" }
+  ];
   
   // Mock notification data
   const notifications = {
@@ -325,14 +334,33 @@ export const PortalHeader = ({
                   {t('portal.today')}: {formattedToday}
                 </p>
               </div>
-              
+
               {/* Countdown Timer */}
               {showCountdown && onCountdownExpired && onCancelCountdown && (
-                <CountdownTimer 
+                <CountdownTimer
                   onTimeExpired={onCountdownExpired}
                   onCancel={onCancelCountdown}
                 />
               )}
+            </div>
+
+            {/* Campus Selector - Right Side */}
+            <div className="flex items-center gap-2">
+              <span className={`text-sm text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                {t('portal.loggedInCampus')}:
+              </span>
+              <Select value={selectedCampus} onValueChange={setSelectedCampus}>
+                <SelectTrigger className="w-20 h-8 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {campusOptions.map((campus) => (
+                    <SelectItem key={campus.value} value={campus.value}>
+                      {campus.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>

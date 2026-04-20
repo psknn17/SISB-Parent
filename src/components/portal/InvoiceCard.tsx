@@ -154,7 +154,7 @@ Generated on: ${new Date().toLocaleDateString()}
           {/* Payment Options */}
           {invoice.status !== 'paid' && (
             <div className="space-y-3 p-3 bg-muted/30 rounded-lg">
-              <div className={`text-sm font-medium text-stroke-bold ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+              <div className={`text-sm font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                 Select Payment Option:
               </div>
               <RadioGroup value={selectedPaymentOption} onValueChange={setSelectedPaymentOption}>
@@ -229,10 +229,10 @@ Generated on: ${new Date().toLocaleDateString()}
           )}
 
           <div className="flex items-center justify-between">
-            <span className={`font-medium text-stroke ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+            <span className={`font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
               {selectedOption ? `Amount to Pay (${selectedOption.label}):` : t('invoice.amountDue') + ':'}
             </span>
-            <span className={`text-lg font-bold text-primary text-stroke-amount ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+            <span className={`text-lg font-bold text-primary ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
               {formatCurrency(currentAmount)}
             </span>
           </div>

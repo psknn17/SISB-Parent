@@ -11,10 +11,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Calendar, 
-  Clock, 
-  MapPin, 
+import {
+  Calendar,
+  Clock,
+  MapPin,
   Users,
   DollarSign,
   CreditCard,
@@ -23,6 +23,7 @@ import {
   Receipt,
   AlertCircle
 } from "lucide-react";
+import { BahtIcon } from "@/components/icons/BahtIcon";
 import { mockStudents, getMockDataForStudent, mockInvoices, mockCreditNotes, mockReceipts } from "@/data/mockData";
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -69,7 +70,6 @@ export const ParentPortal = ({
     outstandingInvoices: allInvoices.filter(inv => inv.status === 'pending').length,
     paidThisTerm: allInvoices.filter(inv => inv.status === 'paid').length,
     creditBalance: allCreditNotes.reduce((sum, cn) => sum + cn.balance, 0),
-    availableCourses: 15,
   };
   
   const outstandingAmount = allInvoices
@@ -225,15 +225,15 @@ export const ParentPortal = ({
           {/* Dashboard Tab - Combined data for all students with student tags */}
           <TabsContent value="dashboard" className="space-y-6">
             {/* Summary Stats - Combined across all students */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <SummaryBox
                 title={t('portal.outstandingInvoices')}
                 value={formatCurrency(outstandingAmount)}
                 subtitle={`${allInvoices.filter(i => i.status === 'pending').length} ${t('portal.pending')}`}
-                icon={DollarSign}
+                icon={BahtIcon}
                 color={overdueCount > 0 ? 'destructive' : 'warning'}
               />
-              
+
               <SummaryBox
                 title={t('portal.paidThisTerm')}
                 value={formatCurrency(paidThisTerm)}
@@ -241,21 +241,13 @@ export const ParentPortal = ({
                 icon={CreditCard}
                 color="success"
               />
-              
+
               <SummaryBox
                 title={t('portal.creditBalance')}
                 value={formatCurrency(stats.creditBalance)}
                 subtitle={t('portal.availableCredit')}
                 icon={Receipt}
                 color="info"
-              />
-              
-              <SummaryBox
-                title={t('portal.availableCourses')}
-                value={stats.availableCourses}
-                subtitle={t('portal.coursesWithSpots')}
-                icon={GraduationCap}
-                color="education"
               />
             </div>
 
