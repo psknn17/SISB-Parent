@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Calendar, DollarSign, AlertCircle, CheckCircle, ChevronDown, ChevronUp, Download } from "lucide-react";
+import { Calendar, ShoppingCart, AlertCircle, CheckCircle, ChevronDown, ChevronUp, Download } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { downloadReceiptPDF } from "@/lib/downloadUtils";
 
 interface InvoiceCardProps {
   invoice: {
@@ -25,11 +26,14 @@ interface InvoiceCardProps {
   };
   creditBalance?: number;
   onAddToCart?: (invoiceId: string, paymentOption?: string, amount?: number) => void;
+  onRemoveFromCart?: (invoiceId: string) => void;
+  isInCart?: boolean;
   studentName?: string;
+  initialPaymentOption?: string;
 }
 
-export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, studentName }: InvoiceCardProps) => {
-  const [selectedPaymentOption, setSelectedPaymentOption] = useState<string>("");
+export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveFromCart, isInCart = false, studentName, initialPaymentOption = '' }: InvoiceCardProps) => {
+  const [selectedPaymentOption, setSelectedPaymentOption] = useState<string>(initialPaymentOption);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const isOverdue = new Date(invoice.due_date) < new Date() && invoice.status !== 'paid';
   const { language, formatCurrency, t } = useLanguage();
@@ -57,36 +61,19 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, studentNa
   const canPayWithCredit = creditBalance >= currentAmount;
 
   const handleDownloadInvoice = () => {
-    // Mock download functionality - in real implementation, this would generate and download a PDF
-    console.log(`Downloading invoice ${invoice.id}...`);
-    
-    // Create a simple mock invoice content
-    const invoiceContent = `
-Invoice: ${invoice.id}
-Student: ${studentName}
-Description: ${invoice.description}
-Term: ${invoice.term || 'N/A'}
-Amount Due: ${formatCurrency(invoice.amount_due)}
-Due Date: ${formatDate(invoice.due_date)}
-Status: ${invoice.status}
-
-${invoice.line_items ? 'Detailed Breakdown:\n' + invoice.line_items.map(item => 
-  `${item.description} (${item.category}): ${formatCurrency(item.amount)}`
-).join('\n') : ''}
-
-Generated on: ${new Date().toLocaleDateString()}
-    `.trim();
-    
-    // Create and download a text file (in real app, this would be a PDF)
-    const blob = new Blob([invoiceContent], { type: 'text/plain' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `Invoice_${invoice.id}_${studentName?.replace(/\s+/g, '_') || 'Student'}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+    downloadReceiptPDF({
+      title: 'Invoice',
+      receiptId: invoice.id,
+      studentName: studentName ?? 'Student',
+      amount: formatCurrency(invoice.amount_due),
+      paymentDate: formatDate(invoice.due_date),
+      paymentMethod: invoice.status === 'paid' ? 'Paid' : 'Due',
+      description: `${invoice.description}${invoice.term ? ' — ' + invoice.term : ''}`,
+      items: invoice.line_items?.map(item => ({
+        name: `${item.description} (${item.category})`,
+        price: formatCurrency(item.amount),
+      })),
+    });
   };
   
   const statusConfig = {
@@ -157,12 +144,12 @@ Generated on: ${new Date().toLocaleDateString()}
               <div className={`text-sm font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                 Select Payment Option:
               </div>
-              <RadioGroup value={selectedPaymentOption} onValueChange={setSelectedPaymentOption}>
+              <RadioGroup value={selectedPaymentOption} onValueChange={setSelectedPaymentOption} disabled={isInCart}>
                 {paymentOptions.map((option) => (
                   <div key={option.id} className="space-y-2">
                     <div className="flex items-center space-x-3">
-                      <RadioGroupItem value={option.id} id={option.id} />
-                      <Label htmlFor={option.id} className="cursor-pointer flex-1">
+                      <RadioGroupItem value={option.id} id={`${invoice.id}-${option.id}`} />
+                      <Label htmlFor={`${invoice.id}-${option.id}`} className="cursor-pointer flex-1">
                         <div className={`space-y-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                           <div className="flex items-center justify-between">
                             <span className="font-medium">{option.label}</span>
@@ -256,24 +243,33 @@ Generated on: ${new Date().toLocaleDateString()}
               </div>
             )}
             
-            <Button 
-              className={`w-full ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
-              onClick={() => onAddToCart?.(invoice.id, selectedPaymentOption, currentAmount)}
-              variant={isOverdue ? "destructive" : "default"}
-              disabled={!selectedPaymentOption}
-            >
-              <DollarSign className="h-4 w-4 mr-2" />
-              {!selectedPaymentOption 
-                ? "Select Payment Option to Continue"
-                : canPayWithCredit 
-                  ? t('portal.applyCreditPay') 
-                  : t('portal.payNow')
-              }
-            </Button>
-            
-            {!selectedPaymentOption && (
+            {isInCart ? (
+              <Button
+                className={`w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+                variant="outline"
+                onClick={() => onRemoveFromCart?.(invoice.id)}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                {language === 'th' ? 'ลบออกจากตะกร้า' : language === 'zh' ? '从购物车移除' : 'Remove from Cart'}
+              </Button>
+            ) : (
+              <Button
+                className={`w-full ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+                onClick={() => onAddToCart?.(invoice.id, selectedPaymentOption, currentAmount)}
+                variant={isOverdue ? "destructive" : "default"}
+                disabled={!selectedPaymentOption}
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                {!selectedPaymentOption
+                  ? (language === 'th' ? 'เลือกตัวเลือกการชำระเงิน' : language === 'zh' ? '请选择付款方式' : 'Select Payment Option to Continue')
+                  : (language === 'th' ? 'เพิ่มลงตะกร้า' : language === 'zh' ? '加入购物车' : 'Add to Cart')
+                }
+              </Button>
+            )}
+
+            {!selectedPaymentOption && !isInCart && (
               <p className={`text-xs text-muted-foreground text-center ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                Please select yearly or termly payment option above
+                {language === 'th' ? 'กรุณาเลือกตัวเลือกการชำระเงินด้านบน' : language === 'zh' ? '请在上方选择付款选项' : 'Please select yearly or termly payment option above'}
               </p>
             )}
           </div>

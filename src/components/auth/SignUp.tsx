@@ -17,7 +17,14 @@ interface SignUpProps {
   onBackToLogin: () => void;
 }
 
-const campuses = ["Main Campus", "North Campus", "South Campus", "International Campus"];
+const campuses = [
+  { code: "CM", name: "SISB Chiang Mai" },
+  { code: "NB", name: "SISB Nonthaburi" },
+  { code: "PU", name: "SISB Pracha Uthit" },
+  { code: "RY", name: "SISB Rayong" },
+  { code: "SV", name: "SISB Suvarnabhumi" },
+  { code: "TB", name: "SISB Thonburi" },
+];
 
 export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -337,7 +344,7 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
                     </SelectTrigger>
                       <SelectContent>
                         {campuses.map((campus) => (
-                          <SelectItem key={campus} value={campus}>{campus}</SelectItem>
+                          <SelectItem key={campus.code} value={campus.code}>{campus.code} - {campus.name}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>

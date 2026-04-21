@@ -7,7 +7,7 @@ interface CartItem {
   id: string;
   name: string;
   price: number;
-  type: 'course' | 'activity';
+  type: 'course' | 'activity' | 'exam' | 'tuition' | 'trip';
   studentName?: string;
 }
 

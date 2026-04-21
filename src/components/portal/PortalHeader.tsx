@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Menu, LogOut, Bell, DollarSign, Clock, Sun, Receipt, ShoppingCart, ChevronDown } from "lucide-react";
+import { GraduationCap, Menu, LogOut, Bell, DollarSign, Clock, Sun, Receipt, ShoppingCart, ChevronDown, Calendar, MapPin } from "lucide-react";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { ParentAccountSelector } from "./ParentAccountSelector";
 import { useState } from "react";
@@ -14,7 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CountdownTimer } from "./CountdownTimer";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { mockStudents } from "@/data/mockData";
 
 interface PortalHeaderProps {
   onLogout?: () => void;
@@ -39,15 +39,20 @@ export const PortalHeader = ({
 }: PortalHeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
-  const [selectedCampus, setSelectedCampus] = useState("SISB");
+  const selectedCampus = mockStudents[0]?.campus ?? "CM";
   const { t, language } = useLanguage();
 
-  const campusOptions = [
-    { value: "SISB", label: "SISB" },
-    { value: "CM", label: "CM" },
-    { value: "SV", label: "SV" },
-    { value: "TR", label: "TR" }
+  const allCampusOptions = [
+    { value: "CM", label: "CM – Chiang Mai" },
+    { value: "NB", label: "NB – Nonthaburi" },
+    { value: "PU", label: "PU – Phuket" },
+    { value: "RY", label: "RY – Rayong" },
+    { value: "SV", label: "SV – Suvarnabhumi" },
+    { value: "TB", label: "TB – Thonburi" },
   ];
+
+  const studentCampuses = new Set(mockStudents.map(s => s.campus));
+  const campusOptions = allCampusOptions.filter(c => studentCampuses.has(c.value));
   
   // Mock notification data
   const notifications = {
@@ -228,21 +233,10 @@ export const PortalHeader = ({
                   <h4 className={`font-medium mb-3 text-sm text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>{t('nav.home')}</h4>
                   <div className="space-y-1">
                     <button
-                      onClick={() => onTabChange?.("dashboard")}
-                      className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${
-                        activeTab === "dashboard" 
-                          ? "bg-primary text-primary-foreground" 
-                          : "hover:bg-muted text-muted-foreground"
-                      } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
-                    >
-                      <GraduationCap className="h-4 w-4" />
-                      Dashboard
-                    </button>
-                    <button
                       onClick={() => onTabChange?.("tuition")}
                       className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${
-                        activeTab === "tuition" 
-                          ? "bg-primary text-primary-foreground" 
+                        activeTab === "tuition"
+                          ? "bg-primary text-primary-foreground"
                           : "hover:bg-muted text-muted-foreground"
                       } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
                     >
@@ -250,32 +244,54 @@ export const PortalHeader = ({
                       Tuition
                     </button>
                     <button
-                      onClick={() => onTabChange?.("afterschool")}
+                      onClick={() => onTabChange?.("eca-eas")}
                       className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${
-                        activeTab === "afterschool" 
-                          ? "bg-primary text-primary-foreground" 
+                        activeTab === "eca-eas"
+                          ? "bg-primary text-primary-foreground"
                           : "hover:bg-muted text-muted-foreground"
                       } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
                     >
                       <Clock className="h-4 w-4" />
-                      After School
+                      ECA &amp; EAS
                     </button>
                     <button
-                      onClick={() => onTabChange?.("summer")}
+                      onClick={() => onTabChange?.("camp")}
                       className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${
-                        activeTab === "summer" 
-                          ? "bg-primary text-primary-foreground" 
+                        activeTab === "camp"
+                          ? "bg-primary text-primary-foreground"
                           : "hover:bg-muted text-muted-foreground"
                       } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
                     >
                       <Sun className="h-4 w-4" />
-                      Summer
+                      Camp
+                    </button>
+                    <button
+                      onClick={() => onTabChange?.("event-exam")}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${
+                        activeTab === "event-exam"
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-muted text-muted-foreground"
+                      } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+                    >
+                      <Calendar className="h-4 w-4" />
+                      Event &amp; Exam
+                    </button>
+                    <button
+                      onClick={() => onTabChange?.("trip")}
+                      className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${
+                        activeTab === "trip"
+                          ? "bg-primary text-primary-foreground"
+                          : "hover:bg-muted text-muted-foreground"
+                      } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+                    >
+                      <MapPin className="h-4 w-4" />
+                      Trip
                     </button>
                     <button
                       onClick={() => onTabChange?.("receipts")}
                       className={`w-full flex items-center gap-3 px-3 py-2 text-sm rounded-lg transition-colors ${
-                        activeTab === "receipts" 
-                          ? "bg-primary text-primary-foreground" 
+                        activeTab === "receipts"
+                          ? "bg-primary text-primary-foreground"
                           : "hover:bg-muted text-muted-foreground"
                       } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
                     >
@@ -344,23 +360,14 @@ export const PortalHeader = ({
               )}
             </div>
 
-            {/* Campus Selector - Right Side */}
+            {/* Campus Display - Right Side */}
             <div className="flex items-center gap-2">
               <span className={`text-sm text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                 {t('portal.loggedInCampus')}:
               </span>
-              <Select value={selectedCampus} onValueChange={setSelectedCampus}>
-                <SelectTrigger className="w-20 h-8 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {campusOptions.map((campus) => (
-                    <SelectItem key={campus.value} value={campus.value}>
-                      {campus.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <span className={`text-sm font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                {campusOptions[0]?.label ?? selectedCampus}
+              </span>
             </div>
           </div>
         </div>

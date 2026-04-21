@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Download, ArrowLeft, Calendar, CreditCard, ShoppingBag } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { downloadReceiptPDF } from "@/lib/downloadUtils";
 import { PaymentProgressBar } from "./PaymentProgressBar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
@@ -38,9 +38,17 @@ export const ActivityPaymentSuccess = ({ studentName, paymentData, onBackToMain,
   };
 
   const handleDownloadReceipt = () => {
-    toast({
-      title: language === 'th' ? 'ดาวน์โหลดใบเสร็จ' : language === 'zh' ? '下载收据' : 'Download Receipt',
-      description: language === 'th' ? 'เริ่มดาวน์โหลดแล้ว' : language === 'zh' ? '下载已开始' : 'Download started',
+    downloadReceiptPDF({
+      title: 'Activity Payment Receipt',
+      receiptId: paymentData.receiptId,
+      studentName,
+      amount: formatCurrency(paymentData.amount),
+      paymentDate: formatDate(paymentData.paymentDate),
+      paymentMethod: paymentData.paymentMethod,
+      items: paymentData.items.map(item => ({
+        name: item.name,
+        price: formatCurrency(item.price),
+      })),
     });
   };
 

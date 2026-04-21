@@ -23,7 +23,7 @@ interface ActivityCheckoutProps {
     id: string;
     name: string;
     price: number;
-    type: 'course' | 'summer';
+    type: 'course' | 'summer' | 'exam' | 'tuition' | 'trip';
   }>;
   creditBalance: number;
   onPaymentSuccess: (paymentData: any) => void;

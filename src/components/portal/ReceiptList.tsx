@@ -7,7 +7,7 @@ interface Receipt {
   id: string;
   invoice_id: string;
   amount: number;
-  payment_method: 'credit_card' | 'bank_transfer' | 'credit_note' | 'cash';
+  payment_method: 'credit_card' | 'bank_transfer' | 'credit_note' | 'cash' | 'promptpay';
   paid_at: string;
   receipt_url: string;
   status: 'completed' | 'processing' | 'failed';
@@ -39,10 +39,15 @@ export const ReceiptList = ({ receipts, onDownload }: ReceiptListProps) => {
       icon: FileText, 
       gradient: 'from-orange-500 to-amber-600' 
     },
-    cash: { 
-      label: t('payment.cash'), 
-      icon: DollarSign, 
-      gradient: 'from-gray-500 to-slate-600' 
+    cash: {
+      label: t('payment.cash'),
+      icon: DollarSign,
+      gradient: 'from-gray-500 to-slate-600'
+    },
+    promptpay: {
+      label: 'PromptPay',
+      icon: CreditCard,
+      gradient: 'from-violet-500 to-purple-600'
     },
   };
 

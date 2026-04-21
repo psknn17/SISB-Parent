@@ -13,7 +13,7 @@ interface CartItem {
   id: string;
   name: string;
   price: number;
-  type: 'course' | 'activity';
+  type: 'course' | 'activity' | 'exam' | 'tuition' | 'trip';
   studentName?: string;
 }
 
@@ -158,7 +158,7 @@ export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewPr
                               </h4>
                               <div className="flex items-center gap-2 mb-2">
                                 <Badge variant="secondary" className={`text-xs ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                                  {item.type === 'course' ? t('portal.afterSchool') : t('portal.summerActivity')}
+                                  {item.type === 'tuition' ? t('portal.tuition') : item.type === 'course' ? t('portal.afterSchool') : item.type === 'trip' ? (language === 'th' ? 'ทัศนศึกษา' : language === 'zh' ? '旅行' : 'Trip') : t('portal.summerActivity')}
                                 </Badge>
                               </div>
                               <div className={`text-lg font-bold text-primary ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
