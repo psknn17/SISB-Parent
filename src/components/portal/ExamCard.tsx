@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Clock, Calendar, MapPin, Users } from "lucide-react";
+import { Clock, Calendar, MapPin, Users, FileText } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { ExamRegistrationDialog } from "./ExamRegistrationDialog";
 
@@ -62,38 +62,37 @@ export const ExamCard = ({ exam, onAddToCart, onRemoveFromCart, isInCart }: Exam
   };
 
   return (
-    <Card className="relative">
-      <CardHeader className="pb-3">
-        <div className="space-y-3">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className={`font-semibold text-base leading-tight flex-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-              {exam.name}
-            </h3>
-            <div className="text-right">
-              <span className={`text-xl font-bold text-blue-600 whitespace-nowrap ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                {formatCurrency(exam.examPrice)}
-              </span>
-              <p className={`text-xs text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                {t('exam.examOnly')}
-              </p>
+    <Card className="overflow-hidden transition-all">
+      <div className="h-1 w-full bg-primary" />
+      <CardContent className="p-4 space-y-4">
+        {/* Header row */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-3 min-w-0">
+            <div className="p-2 rounded-lg shrink-0 bg-primary/10">
+              <FileText className="h-5 w-5 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <p className={`font-semibold text-base leading-snug ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>{exam.name}</p>
+              <p className={`text-sm text-muted-foreground mt-0.5 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>{exam.description}</p>
             </div>
           </div>
-          
-          <p className={`text-sm text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-            {exam.description}
-          </p>
-          
-          <div className="flex flex-wrap gap-2">
-            <Badge className={getAvailabilityColor()}>
-              <span className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
-                {getAvailabilityText()}
-              </span>
-            </Badge>
+          <div className="text-right shrink-0">
+            <span className={`text-xl font-bold text-blue-600 whitespace-nowrap ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+              {formatCurrency(exam.examPrice)}
+            </span>
+            <p className={`text-xs text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+              {t('exam.examOnly')}
+            </p>
           </div>
         </div>
-      </CardHeader>
 
-      <CardContent className="space-y-4">
+        <div className="flex flex-wrap gap-2">
+          <Badge className={getAvailabilityColor()}>
+            <span className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+              {getAvailabilityText()}
+            </span>
+          </Badge>
+        </div>
         <div className="space-y-3 text-sm">
           <div className={`flex items-center gap-2 text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
             <Calendar className="h-4 w-4" />
@@ -141,9 +140,9 @@ export const ExamCard = ({ exam, onAddToCart, onRemoveFromCart, isInCart }: Exam
               {t('portal.fullyBooked')}
             </Button>
           ) : isInCart ? (
-            <Button 
-              variant="outline" 
-              className={`w-full border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+            <Button
+              variant="destructive"
+              className={`w-full ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
               onClick={() => onRemoveFromCart?.(exam.id)}
             >
               {t('portal.removeFromCart')}
