@@ -1,66 +1,58 @@
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { LoginForm } from "@/components/auth/LoginForm";
-import { ForgotPassword } from "@/components/auth/ForgotPassword";
+import { OTPVerification } from "@/components/auth/OTPVerification";
 import { SignUp } from "@/components/auth/SignUp";
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Users } from "lucide-react";
-import schoolBuilding from "@/assets/sisb-new-building.jpg";
+import schoolBuilding from "@/assets/school-building-new.jpg";
 import sisbLogo from "@/assets/sisb-logo-new.png";
 
 interface LoginProps {
   onLogin: () => void;
-  onGoToRegister?: () => void;
 }
 
-type AuthView = "login" | "forgot-password" | "signup";
+type AuthView = "email" | "otp" | "signup";
 
-export const Login = ({ onLogin, onGoToRegister }: LoginProps) => {
-  const [currentView, setCurrentView] = useState<AuthView>("login");
-  const [isForgotPasswordSuccess, setIsForgotPasswordSuccess] = useState(false);
-  const [resetEmail, setResetEmail] = useState<string>("");
+export const Login = ({ onLogin }: LoginProps) => {
+  const [currentView, setCurrentView] = useState<AuthView>("email");
+  const [userEmail, setUserEmail] = useState<string>("");
   const { t, getFontClass } = useLanguage();
 
-  const handleLogin = () => {
+  const handleEmailSubmit = (email: string) => {
+    setUserEmail(email);
+    setCurrentView("otp");
+  };
+
+  const handleOTPVerify = () => {
     onLogin();
   };
 
   const handleSignUp = () => {
-    // After successful signup, redirect to login or directly login
-    setCurrentView("login");
-    // Could also call onLogin() to auto-login after signup
+    setCurrentView("email");
   };
 
   const renderAuthView = () => {
     switch (currentView) {
-      case "forgot-password":
+      case "otp":
         return (
-          <ForgotPassword
-            onBackToLogin={() => {
-              setCurrentView("login");
-              setIsForgotPasswordSuccess(false);
-              setResetEmail("");
-            }}
-            onStateChange={(isSuccess, email) => {
-              setIsForgotPasswordSuccess(isSuccess);
-              if (email) setResetEmail(email);
-            }}
+          <OTPVerification
+            email={userEmail}
+            onVerify={handleOTPVerify}
+            onBackToEmail={() => setCurrentView("email")}
           />
         );
       case "signup":
         return (
           <SignUp
             onSignUp={handleSignUp}
-            onBackToLogin={() => setCurrentView("login")}
+            onBackToLogin={() => setCurrentView("email")}
           />
         );
       default:
         return (
           <LoginForm
-            onLogin={handleLogin}
-            onForgotPassword={() => setCurrentView("forgot-password")}
+            onSubmitEmail={handleEmailSubmit}
             onSignUp={() => setCurrentView("signup")}
           />
         );
@@ -70,11 +62,11 @@ export const Login = ({ onLogin, onGoToRegister }: LoginProps) => {
   return (
     <div className="min-h-screen flex">
       {/* Language Switcher - Top Right */}
-      <div className="absolute top-6 right-6 z-10">
+      <div className="absolute top-4 right-4 z-20 lg:top-6 lg:right-6">
         <LanguageSelector />
       </div>
 
-      {/* Left Side - School Building Image */}
+      {/* Left Side - School Building Image (Desktop Only) */}
       <div 
         className="hidden lg:flex lg:w-1/2 relative bg-cover bg-center lg:fixed lg:h-screen lg:left-0 lg:top-0"
         style={{ backgroundImage: `url(${schoolBuilding})` }}
@@ -100,74 +92,81 @@ export const Login = ({ onLogin, onGoToRegister }: LoginProps) => {
         </div>
       </div>
 
-      {/* Right Side - Login Form */}
-      <div className={`w-full lg:w-1/2 lg:ml-[50%] flex items-center justify-center p-6 bg-background ${getFontClass()}`}>
-        <Card className="w-full max-w-md border-0 shadow-none lg:shadow-lg lg:border">
-          <CardHeader className="text-center space-y-4 pb-8">
-            {/* Mobile Hero Image */}
-            <div className="lg:hidden mb-6">
-              <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <img 
-                  src={sisbLogo} 
-                  alt="SISB International Schools"
-                  className="h-24 w-auto"
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <CardTitle className="text-2xl font-bold text-foreground">
-                {currentView === "signup" ? t('auth.signupTitle') : 
-                 currentView === "forgot-password" && isForgotPasswordSuccess ? t('auth.emailSent') :
-                 currentView === "forgot-password" ? t('auth.resetPasswordTitle') : 
-                 t('portal.loginTitle')}
-              </CardTitle>
-              <CardDescription className="text-base text-muted-foreground">
-                {currentView === "login" && t('portal.loginSubtitle')}
-                {currentView === "forgot-password" && isForgotPasswordSuccess && (
-                  <span>
-                    {t('auth.emailSentMessage')}<br />
-                    <span className="font-medium">{resetEmail}</span>
-                  </span>
-                )}
-                {currentView === "forgot-password" && !isForgotPasswordSuccess && t('auth.resetPasswordSubtitle')}
-                {currentView === "signup" && t('auth.signupSubtitle')}
-              </CardDescription>
-            </div>
-          </CardHeader>
+      {/* Mobile/Tablet: Full Screen Layout */}
+      <div className={`w-full lg:w-1/2 lg:ml-[50%] flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-white lg:bg-background ${getFontClass()}`}>
+        
+        {/* Mobile/Tablet Hero Section */}
+        <div 
+          className="lg:hidden relative h-[35vh] min-h-[280px] bg-cover bg-center animate-fade-in"
+          style={{ backgroundImage: `url(${schoolBuilding})` }}
+        >
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/60 via-primary/40 to-transparent"></div>
           
-          <CardContent>
-            {renderAuthView()}
-            
-            {currentView === "login" && onGoToRegister && (
-              <div className="mt-6 pt-6 border-t">
-                <div className="text-center space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Not a SISB member?
-                  </p>
-                  <Button
-                    variant="outline"
-                    onClick={onGoToRegister}
-                    className="w-full"
-                  >
-                    <Users className="h-4 w-4 mr-2" />
-                    Register as External Parent
-                  </Button>
-                  <p className="text-xs text-muted-foreground">
-                    Access after-school activities, summer programs, and public events
-                  </p>
+          {/* Hero Content */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 px-6">
+            <img 
+              src={sisbLogo} 
+              alt="SISB International Schools"
+              className="h-20 w-auto mb-4 drop-shadow-lg animate-scale-in"
+            />
+            <h1 className="text-2xl font-bold tracking-tight drop-shadow-md animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              Parent Portal
+            </h1>
+            <p className="text-sm opacity-90 mt-1 drop-shadow animate-fade-in" style={{ animationDelay: '0.2s' }}>
+              Manage your child's education journey
+            </p>
+          </div>
+        </div>
+
+        {/* Login Card */}
+        <div className="flex-1 flex items-start lg:items-center justify-center px-4 lg:p-6 -mt-12 lg:mt-0 relative z-10">
+          <Card className="w-full max-w-md border-0 shadow-none lg:shadow-lg lg:border 
+            lg:bg-card lg:backdrop-blur-none
+            bg-white/95 backdrop-blur-xl shadow-2xl rounded-2xl
+            animate-fade-in lg:animate-none"
+            style={{ animationDelay: '0.15s' }}
+          >
+            <CardHeader className="text-center space-y-3 pb-6 pt-8 lg:pt-6 lg:pb-8">
+              {/* Desktop: Show logo in card */}
+              <div className="hidden lg:block mb-6">
+                <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
+                  <img 
+                    src={sisbLogo} 
+                    alt="SISB International Schools"
+                    className="h-24 w-auto"
+                  />
                 </div>
               </div>
-            )}
-            
-            {currentView === "login" && (
-              <div className="lg:hidden text-xs text-muted-foreground text-center mt-6 space-y-1">
-                <p>Secure authentication powered by your school</p>
-                <p>© 2024 Schooney Educational System</p>
+              
+              <div className="space-y-2">
+                <CardTitle className="text-2xl font-bold text-foreground animate-fade-in lg:animate-none" style={{ animationDelay: '0.25s' }}>
+                  {currentView === "signup" ? t('auth.signupTitle') : 
+                   currentView === "otp" ? t('auth.verifyOTP') :
+                   t('portal.loginTitle')}
+                </CardTitle>
+                <CardDescription className="text-base text-muted-foreground animate-fade-in lg:animate-none" style={{ animationDelay: '0.3s' }}>
+                  {currentView === "email" && t('portal.loginSubtitle')}
+                  {currentView === "otp" && t('auth.otpSubtitle')}
+                  {currentView === "signup" && t('auth.signupSubtitle')}
+                </CardDescription>
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            
+            <CardContent className="pb-8">
+              <div className="animate-fade-in lg:animate-none" style={{ animationDelay: '0.35s' }}>
+                {renderAuthView()}
+              </div>
+              
+              {currentView === "email" && (
+                <div className="lg:hidden text-xs text-muted-foreground/80 text-center mt-8 space-y-1 animate-fade-in" style={{ animationDelay: '0.45s' }}>
+                  <p>Secure authentication powered by your school</p>
+                  <p>© 2024 Schooney Educational System</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

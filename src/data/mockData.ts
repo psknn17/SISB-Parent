@@ -1,190 +1,330 @@
 // Mock data for the Parent Portal
 
+// Nationalities list for searchable dropdown
+export const nationalities = [
+  "Thai", "American", "British", "Chinese", "Japanese", "Korean",
+  "Australian", "Canadian", "French", "German", "Indian", "Indonesian",
+  "Malaysian", "Singaporean", "Vietnamese", "Filipino", "Russian",
+  "Italian", "Spanish", "Dutch", "Swedish", "Swiss", "Brazilian",
+  "Mexican", "Argentine", "South African", "New Zealand", "Burmese",
+  "Cambodian", "Laotian", "Taiwanese", "Hong Konger", "Macanese",
+  "Pakistani", "Bangladeshi", "Sri Lankan", "Nepalese", "Other"
+];
+
+// Upcoming deadlines for dashboard - covers all menu types
+export const mockUpcomingDeadlines = [
+  {
+    id: "deadline-tuition-001",
+    type: "tuition" as const,
+    title: "Tuition Fee - Term 2",
+    studentName: "Emma Johnson",
+    studentId: 1,
+    dueDate: "2025-01-15",
+    amount: 155000,
+    description: "Term 2 Tuition Payment"
+  },
+  {
+    id: "deadline-eca-001",
+    type: "eca" as const,
+    title: "Creative Art & Design Registration",
+    studentName: "Emma Johnson",
+    studentId: 1,
+    dueDate: "2024-12-20",
+    amount: 9500,
+    description: "ECA Registration Deadline"
+  },
+  {
+    id: "deadline-eca-002",
+    type: "eca" as const,
+    title: "Advanced Mathematics Club",
+    studentName: "Liam Johnson",
+    studentId: 2,
+    dueDate: "2024-12-22",
+    amount: 12000,
+    description: "ECA Registration Deadline"
+  },
+  {
+    id: "deadline-trip-001",
+    type: "trip" as const,
+    title: "Science Museum Field Trip",
+    studentName: "Emma Johnson",
+    studentId: 1,
+    dueDate: "2024-12-18",
+    amount: 4500,
+    description: "Field Trip Payment Deadline"
+  },
+  {
+    id: "deadline-trip-002",
+    type: "trip" as const,
+    title: "Historical Park Excursion",
+    studentName: "Liam Johnson",
+    studentId: 2,
+    dueDate: "2024-12-25",
+    amount: 6500,
+    description: "Field Trip Payment Deadline"
+  },
+  {
+    id: "deadline-camp-001",
+    type: "camp" as const,
+    title: "Summer Art Camp Registration",
+    studentName: "Emma Johnson",
+    studentId: 1,
+    dueDate: "2024-12-28",
+    amount: 35000,
+    description: "Camp Registration Deadline"
+  },
+  {
+    id: "deadline-camp-002",
+    type: "camp" as const,
+    title: "Robotics Engineering Camp",
+    studentName: "Liam Johnson",
+    studentId: 2,
+    dueDate: "2025-01-05",
+    amount: 42000,
+    description: "Camp Registration Deadline"
+  },
+  {
+    id: "deadline-exam-001",
+    type: "exam" as const,
+    title: "IELTS Registration",
+    studentName: "Sophia Johnson",
+    studentId: 3,
+    dueDate: "2024-12-22",
+    amount: 7500,
+    description: "Exam Registration Deadline"
+  },
+  {
+    id: "deadline-exam-002",
+    type: "exam" as const,
+    title: "Cambridge English B2",
+    studentName: "Liam Johnson",
+    studentId: 2,
+    dueDate: "2024-12-30",
+    amount: 6800,
+    description: "Exam Registration Deadline"
+  },
+  {
+    id: "deadline-event-001",
+    type: "event" as const,
+    title: "Science Fair Registration",
+    studentName: "Emma Johnson",
+    studentId: 1,
+    dueDate: "2024-12-19",
+    amount: 1200,
+    description: "Event Registration Deadline"
+  }
+];
+
 export const mockStudents = [
-  { id: 1, name: "Emma Johnson", class: "Grade 5A", year: "2024", avatar: "👧", campus: "CM" },
-  { id: 2, name: "Liam Johnson", class: "Grade 8B", year: "2024", avatar: "👦", campus: "CM" },
-  { id: 3, name: "Sophia Johnson", class: "Grade 11C", year: "2024", avatar: "👩‍🎓", campus: "CM" },
+  { 
+    id: 1, 
+    name: "Emma Johnson", 
+    class: "Grade 5A", 
+    year: "2024", 
+    avatar: "👧", 
+    campus: "Pracha Uthit", 
+    color: "bg-emerald-500/10 border-emerald-500/30 text-emerald-700", 
+    isSISB: true,
+    email: "emma.johnson@sisb.ac.th",
+    parentEmail: "parent.johnson@sisb.ac.th"
+  },
+  { 
+    id: 2, 
+    name: "Liam Johnson", 
+    class: "Grade 8B", 
+    year: "2024", 
+    avatar: "👦", 
+    campus: "Pracha Uthit", 
+    color: "bg-sky-500/10 border-sky-500/30 text-sky-700", 
+    isSISB: true,
+    email: "liam.johnson@sisb.ac.th",
+    parentEmail: "parent.johnson@sisb.ac.th"
+  },
+  { 
+    id: 3, 
+    name: "Sophia Johnson", 
+    class: "Grade 11C", 
+    year: "2024", 
+    avatar: "👩‍🎓", 
+    campus: "Suvarnabhumi", 
+    color: "bg-purple-500/10 border-purple-500/30 text-purple-700", 
+    isSISB: false,
+    email: "sophia.external@gmail.com",
+    parentEmail: "parent.external@gmail.com"
+  },
+];
+
+// Mandatory courses forced by school (pre-selected in cart)
+export const mandatoryCourses = [
+  {
+    id: "mandatory-001",
+    name: "Physical Education",
+    description: "Required PE course for all students",
+    price: 50,
+    studentId: "1",
+    studentName: "Emma Johnson",
+    type: "course" as const,
+    isMandatory: true,
+    schedule: "Mon & Fri 8:00-9:00 AM",
+    location: "Sports Field"
+  },
+  {
+    id: "mandatory-002",
+    name: "Library & Research Skills",
+    description: "Essential research and information literacy skills",
+    price: 40,
+    studentId: "2",
+    studentName: "Liam Johnson",
+    type: "course" as const,
+    isMandatory: true,
+    schedule: "Tue & Thu 10:00-11:00 AM",
+    location: "Library 3F"
+  }
+];
+
+export const campusList = [
+  { id: "pracha-uthit", name: "SISB ประชาอุทิศ", nameEn: "Pracha Uthit" },
+  { id: "suvarnabhumi", name: "SISB สุวรรณภูมิ", nameEn: "Suvarnabhumi" },
+  { id: "thonburi", name: "SISB ธนบุรี", nameEn: "Thonburi" },
+  { id: "chiangmai", name: "SISB เชียงใหม่", nameEn: "Chiangmai" },
+  { id: "nonthaburi", name: "SISB นนทบุรี", nameEn: "Nonthaburi" },
+  { id: "rayong", name: "SISB ระยอง", nameEn: "Rayong" },
 ];
 
 export const mockInvoices = [
-  // ── Emma Johnson (Grade 5A) ──────────────────────────────
   {
     id: "INV-2024-001",
     student_id: 1,
     type: "Yearly" as const,
-    amount_due: 558000,
-    due_date: "2025-12-15",
+    amount_due: 15500,
+    due_date: "2024-12-15",
     status: "pending" as const,
     description: "Tuition Fee 2024-2025",
-    term: "Academic Year 2024-2025",
-    line_items: [
-      { id: "item-1", description: "Tuition Fee - Grade 5A", amount: 450000, category: "Tuition" },
-      { id: "item-2", description: "School Shirt (Size M)", amount: 1800, category: "Uniform" },
-      { id: "item-3", description: "School Shorts (Size M)", amount: 1500, category: "Uniform" },
-      { id: "item-4", description: "Snack & Lunch K1 Program", amount: 36000, category: "Meal Plan" },
-      { id: "item-5", description: "Activity Fee", amount: 25200, category: "Activities" },
-      { id: "item-6", description: "Technology Fee", amount: 18000, category: "Technology" },
-      { id: "item-7", description: "Library & Resources", amount: 14400, category: "Resources" },
-      { id: "item-8", description: "Insurance Coverage", amount: 7200, category: "Insurance" },
-      { id: "item-9", description: "Student ID Card", amount: 1800, category: "Administrative" },
-      { id: "item-10", description: "Yearbook", amount: 2100, category: "Publications" }
-    ]
+    term: "Academic Year 2024-2025"
   },
-  {
-    id: "INV-2024-002",
-    student_id: 1,
-    type: "Termly" as const,
-    amount_due: 189333,
-    due_date: "2025-09-01",
-    status: "overdue" as const,
-    description: "Term 1 Fee 2024-2025",
-    term: "Term 1 — Sep 2024",
-    line_items: [
-      { id: "item-1b", description: "Term 1 Tuition - Grade 5A", amount: 160000, category: "Tuition" },
-      { id: "item-2b", description: "Term 1 Lunch Program", amount: 12000, category: "Meal Plan" },
-      { id: "item-3b", description: "Art Supplies Fee", amount: 4800, category: "Activities" },
-      { id: "item-4b", description: "Swimming Lesson (Term 1)", amount: 9600, category: "Activities" },
-      { id: "item-5b", description: "Library Fee", amount: 2933, category: "Resources" },
-    ]
-  },
-  {
-    id: "INV-2024-003",
-    student_id: 1,
-    type: "Termly" as const,
-    amount_due: 189333,
-    due_date: "2025-06-01",
-    status: "paid" as const,
-    description: "Term 3 Fee 2023-2024",
-    term: "Term 3 — Jun 2024",
-    line_items: [
-      { id: "item-1c", description: "Term 3 Tuition - Grade 4A", amount: 160000, category: "Tuition" },
-      { id: "item-2c", description: "Term 3 Lunch Program", amount: 12000, category: "Meal Plan" },
-      { id: "item-3c", description: "Graduation Ceremony Fee", amount: 5000, category: "Events" },
-      { id: "item-4c", description: "End-of-Year Camp", amount: 8400, category: "Activities" },
-      { id: "item-5c", description: "Library Fee", amount: 3933, category: "Resources" },
-    ]
-  },
-
-  // ── Liam Johnson (Grade 8B) ──────────────────────────────
   {
     id: "INV-2024-005",
     student_id: 2,
     type: "Yearly" as const,
-    amount_due: 586800,
-    due_date: "2025-12-15",
+    amount_due: 15500,
+    due_date: "2024-12-15",
     status: "paid" as const,
     description: "Tuition Fee 2024-2025",
-    term: "Academic Year 2024-2025",
-    line_items: [
-      { id: "item-11", description: "Tuition Fee - Grade 8B", amount: 470000, category: "Tuition" },
-      { id: "item-12", description: "School Shirt (Size L)", amount: 1800, category: "Uniform" },
-      { id: "item-13", description: "School Pants (Size L)", amount: 2100, category: "Uniform" },
-      { id: "item-14", description: "Lunch Program - Middle School", amount: 43200, category: "Meal Plan" },
-      { id: "item-15", description: "Sports Activity Fee", amount: 32400, category: "Activities" },
-      { id: "item-16", description: "Technology Fee", amount: 18000, category: "Technology" },
-      { id: "item-17", description: "Lab Equipment Fee", amount: 7200, category: "Laboratory" },
-      { id: "item-18", description: "Student Insurance", amount: 8400, category: "Insurance" },
-      { id: "item-19", description: "Student Handbook", amount: 600, category: "Publications" },
-      { id: "item-19b", description: "Science Competition Entry", amount: 3100, category: "Activities" },
-    ]
+    term: "Academic Year 2024-2025"
   },
-  {
-    id: "INV-2024-007",
-    student_id: 2,
-    type: "Termly" as const,
-    amount_due: 205600,
-    due_date: "2026-01-10",
-    status: "pending" as const,
-    description: "Term 2 Fee 2024-2025",
-    term: "Term 2 — Jan 2025",
-    line_items: [
-      { id: "item-20b", description: "Term 2 Tuition - Grade 8B", amount: 170000, category: "Tuition" },
-      { id: "item-21b", description: "Term 2 Lunch Program", amount: 14400, category: "Meal Plan" },
-      { id: "item-22b", description: "Robotics Club Fee", amount: 9600, category: "Activities" },
-      { id: "item-23b", description: "Lab Consumables", amount: 4800, category: "Laboratory" },
-      { id: "item-24b", description: "Sports Equipment Levy", amount: 6800, category: "Activities" },
-    ]
-  },
-  {
-    id: "INV-2024-008",
-    student_id: 2,
-    type: "Termly" as const,
-    amount_due: 189000,
-    due_date: "2025-05-15",
-    status: "overdue" as const,
-    description: "Term 2 Fee 2023-2024",
-    term: "Term 2 — May 2024",
-    line_items: [
-      { id: "item-25b", description: "Term 2 Tuition - Grade 7B", amount: 160000, category: "Tuition" },
-      { id: "item-26b", description: "Term 2 Lunch Program", amount: 14400, category: "Meal Plan" },
-      { id: "item-27b", description: "Football Team Fee", amount: 7200, category: "Activities" },
-      { id: "item-28b", description: "Music Class (Term 2)", amount: 7400, category: "Activities" },
-    ]
-  },
-
-  // ── Sophia Johnson (Grade 11C) ───────────────────────────
   {
     id: "INV-2024-006",
     student_id: 3,
     type: "Yearly" as const,
-    amount_due: 612400,
-    due_date: "2025-12-15",
-    status: "partial" as const,
-    description: "Tuition Fee 2024-2025",
-    term: "Academic Year 2024-2025",
-    line_items: [
-      { id: "item-30", description: "Tuition Fee - Grade 11C", amount: 490000, category: "Tuition" },
-      { id: "item-31", description: "School Shirt (Size L)", amount: 1800, category: "Uniform" },
-      { id: "item-32", description: "School Blazer (Size L)", amount: 3600, category: "Uniform" },
-      { id: "item-33", description: "Lunch Program - High School", amount: 46800, category: "Meal Plan" },
-      { id: "item-34", description: "AP Course Materials", amount: 28800, category: "Academic Materials" },
-      { id: "item-35", description: "Technology Fee", amount: 18000, category: "Technology" },
-      { id: "item-36", description: "College Counseling", amount: 14400, category: "Counseling" },
-      { id: "item-37", description: "Student Insurance", amount: 7200, category: "Insurance" },
-      { id: "item-38", description: "Extended Essay Support", amount: 1800, category: "Academic Materials" },
-    ]
-  },
-  {
-    id: "INV-2024-009",
-    student_id: 3,
-    type: "Termly" as const,
-    amount_due: 224133,
-    due_date: "2026-03-01",
-    status: "pending" as const,
-    description: "Term 3 Fee 2024-2025",
-    term: "Term 3 — Mar 2025",
-    line_items: [
-      { id: "item-40", description: "Term 3 Tuition - Grade 11C", amount: 180000, category: "Tuition" },
-      { id: "item-41", description: "IB Exam Registration Fee", amount: 18000, category: "Examinations" },
-      { id: "item-42", description: "Term 3 Lunch Program", amount: 15600, category: "Meal Plan" },
-      { id: "item-43", description: "Graduation Deposit", amount: 5000, category: "Events" },
-      { id: "item-44", description: "Mock Exam Materials", amount: 5533, category: "Examinations" },
-    ]
-  },
-  {
-    id: "INV-2023-010",
-    student_id: 3,
-    type: "Yearly" as const,
-    amount_due: 578000,
+    amount_due: 15500,
     due_date: "2024-12-15",
-    status: "paid" as const,
-    description: "Tuition Fee 2023-2024",
-    term: "Academic Year 2023-2024",
-    line_items: [
-      { id: "item-50", description: "Tuition Fee - Grade 10C", amount: 470000, category: "Tuition" },
-      { id: "item-51", description: "Lunch Program - High School", amount: 46800, category: "Meal Plan" },
-      { id: "item-52", description: "AP Course Materials", amount: 24000, category: "Academic Materials" },
-      { id: "item-53", description: "Technology Fee", amount: 18000, category: "Technology" },
-      { id: "item-54", description: "College Counseling", amount: 12000, category: "Counseling" },
-      { id: "item-55", description: "Student Insurance", amount: 7200, category: "Insurance" },
-    ]
-  },
+    status: "pending" as const,
+    description: "Tuition Fee 2024-2025",
+    term: "Academic Year 2024-2025"
+  }
 ];
 
 export const mockCreditNotes = [
-  { id: 1, student_id: 1, balance: 18000 },
-  { id: 2, student_id: 2, balance: 43200 },
-  { id: 3, student_id: 3, balance: 0 },
+  { 
+    id: 1, 
+    student_id: 1, 
+    balance: 500,
+    items: [
+      { title: "Tuition Refund - Term 1", amount: 300 },
+      { title: "After School Course Cancellation", amount: 200 }
+    ]
+  },
+  { 
+    id: 2, 
+    student_id: 2, 
+    balance: 1200,
+    items: [
+      { title: "Tuition Overpayment", amount: 800 },
+      { title: "Summer Camp Refund", amount: 400 }
+    ]
+  },
+  { 
+    id: 3, 
+    student_id: 3, 
+    balance: 0,
+    items: []
+  },
+];
+
+// Credit Note History for Transaction History page
+export const mockCreditNoteHistory = [
+  {
+    id: "CN-2024-005",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    amount: 3500,
+    description: "Early payment discount reward",
+    issued_at: "2024-11-20",
+    type: "discount" as const,
+    status: "active" as const,
+    academicYear: "2024",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2024-001",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    amount: 5000,
+    description: "Refund for cancelled swimming course",
+    issued_at: "2024-11-15",
+    type: "refund" as const,
+    status: "active" as const,
+    academicYear: "2024",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2024-002",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    amount: 1800,
+    description: "Overpayment adjustment from previous term",
+    issued_at: "2024-11-10",
+    type: "overpayment" as const,
+    status: "active" as const,
+    academicYear: "2024",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2024-003",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    amount: 3700,
+    description: "Course cancellation refund - Robotics",
+    issued_at: "2024-10-25",
+    type: "cancellation" as const,
+    status: "active" as const,
+    academicYear: "2024",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2023-015",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    amount: 2500,
+    description: "Summer camp partial refund",
+    issued_at: "2023-08-15",
+    type: "refund" as const,
+    status: "used" as const,
+    academicYear: "2023",
+    usedAmount: 2500
+  },
+  {
+    id: "CN-2023-012",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    amount: 1800,
+    description: "Term 2 tuition adjustment",
+    issued_at: "2023-06-10",
+    type: "overpayment" as const,
+    status: "used" as const,
+    academicYear: "2023",
+    usedAmount: 1800
+  }
 ];
 
 // Student-specific course data
@@ -197,10 +337,29 @@ export const mockCoursesData = {
       capacity: 15,
       enrolled: 12,
       schedule: "Mon & Wed 3:30-4:30 PM",
+      day: "Mon",
+      startTime: "15:30",
+      endTime: "16:30",
       location: "Art Room 201",
-      price: 3420,
+      price: 95,
       duration: "8 weeks",
-      instructor: "Ms. Jennifer Taylor",
+      vendor: "Ms. Jennifer Taylor",
+      hasConflict: false
+    },
+    {
+      id: "course-001-wed",
+      name: "Creative Art & Design",
+      description: "Learn drawing, painting and basic design principles",
+      capacity: 15,
+      enrolled: 12,
+      schedule: "Mon & Wed 3:30-4:30 PM",
+      day: "Wed",
+      startTime: "15:30",
+      endTime: "16:30",
+      location: "Art Room 201",
+      price: 95,
+      duration: "8 weeks",
+      vendor: "Ms. Jennifer Taylor",
       hasConflict: false
     },
     {
@@ -210,10 +369,29 @@ export const mockCoursesData = {
       capacity: 18,
       enrolled: 14,
       schedule: "Tue & Thu 4:00-5:00 PM",
+      day: "Tue",
+      startTime: "16:00",
+      endTime: "17:00",
       location: "Science Lab A",
-      price: 3960,
+      price: 110,
       duration: "6 weeks",
-      instructor: "Mr. Peter Chen",
+      vendor: "Mr. Peter Chen",
+      hasConflict: false
+    },
+    {
+      id: "course-002-thu",
+      name: "Elementary Science Club",
+      description: "Fun experiments and discovery activities for young learners",
+      capacity: 18,
+      enrolled: 14,
+      schedule: "Tue & Thu 4:00-5:00 PM",
+      day: "Thu",
+      startTime: "16:00",
+      endTime: "17:00",
+      location: "Science Lab A",
+      price: 110,
+      duration: "6 weeks",
+      vendor: "Mr. Peter Chen",
       hasConflict: false
     },
     {
@@ -223,11 +401,62 @@ export const mockCoursesData = {
       capacity: 12,
       enrolled: 10,
       schedule: "Wed & Fri 3:30-4:30 PM",
+      day: "Fri",
+      startTime: "15:30",
+      endTime: "16:30",
       location: "Library Reading Corner",
-      price: 3060,
+      price: 85,
       duration: "8 weeks",
-      instructor: "Ms. Sarah Johnson",
+      vendor: "Ms. Sarah Johnson",
       hasConflict: false
+    },
+    {
+      id: "course-003-sat",
+      name: "Junior Swimming Class",
+      description: "Learn swimming basics and water safety",
+      capacity: 16,
+      enrolled: 14,
+      schedule: "Sat 10:00-11:30 AM",
+      day: "Sat",
+      startTime: "10:00",
+      endTime: "11:30",
+      location: "Swimming Pool",
+      price: 120,
+      duration: "8 weeks",
+      vendor: "Coach Lisa Williams",
+      hasConflict: false
+    },
+    {
+      id: "course-003-sun",
+      name: "Kids Yoga & Mindfulness",
+      description: "Relaxation techniques and basic yoga poses for children",
+      capacity: 15,
+      enrolled: 11,
+      schedule: "Sun 9:00-10:00 AM",
+      day: "Sun",
+      startTime: "09:00",
+      endTime: "10:00",
+      location: "Wellness Studio",
+      price: 90,
+      duration: "6 weeks",
+      vendor: "Ms. Emma Green",
+      hasConflict: false
+    },
+    {
+      id: "course-003-conflict",
+      name: "Music Theory Basics",
+      description: "Learn fundamental music theory and notation",
+      capacity: 15,
+      enrolled: 8,
+      schedule: "Mon & Wed 3:30-4:30 PM",
+      day: "Mon",
+      startTime: "15:30",
+      endTime: "16:30",
+      location: "Music Room 105",
+      price: 100,
+      duration: "8 weeks",
+      vendor: "Mr. James Williams",
+      hasConflict: true
     }
   ],
   2: [ // Liam Johnson - Grade 8B
@@ -238,10 +467,29 @@ export const mockCoursesData = {
       capacity: 20,
       enrolled: 18,
       schedule: "Mon & Wed 3:30-4:30 PM",
+      day: "Mon",
+      startTime: "15:30",
+      endTime: "16:30",
       location: "Math Lab Room 205",
-      price: 4320,
+      price: 120,
       duration: "8 weeks",
-      instructor: "Dr. Sarah Wilson",
+      vendor: "Dr. Sarah Wilson",
+      hasConflict: false
+    },
+    {
+      id: "course-004-wed",
+      name: "Advanced Mathematics Club",
+      description: "Explore advanced mathematical concepts and problem-solving techniques",
+      capacity: 20,
+      enrolled: 18,
+      schedule: "Mon & Wed 3:30-4:30 PM",
+      day: "Wed",
+      startTime: "15:30",
+      endTime: "16:30",
+      location: "Math Lab Room 205",
+      price: 120,
+      duration: "8 weeks",
+      vendor: "Dr. Sarah Wilson",
       hasConflict: false
     },
     {
@@ -251,10 +499,13 @@ export const mockCoursesData = {
       capacity: 12,
       enrolled: 12,
       schedule: "Wed & Fri 3:30-5:00 PM",
+      day: "Fri",
+      startTime: "15:30",
+      endTime: "17:00",
       location: "STEM Lab Room 101",
-      price: 6480,
+      price: 180,
       duration: "10 weeks",
-      instructor: "Mr. David Kim",
+      vendor: "Mr. David Kim",
       hasConflict: false
     },
     {
@@ -264,52 +515,192 @@ export const mockCoursesData = {
       capacity: 15,
       enrolled: 11,
       schedule: "Tue & Thu 4:00-5:30 PM",
+      day: "Tue",
+      startTime: "16:00",
+      endTime: "17:30",
       location: "Media Lab Room 305",
-      price: 5040,
+      price: 140,
       duration: "8 weeks",
-      instructor: "Ms. Rachel Martinez",
+      vendor: "Ms. Rachel Martinez",
       hasConflict: false
+    },
+    {
+      id: "course-006-thu",
+      name: "Digital Photography",
+      description: "Learn photography techniques and digital editing",
+      capacity: 15,
+      enrolled: 11,
+      schedule: "Tue & Thu 4:00-5:30 PM",
+      day: "Thu",
+      startTime: "16:00",
+      endTime: "17:30",
+      location: "Media Lab Room 305",
+      price: 140,
+      duration: "8 weeks",
+      vendor: "Ms. Rachel Martinez",
+      hasConflict: false
+    },
+    {
+      id: "course-007-sat",
+      name: "Basketball Training",
+      description: "Improve basketball skills and game strategy",
+      capacity: 20,
+      enrolled: 18,
+      schedule: "Sat 2:00-4:00 PM",
+      day: "Sat",
+      startTime: "14:00",
+      endTime: "16:00",
+      location: "Sports Court",
+      price: 150,
+      duration: "10 weeks",
+      vendor: "Coach Mike Johnson",
+      hasConflict: false
+    },
+    {
+      id: "course-007-sun",
+      name: "Chess Strategy Club",
+      description: "Learn advanced chess tactics and tournament preparation",
+      capacity: 12,
+      enrolled: 9,
+      schedule: "Sun 10:00-12:00 PM",
+      day: "Sun",
+      startTime: "10:00",
+      endTime: "12:00",
+      location: "Activity Room 203",
+      price: 100,
+      duration: "8 weeks",
+      vendor: "Grandmaster Alex Chen",
+      hasConflict: false
+    },
+    {
+      id: "course-006-conflict",
+      name: "Spanish Language",
+      description: "Introduction to Spanish language and culture",
+      capacity: 18,
+      enrolled: 14,
+      schedule: "Mon & Wed 3:30-4:30 PM",
+      day: "Mon",
+      startTime: "15:30",
+      endTime: "16:30",
+      location: "Language Lab 210",
+      price: 130,
+      duration: "8 weeks",
+      vendor: "Señora Maria Garcia",
+      hasConflict: true
     }
   ],
   3: [ // Sophia Johnson - Grade 11C
     {
-      id: "course-007",
+      id: "course-008",
       name: "Academic Writing Workshop",
       description: "Develop advanced writing skills for college preparation",
       capacity: 15,
       enrolled: 13,
       schedule: "Mon & Wed 4:00-5:30 PM",
+      day: "Mon",
+      startTime: "16:00",
+      endTime: "17:30",
       location: "English Department Room 402",
-      price: 5760,
+      price: 160,
       duration: "10 weeks",
-      instructor: "Dr. Emily Roberts",
+      vendor: "Dr. Emily Roberts",
       hasConflict: false
     },
     {
-      id: "course-008",
+      id: "course-008-wed",
+      name: "Academic Writing Workshop",
+      description: "Develop advanced writing skills for college preparation",
+      capacity: 15,
+      enrolled: 13,
+      schedule: "Mon & Wed 4:00-5:30 PM",
+      day: "Wed",
+      startTime: "16:00",
+      endTime: "17:30",
+      location: "English Department Room 402",
+      price: 160,
+      duration: "10 weeks",
+      vendor: "Dr. Emily Roberts",
+      hasConflict: false
+    },
+    {
+      id: "course-009",
       name: "Advanced Biology Lab",
       description: "Hands-on laboratory experiments and research projects",
       capacity: 18,
       enrolled: 16,
       schedule: "Tue & Thu 3:30-5:00 PM",
+      day: "Tue",
+      startTime: "15:30",
+      endTime: "17:00",
       location: "Biology Lab Room 501",
-      price: 7200,
+      price: 200,
       duration: "12 weeks",
-      instructor: "Dr. Michael Thompson",
+      vendor: "Dr. Michael Thompson",
       hasConflict: false
     },
     {
-      id: "course-009",
+      id: "course-009-thu",
+      name: "Advanced Biology Lab",
+      description: "Hands-on laboratory experiments and research projects",
+      capacity: 18,
+      enrolled: 16,
+      schedule: "Tue & Thu 3:30-5:00 PM",
+      day: "Thu",
+      startTime: "15:30",
+      endTime: "17:00",
+      location: "Biology Lab Room 501",
+      price: 200,
+      duration: "12 weeks",
+      vendor: "Dr. Michael Thompson",
+      hasConflict: false
+    },
+    {
+      id: "course-010",
       name: "Leadership & Communication",
       description: "Develop leadership skills and public speaking abilities",
       capacity: 20,
       enrolled: 17,
-      schedule: "Wed & Fri 4:00-5:30 PM",
+      schedule: "Fri 4:00-5:30 PM",
+      day: "Fri",
+      startTime: "16:00",
+      endTime: "17:30",
       location: "Conference Room B",
-      price: 6300,
+      price: 175,
       duration: "8 weeks",
-      instructor: "Ms. Amanda Lee",
-      hasConflict: true
+      vendor: "Ms. Amanda Lee",
+      hasConflict: false
+    },
+    {
+      id: "course-011-sat",
+      name: "SAT Preparation Course",
+      description: "Intensive SAT test preparation and practice",
+      capacity: 25,
+      enrolled: 22,
+      schedule: "Sat 9:00-12:00 PM",
+      day: "Sat",
+      startTime: "09:00",
+      endTime: "12:00",
+      location: "Study Hall 401",
+      price: 280,
+      duration: "12 weeks",
+      vendor: "Dr. James Patterson",
+      hasConflict: false
+    },
+    {
+      id: "course-011-sun",
+      name: "College Essay Workshop",
+      description: "Craft compelling college application essays",
+      capacity: 15,
+      enrolled: 13,
+      schedule: "Sun 1:00-3:00 PM",
+      day: "Sun",
+      startTime: "13:00",
+      endTime: "15:00",
+      location: "Writing Center",
+      price: 190,
+      duration: "8 weeks",
+      vendor: "Ms. Rebecca Stone",
+      hasConflict: false
     }
   ]
 };
@@ -325,10 +716,24 @@ export const mockSummerActivitiesData = {
       enrolled: 15,
       schedule: "July 8-19, 9:00 AM - 1:00 PM",
       location: "Art Studio Room 201",
-      price: 12600,
+      price: 350,
       duration: "2 weeks",
-      instructor: "Ms. Jennifer Taylor",
-      discount: "Early Bird: ฿1,080 off"
+      vendor: "Ms. Jennifer Taylor",
+      discount: "Early Bird: $30 off",
+      campType: 'flexible' as const,
+      campus: 'Bangkok',
+      totalWeeks: 2,
+      availableWeeks: [1, 2],
+      pricePerWeek: 350,
+      weekDates: {
+        1: { start: "2025-07-08", end: "2025-07-12" },
+        2: { start: "2025-07-15", end: "2025-07-19" }
+      },
+      boardingOptions: [
+        { id: 'weekday', name: 'Weekday Boarding', price: 3000 },
+        { id: 'weekend', name: 'Weekend Boarding', price: 2000 },
+        { id: 'full', name: 'Weekday + Weekend', price: 4500 }
+      ]
     },
     {
       id: "summer-002",
@@ -338,10 +743,24 @@ export const mockSummerActivitiesData = {
       enrolled: 18,
       schedule: "July 22 - Aug 2, 9:00 AM - 2:00 PM",
       location: "Outdoor Campus & Nature Trail",
-      price: 15120,
+      price: 420,
       duration: "2 weeks", 
-      instructor: "Mr. Tom Wilson",
-      discount: "Sibling Discount: 10% off"
+      vendor: "Mr. Tom Wilson",
+      discount: "Sibling Discount: 10% off",
+      campType: 'package' as const,
+      campus: 'Chiangmai',
+      totalWeeks: 2,
+      availableWeeks: [1, 2],
+      pricePerWeek: 0,
+      weekDates: {
+        1: { start: "2025-07-22", end: "2025-07-26" },
+        2: { start: "2025-07-29", end: "2025-08-02" }
+      },
+      boardingOptions: [
+        { id: 'weekday', name: 'Weekday Boarding', price: 3500 },
+        { id: 'weekend', name: 'Weekend Boarding', price: 2200 },
+        { id: 'full', name: 'Weekday + Weekend', price: 5000 }
+      ]
     }
   ],
   2: [ // Liam Johnson - Grade 8B
@@ -353,10 +772,27 @@ export const mockSummerActivitiesData = {
       enrolled: 12,
       schedule: "July 8-19, 9:00 AM - 3:00 PM",
       location: "STEM Lab & Computer Center",
-      price: 19800,
+      price: 550,
       duration: "2 weeks",
-      instructor: "Tech Team",
-      discount: "Early Bird: ฿2,700 off"
+      vendor: "Tech Team",
+      discount: "Early Bird: $75 off",
+      campType: 'flexible' as const,
+      campus: 'Nonthaburi',
+      totalWeeks: 5,
+      availableWeeks: [1, 2, 3, 4, 5],
+      pricePerWeek: 550,
+      weekDates: {
+        1: { start: "2025-07-08", end: "2025-07-12" },
+        2: { start: "2025-07-15", end: "2025-07-19" },
+        3: { start: "2025-07-22", end: "2025-07-26" },
+        4: { start: "2025-07-29", end: "2025-08-02" },
+        5: { start: "2025-08-05", end: "2025-08-09" }
+      },
+      boardingOptions: [
+        { id: 'weekday', name: 'Weekday Boarding', price: 4000 },
+        { id: 'weekend', name: 'Weekend Boarding', price: 2500 },
+        { id: 'full', name: 'Weekday + Weekend', price: 6000 }
+      ]
     },
     {
       id: "summer-004",
@@ -366,9 +802,25 @@ export const mockSummerActivitiesData = {
       enrolled: 28,
       schedule: "Aug 5-16, 8:00 AM - 12:00 PM",
       location: "Sports Field Complex",
-      price: 11520,
+      price: 320,
       duration: "2 weeks",
-      instructor: "Coach Michael Rodriguez"
+      vendor: "Coach Michael Rodriguez",
+      campType: 'flexible' as const,
+      campus: 'Rayong',
+      totalWeeks: 4,
+      availableWeeks: [1, 2, 3, 4],
+      pricePerWeek: 320,
+      weekDates: {
+        1: { start: "2025-08-05", end: "2025-08-09" },
+        2: { start: "2025-08-12", end: "2025-08-16" },
+        3: { start: "2025-08-19", end: "2025-08-23" },
+        4: { start: "2025-08-26", end: "2025-08-30" }
+      },
+      boardingOptions: [
+        { id: 'weekday', name: 'Weekday Boarding', price: 3500 },
+        { id: 'weekend', name: 'Weekend Boarding', price: 2300 },
+        { id: 'full', name: 'Weekday + Weekend', price: 5200 }
+      ]
     },
     {
       id: "summer-005",
@@ -378,9 +830,24 @@ export const mockSummerActivitiesData = {
       enrolled: 16,
       schedule: "July 22 - Aug 2, 10:00 AM - 3:00 PM",
       location: "Science Building Lab",
-      price: 17280,
+      price: 480,
       duration: "2 weeks",
-      instructor: "Science Department"
+      vendor: "Science Department",
+      campType: 'package' as const,
+      campus: 'Bangkok',
+      totalWeeks: 3,
+      availableWeeks: [1, 2, 3],
+      pricePerWeek: 0,
+      weekDates: {
+        1: { start: "2025-07-22", end: "2025-07-26" },
+        2: { start: "2025-07-29", end: "2025-08-02" },
+        3: { start: "2025-08-05", end: "2025-08-09" }
+      },
+      boardingOptions: [
+        { id: 'weekday', name: 'Weekday Boarding', price: 4200 },
+        { id: 'weekend', name: 'Weekend Boarding', price: 2600 },
+        { id: 'full', name: 'Weekday + Weekend', price: 6200 }
+      ]
     }
   ],
   3: [ // Sophia Johnson - Grade 11C
@@ -392,10 +859,10 @@ export const mockSummerActivitiesData = {
       enrolled: 22,
       schedule: "July 8-26, 9:00 AM - 2:00 PM",
       location: "Academic Center Room 501",
-      price: 23400,
+      price: 650,
       duration: "3 weeks",
-      instructor: "College Counseling Team",
-      discount: "Merit Scholarship: ฿3,600 off"
+      vendor: "College Counseling Team",
+      discount: "Merit Scholarship: $100 off"
     },
     {
       id: "summer-007",
@@ -405,10 +872,10 @@ export const mockSummerActivitiesData = {
       enrolled: 8,
       schedule: "July 15 - Aug 9, 1:00 PM - 5:00 PM",
       location: "Advanced Biology Lab",
-      price: 20880,
+      price: 580,
       duration: "4 weeks", 
-      instructor: "Dr. Lisa Chang",
-      discount: "Research Grant: ฿1,800 off"
+      vendor: "Dr. Lisa Chang",
+      discount: "Research Grant: $50 off"
     },
     {
       id: "summer-008",
@@ -418,708 +885,489 @@ export const mockSummerActivitiesData = {
       enrolled: 15,
       schedule: "Aug 12-23, 10:00 AM - 4:00 PM",
       location: "Conference Center",
-      price: 18720,
+      price: 520,
       duration: "2 weeks",
-      instructor: "Leadership Institute"
+      vendor: "Leadership Institute"
     }
   ]
 };
 
-// Exam data
-export type LocalizedString = { en: string; th: string; zh: string };
-
-export interface Exam {
-  id: string;
-  name: string;
-  descriptions: LocalizedString;
-  price: number;
-  resultsDeliveryPrice: number;
-  capacity: number;
-  enrolled: number;
-  date: string;
-  time: string;
-  vendors: LocalizedString;
-  locations: LocalizedString;
-  eligibleGrades: string[];
-}
-
-export const mockExams: Exam[] = [
-  {
-    id: "exam-001",
-    name: "Cambridge Primary English Test",
-    price: 2500,
-    resultsDeliveryPrice: 500,
-    capacity: 50,
-    enrolled: 35,
-    date: "2024-12-15",
-    time: "9:00 AM - 12:00 PM",
-    vendors: {
-      en: "Cambridge Assessment",
-      th: "Cambridge Assessment",
-      zh: "剑桥评估",
+// Student-specific event activities data (School Events)
+export const mockEventActivitiesData = {
+  1: [ // Emma Johnson - Grade 5A
+    {
+      id: "event-001",
+      name: "Sports Day 2024",
+      description: "Annual school sports day competition and activities",
+      capacity: 150,
+      enrolled: 120,
+      schedule: "Oct 15, 8:00 AM - 4:00 PM",
+      location: "Main Sports Complex",
+      price: 150,
+      duration: "1 day",
+      vendor: "PE Department",
+      discount: "Family Package: 15% off"
     },
-    locations: {
-      en: "Examination Hall A",
-      th: "ห้องสอบ A",
-      zh: "考场 A",
+    {
+      id: "event-002",
+      name: "Science Fair Exhibition",
+      description: "Student science projects showcase and competition",
+      capacity: 80,
+      enrolled: 65,
+      schedule: "Nov 8-9, 9:00 AM - 3:00 PM",
+      location: "Main Hall & Science Building",
+      price: 120,
+      duration: "2 days", 
+      vendor: "Science Department",
+      discount: "Early Registration: $20 off"
     },
-    descriptions: {
-      en: "International standardized English assessment for primary students",
-      th: "การสอบภาษาอังกฤษมาตรฐานสากลสำหรับนักเรียนระดับประถม",
-      zh: "面向小学生的国际标准化英语测评",
+    {
+      id: "event-003",
+      name: "Winter Concert Performance",
+      description: "Participate in annual winter music concert",
+      capacity: 50,
+      enrolled: 42,
+      schedule: "Dec 12, 6:00 PM - 8:30 PM",
+      location: "School Auditorium",
+      price: 100,
+      duration: "1 evening",
+      vendor: "Music Department"
+    }
+  ],
+  2: [ // Liam Johnson - Grade 8B
+    {
+      id: "event-004",
+      name: "Math Olympiad Competition",
+      description: "Inter-school mathematics competition",
+      capacity: 40,
+      enrolled: 35,
+      schedule: "Oct 28, 9:00 AM - 4:00 PM",
+      location: "Academic Building Room 301",
+      price: 200,
+      duration: "1 day",
+      vendor: "Math Department",
+      discount: "Top Students: 20% off"
     },
-    eligibleGrades: ["Grade 5A", "Grade 5B", "Grade 6A"],
-  },
-  {
-    id: "exam-002",
-    name: "Math Olympiad Qualifier",
-    price: 1500,
-    resultsDeliveryPrice: 300,
-    capacity: 30,
-    enrolled: 28,
-    date: "2025-01-10",
-    time: "1:00 PM - 4:00 PM",
-    vendors: {
-      en: "Thailand Math Association",
-      th: "สมาคมคณิตศาสตร์ไทย",
-      zh: "泰国数学协会",
+    {
+      id: "event-005",
+      name: "Robotics Challenge 2024",
+      description: "STEM robotics competition and exhibition",
+      capacity: 30,
+      enrolled: 28,
+      schedule: "Nov 15-16, 9:00 AM - 5:00 PM",
+      location: "STEM Lab & Exhibition Hall",
+      price: 250,
+      duration: "2 days",
+      vendor: "STEM Team"
     },
-    locations: {
-      en: "Math Lab Room 205",
-      th: "ห้องคณิตศาสตร์ 205",
-      zh: "数学实验室 205",
+    {
+      id: "event-006",
+      name: "Cultural Day Festival",
+      description: "Multicultural celebration and performances",
+      capacity: 200,
+      enrolled: 180,
+      schedule: "Dec 5, 10:00 AM - 6:00 PM",
+      location: "School Campus",
+      price: 180,
+      duration: "1 day",
+      vendor: "Cultural Activities Team",
+      discount: "Group Discount: 10% off"
+    }
+  ],
+  3: [ // Sophia Johnson - Grade 11C
+    {
+      id: "event-007",
+      name: "Model United Nations Conference",
+      description: "Inter-school MUN conference and debate",
+      capacity: 60,
+      enrolled: 55,
+      schedule: "Nov 22-24, 8:00 AM - 6:00 PM",
+      location: "Conference Center",
+      price: 350,
+      duration: "3 days",
+      vendor: "Social Studies Department",
+      discount: "Delegate Scholarship: $50 off"
     },
-    descriptions: {
-      en: "Regional mathematics competition preliminary round",
-      th: "รอบคัดเลือกการแข่งขันคณิตศาสตร์ระดับภูมิภาค",
-      zh: "地区数学竞赛初赛",
+    {
+      id: "event-008",
+      name: "Art Exhibition & Workshop",
+      description: "Student art showcase and creative workshops",
+      capacity: 45,
+      enrolled: 38,
+      schedule: "Dec 1-3, 1:00 PM - 5:00 PM",
+      location: "Art Gallery & Studios",
+      price: 220,
+      duration: "3 days", 
+      vendor: "Art Department",
+      discount: "Portfolio Package: $30 off"
     },
-    eligibleGrades: ["Grade 5A", "Grade 5B", "Grade 6A"],
-  },
-  {
-    id: "exam-003",
-    name: "iPSLE 2026 Examination",
-    price: 5000,
-    resultsDeliveryPrice: 500,
-    capacity: 40,
-    enrolled: 10,
-    date: "2025-03-20",
-    time: "9:00 AM - 3:00 PM",
-    vendors: {
-      en: "MOE Singapore",
-      th: "MOE Singapore",
-      zh: "新加坡教育部",
-    },
-    locations: {
-      en: "Examination Hall B",
-      th: "ห้องสอบ B",
-      zh: "考场 B",
-    },
-    descriptions: {
-      en: "2026 Singapore International Primary School Leaving Examination",
-      th: "การสอบ PSLE นานาชาติสิงคโปร์ 2026",
-      zh: "2026年新加坡国际小学离校考试",
-    },
-    eligibleGrades: ["Grade 5A", "Grade 5B", "Grade 6A"],
-  },
-  {
-    id: "exam-004",
-    name: "HSK Level 4 Examination",
-    price: 3000,
-    resultsDeliveryPrice: 500,
-    capacity: 25,
-    enrolled: 5,
-    date: "2025-02-15",
-    time: "10:00 AM - 12:30 PM",
-    vendors: {
-      en: "Hanban / Confucius Institute",
-      th: "Hanban / สถาบันขงจื่อ",
-      zh: "汉办 / 孔子学院",
-    },
-    locations: {
-      en: "Language Center",
-      th: "ศูนย์ภาษา",
-      zh: "语言中心",
-    },
-    descriptions: {
-      en: "Hanyu Shuiping Kaoshi Chinese proficiency test level 4",
-      th: "การสอบวัดความสามารถภาษาจีน HSK ระดับ 4",
-      zh: "汉语水平考试四级",
-    },
-    eligibleGrades: ["Grade 5A", "Grade 5B", "Grade 6A"],
-  },
-  // ── Grade 8B exams ──────────────────────────────────────
-  {
-    id: "exam-005",
-    name: "IELTS Academic (Junior)",
-    price: 6500,
-    resultsDeliveryPrice: 0,
-    capacity: 20,
-    enrolled: 7,
-    date: "2025-02-22",
-    time: "9:00 AM - 1:00 PM",
-    vendors: { en: "British Council Thailand", th: "British Council ประเทศไทย", zh: "英国文化协会泰国" },
-    locations: { en: "Examination Hall B", th: "ห้องสอบ B", zh: "考场 B" },
-    descriptions: {
-      en: "Official IELTS Academic test administered by British Council",
-      th: "การสอบ IELTS Academic อย่างเป็นทางการโดย British Council",
-      zh: "英国文化协会主办的官方雅思学术类考试",
-    },
-    eligibleGrades: ["Grade 8B", "Grade 8A", "Grade 9A"],
-  },
-  {
-    id: "exam-006",
-    name: "Thailand Science Olympiad — Regional",
-    price: 800,
-    resultsDeliveryPrice: 0,
-    capacity: 15,
-    enrolled: 15,
-    date: "2025-03-08",
-    time: "8:30 AM - 3:00 PM",
-    vendors: { en: "IPST Thailand", th: "สสวท.", zh: "泰国科学促进会" },
-    locations: { en: "Science Building — Hall C", th: "อาคารวิทยาศาสตร์ ห้อง C", zh: "科学楼 C 厅" },
-    descriptions: {
-      en: "Regional qualifier for the Thailand Science Olympiad — Physics & Chemistry tracks",
-      th: "รอบภูมิภาคสำหรับโอลิมปิกวิทยาศาสตร์ไทย สาขาฟิสิกส์และเคมี",
-      zh: "泰国科学奥林匹克地区资格赛——物理与化学赛道",
-    },
-    eligibleGrades: ["Grade 8B", "Grade 8A", "Grade 9A"],
-  },
-  {
-    id: "exam-007",
-    name: "Cambridge Checkpoint Science",
-    price: 3200,
-    resultsDeliveryPrice: 600,
-    capacity: 30,
-    enrolled: 12,
-    date: "2025-04-10",
-    time: "10:00 AM - 12:30 PM",
-    vendors: { en: "Cambridge Assessment", th: "Cambridge Assessment", zh: "剑桥评估" },
-    locations: { en: "Examination Hall A", th: "ห้องสอบ A", zh: "考场 A" },
-    descriptions: {
-      en: "Cambridge Lower Secondary Checkpoint Science for Grade 8 students",
-      th: "การสอบ Cambridge Lower Secondary Checkpoint วิทยาศาสตร์ สำหรับนักเรียนชั้น 8",
-      zh: "面向8年级学生的剑桥初中阶段科学测验",
-    },
-    eligibleGrades: ["Grade 8B", "Grade 8A", "Grade 9A"],
-  },
-  // ── Grade 11C exams ─────────────────────────────────────
-  {
-    id: "exam-008",
-    name: "SAT — Spring Session",
-    price: 5800,
-    resultsDeliveryPrice: 0,
-    capacity: 40,
-    enrolled: 31,
-    date: "2025-03-08",
-    time: "8:00 AM - 1:30 PM",
-    vendors: { en: "College Board", th: "College Board", zh: "大学理事会" },
-    locations: { en: "Examination Hall B", th: "ห้องสอบ B", zh: "考场 B" },
-    descriptions: {
-      en: "SAT Spring 2025 — Reading, Writing & Math sections for college admissions",
-      th: "SAT ภาคเรียนฤดูใบไม้ผลิ 2025 สำหรับการสมัครเข้ามหาวิทยาลัย",
-      zh: "2025年春季SAT考试——阅读、写作与数学，用于大学入学申请",
-    },
-    eligibleGrades: ["Grade 11C", "Grade 11A", "Grade 12A"],
-  },
-  {
-    id: "exam-009",
-    name: "IB Diploma — Theory of Knowledge Essay",
-    price: 2000,
-    resultsDeliveryPrice: 500,
-    capacity: 25,
-    enrolled: 3,
-    date: "2025-05-05",
-    time: "9:00 AM - 11:00 AM",
-    vendors: { en: "IBO Geneva", th: "IBO เจนีวา", zh: "国际文凭组织日内瓦" },
-    locations: { en: "Library Seminar Room", th: "ห้องสัมมนาห้องสมุด", zh: "图书馆研讨室" },
-    descriptions: {
-      en: "IB Diploma Programme Theory of Knowledge internal essay submission and assessment",
-      th: "การส่งและประเมินเรียงความ Theory of Knowledge สำหรับ IB Diploma Programme",
-      zh: "IB文凭课程知识理论内部论文提交与评估",
-    },
-    eligibleGrades: ["Grade 11C", "Grade 11A", "Grade 12A"],
-  },
-  {
-    id: "exam-010",
-    name: "TOEFL iBT — April Test",
-    price: 7200,
-    resultsDeliveryPrice: 0,
-    capacity: 18,
-    enrolled: 18,
-    date: "2025-04-19",
-    time: "9:00 AM - 1:30 PM",
-    vendors: { en: "ETS Global", th: "ETS Global", zh: "ETS全球" },
-    locations: { en: "Computer Lab Room 401", th: "ห้องคอมพิวเตอร์ 401", zh: "计算机实验室401" },
-    descriptions: {
-      en: "TOEFL iBT April session — internet-based English proficiency test for university applications",
-      th: "สอบ TOEFL iBT เดือนเมษายน สำหรับการสมัครมหาวิทยาลัยต่างประเทศ",
-      zh: "TOEFL iBT四月场——网络英语水平考试，用于海外大学申请",
-    },
-    eligibleGrades: ["Grade 11C", "Grade 11A", "Grade 12A"],
-  },
-];
-
-// Trip data
-export interface Trip {
-  id: string;
-  name: LocalizedString;
-  descriptions: LocalizedString;
-  destination: LocalizedString;
-  startDate: string;
-  endDate: string;
-  price: number;
-  capacity: number;
-  enrolled: number;
-  eligibleGrades: string[];
-  consentFormUrl: string;
-  status: 'open' | 'closed' | 'full';
-}
-
-export interface TripRegistration {
-  id: string;
-  tripId: string;
-  tripName: LocalizedString;
-  destination: LocalizedString;
-  studentId: number;
-  studentName: string;
-  price: number;
-  paymentStatus: 'paid' | 'pending' | 'overdue';
-  registeredAt: string;
-  startDate: string;
-  endDate: string;
-  receiptUrl?: string;
-}
-
-export const mockTrips: Trip[] = [
-  {
-    id: "trip-001",
-    name: {
-      en: "Science Museum Discovery Tour",
-      th: "ทัวร์พิพิธภัณฑ์วิทยาศาสตร์",
-      zh: "科学博物馆探索之旅",
-    },
-    descriptions: {
-      en: "Explore interactive science exhibits and hands-on experiments at the National Science Museum",
-      th: "สำรวจนิทรรศการวิทยาศาสตร์แบบโต้ตอบและการทดลองที่พิพิธภัณฑ์วิทยาศาสตร์แห่งชาติ",
-      zh: "在国家科学博物馆探索互动科学展览和动手实验",
-    },
-    destination: {
-      en: "National Science Museum, Pathum Thani",
-      th: "พิพิธภัณฑ์วิทยาศาสตร์แห่งชาติ ปทุมธานี",
-      zh: "国家科学博物馆，巴吞他尼",
-    },
-    startDate: "2026-06-10",
-    endDate: "2026-06-10",
-    price: 850,
-    capacity: 40,
-    enrolled: 28,
-    eligibleGrades: ["Grade 5A", "Grade 5B", "Grade 6A"],
-    consentFormUrl: "#",
-    status: "open",
-  },
-  {
-    id: "trip-002",
-    name: {
-      en: "Art Gallery & Creative Workshop",
-      th: "หอศิลป์และเวิร์กช็อปสร้างสรรค์",
-      zh: "艺术画廊与创意工作坊",
-    },
-    descriptions: {
-      en: "Visit the Bangkok Art and Culture Centre and participate in a guided creative workshop",
-      th: "เยี่ยมชมหอศิลปวัฒนธรรมแห่งกรุงเทพมหานครและเข้าร่วมเวิร์กช็อปสร้างสรรค์",
-      zh: "参观曼谷艺术与文化中心，参与引导式创意工作坊",
-    },
-    destination: {
-      en: "Bangkok Art and Culture Centre",
-      th: "หอศิลปวัฒนธรรมแห่งกรุงเทพมหานคร",
-      zh: "曼谷艺术与文化中心",
-    },
-    startDate: "2026-06-18",
-    endDate: "2026-06-18",
-    price: 600,
-    capacity: 30,
-    enrolled: 27,
-    eligibleGrades: ["Grade 8B", "Grade 8A", "Grade 9A"],
-    consentFormUrl: "#",
-    status: "open",
-  },
-  {
-    id: "trip-003",
-    name: {
-      en: "Chiang Mai Nature Camp",
-      th: "ค่ายธรรมชาติเชียงใหม่",
-      zh: "清迈自然营",
-    },
-    descriptions: {
-      en: "A 3-day immersive nature camp in Chiang Mai featuring trekking, wildlife observation, and eco-learning",
-      th: "ค่ายธรรมชาติ 3 วันที่เชียงใหม่ ประกอบด้วยการเดินป่า การสังเกตสัตว์ป่า และการเรียนรู้เชิงนิเวศ",
-      zh: "清迈3天沉浸式自然营，包括徒步、野生动物观察和生态学习",
-    },
-    destination: {
-      en: "Doi Inthanon National Park, Chiang Mai",
-      th: "อุทยานแห่งชาติดอยอินทนนท์ เชียงใหม่",
-      zh: "英他侬国家公园，清迈",
-    },
-    startDate: "2026-07-05",
-    endDate: "2026-07-07",
-    price: 4500,
-    capacity: 25,
-    enrolled: 25,
-    eligibleGrades: ["Grade 8B", "Grade 8A", "Grade 9A"],
-    consentFormUrl: "#",
-    status: "full",
-  },
-  {
-    id: "trip-004",
-    name: {
-      en: "National Park Hike & Conservation",
-      th: "เดินป่าอุทยานแห่งชาติและอนุรักษ์สิ่งแวดล้อม",
-      zh: "国家公园徒步与自然保护",
-    },
-    descriptions: {
-      en: "Day hike and conservation activity at Khao Yai National Park, a UNESCO World Heritage Site",
-      th: "เดินป่าและกิจกรรมอนุรักษ์ที่อุทยานแห่งชาติเขาใหญ่ มรดกโลกยูเนสโก",
-      zh: "在联合国教科文组织世界遗产考艾国家公园进行一日徒步和保护活动",
-    },
-    destination: {
-      en: "Khao Yai National Park, Nakhon Ratchasima",
-      th: "อุทยานแห่งชาติเขาใหญ่ นครราชสีมา",
-      zh: "考艾国家公园，那空叻察是玛",
-    },
-    startDate: "2026-07-15",
-    endDate: "2026-07-15",
-    price: 1200,
-    capacity: 35,
-    enrolled: 14,
-    eligibleGrades: ["Grade 11C", "Grade 11A", "Grade 12A"],
-    consentFormUrl: "#",
-    status: "open",
-  },
-  {
-    id: "trip-005",
-    name: {
-      en: "ASEAN Cultural Exchange Program",
-      th: "โครงการแลกเปลี่ยนวัฒนธรรมอาเซียน",
-      zh: "东盟文化交流项目",
-    },
-    descriptions: {
-      en: "A cultural immersion trip to Singapore exploring ASEAN heritage, technology hubs, and student exchanges",
-      th: "ทริปเรียนรู้วัฒนธรรมที่สิงคโปร์ สำรวจมรดกอาเซียน ศูนย์กลางเทคโนโลยี และการแลกเปลี่ยนนักเรียน",
-      zh: "新加坡文化沉浸之旅，探索东盟遗产、科技中心和学生交流",
-    },
-    destination: {
-      en: "Singapore",
-      th: "สิงคโปร์",
-      zh: "新加坡",
-    },
-    startDate: "2026-08-10",
-    endDate: "2026-08-14",
-    price: 18500,
-    capacity: 20,
-    enrolled: 5,
-    eligibleGrades: ["Grade 11C", "Grade 11A", "Grade 12A"],
-    consentFormUrl: "#",
-    status: "closed",
-  },
-  {
-    id: "trip-006",
-    name: { en: "Floating Market & River Culture Day", th: "วันตลาดน้ำและวัฒนธรรมแม่น้ำ", zh: "水上市场与运河文化日" },
-    descriptions: {
-      en: "Explore Damnoen Saduak floating market and learn about traditional Thai river culture and cuisine",
-      th: "สำรวจตลาดน้ำดำเนินสะดวกและเรียนรู้วัฒนธรรมและอาหารริมแม่น้ำแบบไทยดั้งเดิม",
-      zh: "探索丹嫩沙多水上市场，了解泰国传统水乡文化与美食",
-    },
-    destination: { en: "Damnoen Saduak, Ratchaburi", th: "ดำเนินสะดวก ราชบุรี", zh: "丹嫩沙多，叻丕府" },
-    startDate: "2026-05-22",
-    endDate: "2026-05-22",
-    price: 750,
-    capacity: 45,
-    enrolled: 43,
-    eligibleGrades: ["Grade 5A", "Grade 5B", "Grade 6A"],
-    consentFormUrl: "#",
-    status: "open",
-  },
-  {
-    id: "trip-007",
-    name: { en: "Bangkok Heritage Walk", th: "เดินชมมรดกกรุงเทพมหานคร", zh: "曼谷文化遗产徒步游" },
-    descriptions: {
-      en: "Guided walking tour of Bangkok's historic districts — Rattanakosin Island, Chinatown, and Bangrak",
-      th: "ทัวร์เดินชมย่านประวัติศาสตร์กรุงเทพฯ — เกาะรัตนโกสินทร์ เยาวราช และบางรัก",
-      zh: "导览曼谷历史街区——拉达纳哥欣岛、唐人街与邦叻",
-    },
-    destination: { en: "Rattanakosin Island, Bangkok", th: "เกาะรัตนโกสินทร์ กรุงเทพฯ", zh: "拉达纳哥欣岛，曼谷" },
-    startDate: "2026-06-05",
-    endDate: "2026-06-05",
-    price: 500,
-    capacity: 30,
-    enrolled: 30,
-    eligibleGrades: ["Grade 8B", "Grade 8A", "Grade 9A"],
-    consentFormUrl: "#",
-    status: "full",
-  },
-  {
-    id: "trip-008",
-    name: { en: "Model United Nations — Phuket Conference", th: "การประชุม MUN ภูเก็ต", zh: "普吉岛模拟联合国大会" },
-    descriptions: {
-      en: "3-day Model United Nations conference in Phuket — debate, diplomacy, and international relations",
-      th: "การประชุม Model United Nations 3 วันที่ภูเก็ต เน้นการอภิปราย การทูต และความสัมพันธ์ระหว่างประเทศ",
-      zh: "普吉岛3天模拟联合国大会——辩论、外交与国际关系",
-    },
-    destination: { en: "Phuket International Convention Hall", th: "ศูนย์ประชุมนานาชาติภูเก็ต", zh: "普吉岛国际会议中心" },
-    startDate: "2026-08-20",
-    endDate: "2026-08-22",
-    price: 8500,
-    capacity: 20,
-    enrolled: 9,
-    eligibleGrades: ["Grade 11C", "Grade 11A", "Grade 12A"],
-    consentFormUrl: "#",
-    status: "open",
-  },
-];
-
-export const mockTripRegistrations: TripRegistration[] = [
-  {
-    id: "treg-001",
-    tripId: "trip-001",
-    tripName: {
-      en: "Science Museum Discovery Tour",
-      th: "ทัวร์พิพิธภัณฑ์วิทยาศาสตร์",
-      zh: "科学博物馆探索之旅",
-    },
-    destination: {
-      en: "National Science Museum, Pathum Thani",
-      th: "พิพิธภัณฑ์วิทยาศาสตร์แห่งชาติ ปทุมธานี",
-      zh: "国家科学博物馆，巴吞他尼",
-    },
-    studentId: 1,
-    studentName: "Emma Johnson",
-    price: 850,
-    paymentStatus: "paid",
-    registeredAt: "2026-05-01T10:00:00Z",
-    startDate: "2026-06-10",
-    endDate: "2026-06-10",
-    receiptUrl: "#",
-  },
-  {
-    id: "treg-002",
-    tripId: "trip-002",
-    tripName: {
-      en: "Art Gallery & Creative Workshop",
-      th: "หอศิลป์และเวิร์กช็อปสร้างสรรค์",
-      zh: "艺术画廊与创意工作坊",
-    },
-    destination: {
-      en: "Bangkok Art and Culture Centre",
-      th: "หอศิลปวัฒนธรรมแห่งกรุงเทพมหานคร",
-      zh: "曼谷艺术与文化中心",
-    },
-    studentId: 2,
-    studentName: "Liam Johnson",
-    price: 600,
-    paymentStatus: "pending",
-    registeredAt: "2026-05-05T14:00:00Z",
-    startDate: "2026-06-18",
-    endDate: "2026-06-18",
-  },
-  {
-    id: "treg-003",
-    tripId: "trip-003",
-    tripName: {
-      en: "Chiang Mai Nature Camp",
-      th: "ค่ายธรรมชาติเชียงใหม่",
-      zh: "清迈自然营",
-    },
-    destination: {
-      en: "Doi Inthanon National Park, Chiang Mai",
-      th: "อุทยานแห่งชาติดอยอินทนนท์ เชียงใหม่",
-      zh: "英他侬国家公园，清迈",
-    },
-    studentId: 2,
-    studentName: "Liam Johnson",
-    price: 4500,
-    paymentStatus: "overdue",
-    registeredAt: "2026-04-20T09:00:00Z",
-    startDate: "2026-07-05",
-    endDate: "2026-07-07",
-  },
-  {
-    id: "treg-004",
-    tripId: "trip-004",
-    tripName: { en: "National Park Hike & Conservation", th: "เดินป่าอุทยานแห่งชาติและอนุรักษ์สิ่งแวดล้อม", zh: "国家公园徒步与自然保护" },
-    destination: { en: "Khao Yai National Park, Nakhon Ratchasima", th: "อุทยานแห่งชาติเขาใหญ่ นครราชสีมา", zh: "考艾国家公园，那空叻察是玛" },
-    studentId: 3,
-    studentName: "Sophia Johnson",
-    price: 1200,
-    paymentStatus: "paid",
-    registeredAt: "2026-05-10T11:00:00Z",
-    startDate: "2026-07-15",
-    endDate: "2026-07-15",
-    receiptUrl: "#",
-  },
-  {
-    id: "treg-005",
-    tripId: "trip-006",
-    tripName: { en: "Floating Market & River Culture Day", th: "วันตลาดน้ำและวัฒนธรรมแม่น้ำ", zh: "水上市场与运河文化日" },
-    destination: { en: "Damnoen Saduak, Ratchaburi", th: "ดำเนินสะดวก ราชบุรี", zh: "丹嫩沙多，叻丕府" },
-    studentId: 1,
-    studentName: "Emma Johnson",
-    price: 750,
-    paymentStatus: "pending",
-    registeredAt: "2026-04-15T08:00:00Z",
-    startDate: "2026-05-22",
-    endDate: "2026-05-22",
-  },
-  {
-    id: "treg-006",
-    tripId: "trip-005",
-    tripName: { en: "ASEAN Cultural Exchange Program", th: "โครงการแลกเปลี่ยนวัฒนธรรมอาเซียน", zh: "东盟文化交流项目" },
-    destination: { en: "Singapore", th: "สิงคโปร์", zh: "新加坡" },
-    studentId: 3,
-    studentName: "Sophia Johnson",
-    price: 18500,
-    paymentStatus: "overdue",
-    registeredAt: "2026-03-01T09:00:00Z",
-    startDate: "2026-08-10",
-    endDate: "2026-08-14",
-  },
-  {
-    id: "treg-007",
-    tripId: "trip-007",
-    tripName: { en: "Bangkok Heritage Walk", th: "เดินชมมรดกกรุงเทพมหานคร", zh: "曼谷文化遗产徒步游" },
-    destination: { en: "Rattanakosin Island, Bangkok", th: "เกาะรัตนโกสินทร์ กรุงเทพฯ", zh: "拉达纳哥欣岛，曼谷" },
-    studentId: 2,
-    studentName: "Liam Johnson",
-    price: 500,
-    paymentStatus: "paid",
-    registeredAt: "2026-04-01T10:00:00Z",
-    startDate: "2026-06-05",
-    endDate: "2026-06-05",
-    receiptUrl: "#",
-  },
-  {
-    id: "treg-008",
-    tripId: "trip-008",
-    tripName: { en: "Model United Nations — Phuket Conference", th: "การประชุม MUN ภูเก็ต", zh: "普吉岛模拟联合国大会" },
-    destination: { en: "Phuket International Convention Hall", th: "ศูนย์ประชุมนานาชาติภูเก็ต", zh: "普吉岛国际会议中心" },
-    studentId: 3,
-    studentName: "Sophia Johnson",
-    price: 8500,
-    paymentStatus: "pending",
-    registeredAt: "2026-05-20T14:00:00Z",
-    startDate: "2026-08-20",
-    endDate: "2026-08-22",
-  },
-];
+    {
+      id: "event-009",
+      name: "Academic Excellence Awards",
+      description: "Year-end academic achievement ceremony",
+      capacity: 300,
+      enrolled: 250,
+      schedule: "Dec 18, 5:00 PM - 8:00 PM",
+      location: "Main Auditorium",
+      price: 150,
+      duration: "1 evening",
+      vendor: "Academic Affairs"
+    }
+  ]
+};
 
 // Legacy exports for backward compatibility
 export const mockCourses = mockCoursesData[1];
 export const mockSummerActivities = mockSummerActivitiesData[1];
+export const mockEventActivities = mockEventActivitiesData[1];
 
 export const mockReceipts = [
-  // ── Completed ────────────────────────────────────────────
   {
     id: "REC-2024-001",
-    invoice_id: "INV-2024-003",
-    amount: 189333,
+    type: "tuition" as const,
+    usedCreditNotes: [
+      {
+        id: "CN-2024-001",
+        amount: 500,
+        appliedTo: "September Tuition",
+        used_at: "2024-08-28T17:30:00Z"
+      },
+      {
+        id: "CN-2024-002",
+        amount: 300,
+        appliedTo: "September Tuition",
+        used_at: "2024-08-28T17:30:00Z"
+      }
+    ],
+    invoice_id: "INV-2024-004",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2024",
+    amount: 3200,
     payment_method: "credit_card" as const,
-    paid_at: "2024-05-20T10:30:00Z",
+    paid_at: "2024-08-28T10:30:00Z",
     receipt_url: "#",
     status: "completed" as const,
-    description: "Term 3 Fee 2023-2024 — Emma Johnson",
-    reference_number: "TXN-20240520-001"
+    description: "September Tuition Payment",
+    reference_number: "TXN-20240828-001"
   },
   {
     id: "REC-2024-002",
+    type: "activity" as const,
+    usedCreditNotes: [
+      {
+        id: "CN-2024-003",
+        amount: 200,
+        appliedTo: "Art Class Registration",
+        used_at: "2024-08-25T14:00:00Z"
+      }
+    ],
     invoice_id: "INV-2024-005",
-    amount: 586800,
+    student_id: 2,
+    studentName: "Liam Johnson",
+    year: "2024",
+    amount: 850,
     payment_method: "bank_transfer" as const,
-    paid_at: "2024-11-10T14:15:00Z",
+    paid_at: "2024-08-25T14:15:00Z",
     receipt_url: "#",
     status: "completed" as const,
-    description: "Yearly Tuition 2024-2025 — Liam Johnson",
-    reference_number: "TXN-20241110-002"
+    description: "Activity Registration Fee",
+    reference_number: "TXN-20240825-002"
   },
   {
     id: "REC-2024-003",
-    invoice_id: "INV-2023-010",
-    amount: 578000,
-    payment_method: "promptpay" as const,
-    paid_at: "2023-11-05T09:45:00Z",
-    receipt_url: "#",
-    status: "completed" as const,
-    description: "Yearly Tuition 2023-2024 — Sophia Johnson",
-    reference_number: "TXN-20231105-003"
-  },
-  {
-    id: "REC-2025-004",
-    invoice_id: "INV-2024-001",
-    amount: 25200,
-    payment_method: "credit_note" as const,
-    paid_at: "2025-02-14T11:00:00Z",
-    receipt_url: "#",
-    status: "completed" as const,
-    description: "Activity Fee Partial Payment — Emma Johnson",
-    reference_number: "TXN-20250214-004"
-  },
-  {
-    id: "REC-2025-005",
+    type: "camp" as const,
+    usedCreditNotes: [],
     invoice_id: "INV-2024-006",
-    amount: 306200,
-    payment_method: "credit_card" as const,
-    paid_at: "2025-01-08T15:30:00Z",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    year: "2024",
+    amount: 450,
+    payment_method: "credit_note" as const,
+    paid_at: "2024-08-20T09:45:00Z",
     receipt_url: "#",
     status: "completed" as const,
-    description: "Partial Tuition Payment (Term 1&2) — Sophia Johnson",
-    reference_number: "TXN-20250108-005"
+    description: "Summer Camp Registration",
+    reference_number: "TXN-20240820-003"
   },
   {
-    id: "REC-2025-006",
+    id: "REC-2024-004",
+    type: "tuition" as const,
+    usedCreditNotes: [],
     invoice_id: "INV-2024-007",
-    amount: 43200,
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2024",
+    amount: 12800,
+    payment_method: "credit_card" as const,
+    paid_at: "2024-08-30T16:20:00Z",
+    receipt_url: "#",
+    status: "processing" as const,
+    description: "Tuition Fee",
+    reference_number: "TXN-20240830-004"
+  },
+  {
+    id: "REC-2023-001",
+    type: "tuition" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2023-001",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    year: "2023",
+    amount: 2800,
     payment_method: "bank_transfer" as const,
-    paid_at: "2025-03-22T09:00:00Z",
+    paid_at: "2023-08-15T10:30:00Z",
     receipt_url: "#",
     status: "completed" as const,
-    description: "Lunch Program Fee — Liam Johnson",
-    reference_number: "TXN-20250322-006"
+    description: "August Tuition Payment",
+    reference_number: "TXN-20230815-001"
   },
-  // ── Processing ───────────────────────────────────────────
   {
-    id: "REC-2025-007",
-    invoice_id: "INV-2024-009",
-    amount: 224133,
+    id: "REC-2023-002",
+    type: "tuition" as const,
+    usedCreditNotes: [
+      {
+        id: "CN-2023-001",
+        amount: 1000,
+        appliedTo: "Yearly Tuition 2023",
+        used_at: "2023-07-20T14:00:00Z"
+      }
+    ],
+    invoice_id: "INV-2023-002",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    year: "2023",
+    amount: 15500,
     payment_method: "credit_card" as const,
-    paid_at: "2025-04-18T16:20:00Z",
+    paid_at: "2023-07-20T14:15:00Z",
     receipt_url: "#",
-    status: "processing" as const,
-    description: "Term 3 Fee 2024-2025 — Sophia Johnson",
-    reference_number: "TXN-20250418-007"
-  },
-  {
-    id: "REC-2025-008",
-    invoice_id: "INV-2024-002",
-    amount: 189333,
-    payment_method: "promptpay" as const,
-    paid_at: "2025-04-19T10:05:00Z",
-    receipt_url: "#",
-    status: "processing" as const,
-    description: "Term 1 Fee Payment — Emma Johnson",
-    reference_number: "TXN-20250419-008"
-  },
-  // ── Failed ───────────────────────────────────────────────
-  {
-    id: "REC-2025-009",
-    invoice_id: "INV-2024-008",
-    amount: 189000,
-    payment_method: "credit_card" as const,
-    paid_at: "2025-04-10T13:45:00Z",
-    receipt_url: "#",
-    status: "failed" as const,
-    description: "Term 2 Fee 2023-2024 — Liam Johnson",
-    reference_number: "TXN-20250410-009"
-  },
+    status: "completed" as const,
+    description: "Yearly Tuition Fee 2023-2024",
+    reference_number: "TXN-20230720-002"
+  }
 ];
+
+// Mock exam data
+export const mockExamActivitiesData: Record<number, any[]> = {
+  1: [ // Emma Johnson - Grade 5A
+    {
+      id: "exam-001",
+      name: "Cambridge Primary English Test",
+      description: "International standardized English assessment for primary students",
+      date: "Dec 15, 2024",
+      time: "9:00 AM - 12:00 PM",
+      location: "Examination Hall A",
+      capacity: 50,
+      enrolled: 35,
+      examPrice: 2500,
+      deliveryPrice: 500,
+      vendor: "Cambridge Assessment",
+      examType: "general"
+    },
+    {
+      id: "exam-002",
+      name: "Math Olympiad Qualifier",
+      description: "Regional mathematics competition preliminary round",
+      date: "Jan 10, 2025",
+      time: "1:00 PM - 4:00 PM",
+      location: "Math Lab Room 205",
+      capacity: 30,
+      enrolled: 28,
+      examPrice: 1500,
+      deliveryPrice: 300,
+      vendor: "Thailand Math Association",
+      examType: "general"
+    },
+    {
+      id: "exam-ipsle-001",
+      name: "iPSLE 2026 Examination",
+      description: "2026 Singapore International Primary School Leaving Examination",
+      date: "Jun 29 - Jul 2, 2026",
+      time: "Various Times",
+      location: "Examination Hall",
+      capacity: 100,
+      enrolled: 45,
+      examPrice: 5000,
+      deliveryPrice: 0,
+      vendor: "SEAB Singapore",
+      examType: "ipsle",
+      subjects: [
+        { id: "english", labelEn: "ENGLISH LANGUAGE", labelZh: "英语" },
+        { id: "mathematics", labelEn: "MATHEMATICS", labelZh: "数学" },
+        { id: "science", labelEn: "SCIENCE", labelZh: "科学" },
+        { id: "chinese", labelEn: "CHINESE LANGUAGE", labelZh: "汉语" }
+      ],
+      timetable: {
+        oral: [
+          { date: "Mon 29 Jun 2026", subjects: ["English Language Oral & LC", "Chinese Language Oral & LC"] },
+          { date: "Tue 30 Jun 2026", subjects: ["English Language Oral & LC", "Chinese Language Oral & LC"] }
+        ],
+        written: [
+          { date: "Wed 1 Jul 2026", subjects: ["English Language", "Mathematics"] },
+          { date: "Thu 2 Jul 2026", subjects: ["Science", "Chinese Language"] }
+        ]
+      }
+    },
+    {
+      id: "exam-hsk-001",
+      name: "HSK Level 4 Examination",
+      description: "Hanyu Shuiping Kaoshi Chinese proficiency test",
+      date: "Feb 15, 2025",
+      time: "9:00 AM - 12:00 PM",
+      location: "Language Center",
+      capacity: 40,
+      enrolled: 20,
+      examPrice: 3000,
+      deliveryPrice: 500,
+      vendor: "Hanban",
+      examType: "hsk"
+    }
+  ],
+  2: [ // Liam Johnson - Grade 8B
+    {
+      id: "exam-003",
+      name: "IGCSE Mock Examination",
+      description: "Practice examination for IGCSE preparation",
+      date: "Dec 20, 2024",
+      time: "8:30 AM - 3:30 PM",
+      location: "Examination Hall B",
+      capacity: 60,
+      enrolled: 45,
+      examPrice: 3500,
+      deliveryPrice: 600,
+      vendor: "Cambridge Assessment"
+    },
+    {
+      id: "exam-004",
+      name: "Science Competition",
+      description: "National science knowledge competition",
+      date: "Jan 15, 2025",
+      time: "9:00 AM - 12:00 PM",
+      location: "Science Lab A",
+      capacity: 40,
+      enrolled: 32,
+      examPrice: 1800,
+      deliveryPrice: 400,
+      vendor: "Thailand Science Society"
+    }
+  ],
+  3: [ // Sophia Johnson - Grade 11C
+    {
+      id: "exam-005",
+      name: "SAT Practice Test",
+      description: "Full-length SAT practice examination with detailed scoring",
+      date: "Dec 18, 2024",
+      time: "8:00 AM - 1:00 PM",
+      location: "Study Hall 401",
+      capacity: 40,
+      enrolled: 38,
+      examPrice: 4500,
+      deliveryPrice: 800,
+      vendor: "College Board"
+    },
+    {
+      id: "exam-006",
+      name: "IELTS Preparation Exam",
+      description: "Mock IELTS examination with all four components",
+      date: "Jan 20, 2025",
+      time: "8:30 AM - 2:30 PM",
+      location: "Language Center",
+      capacity: 35,
+      enrolled: 30,
+      examPrice: 5000,
+      deliveryPrice: 700,
+      vendor: "British Council"
+    }
+  ]
+};
+
+// Mock trip data
+export const mockTripActivitiesData: Record<number, any[]> = {
+  1: [ // Emma Johnson - Grade 5A
+    {
+      id: "trip-001",
+      name: "Ayutthaya Historical Trip",
+      description: "Educational trip to explore Thailand's ancient capital",
+      date: "January 25, 2026",
+      time: "7:00 AM - 5:00 PM",
+      location: "Ayutthaya Province",
+      price: 1200,
+      paymentDeadline: "2026-01-15",
+      details: "• Transportation by air-conditioned bus\n• Includes lunch and snacks\n• Visit 3 historical temples\n• English/Thai speaking guide",
+      organizer: "History Department",
+      status: "pending" as const
+    },
+    {
+      id: "trip-002",
+      name: "Science Museum Field Trip",
+      description: "Interactive learning experience at Bangkok Science Museum",
+      date: "February 20, 2026",
+      time: "8:30 AM - 3:00 PM",
+      location: "National Science Museum, Pathumthani",
+      price: 650,
+      paymentDeadline: "2026-02-10",
+      details: "• Bus transportation included\n• Museum entry fee included\n• Planetarium show\n• Lunch provided",
+      organizer: "Science Department",
+      status: "accepted" as const
+    }
+  ],
+  2: [ // Liam Johnson - Grade 8B
+    {
+      id: "trip-003",
+      name: "Khao Yai Nature Camp",
+      description: "Outdoor adventure and nature exploration at Khao Yai National Park",
+      date: "January 28-30, 2026",
+      time: "6:00 AM Day 1 - 6:00 PM Day 3",
+      location: "Khao Yai National Park",
+      price: 4500,
+      paymentDeadline: "2026-01-20",
+      details: "• 3 days 2 nights camping\n• Wildlife watching tours\n• Waterfall trekking\n• Night safari included\n• All meals provided",
+      organizer: "Outdoor Education",
+      status: "pending" as const
+    },
+    {
+      id: "trip-004",
+      name: "Tech Company Visit",
+      description: "Visit to leading tech companies in Bangkok",
+      date: "February 15, 2026",
+      time: "9:00 AM - 4:00 PM",
+      location: "True Digital Park, Bangkok",
+      price: 350,
+      paymentDeadline: "2026-02-05",
+      details: "• Tour of tech startup offices\n• Workshop on coding basics\n• Meet tech professionals\n• Lunch included",
+      organizer: "IT Department",
+      status: "declined" as const
+    }
+  ],
+  3: [ // Sophia Johnson - Grade 11C
+    {
+      id: "trip-005",
+      name: "University Campus Tour",
+      description: "Visit top universities in Bangkok for college preparation",
+      date: "February 20, 2026",
+      time: "8:00 AM - 5:00 PM",
+      location: "Multiple Universities, Bangkok",
+      price: 500,
+      paymentDeadline: "2026-02-10",
+      details: "• Visit Chulalongkorn University\n• Visit Thammasat University\n• Meet admissions officers\n• Information sessions\n• Transportation and lunch included",
+      organizer: "Guidance Counseling",
+      status: "pending" as const
+    },
+    {
+      id: "trip-006",
+      name: "Art Museum & Gallery Tour",
+      description: "Cultural exploration at Bangkok's finest art venues",
+      date: "February 5, 2026",
+      time: "10:00 AM - 4:00 PM",
+      location: "MOCA & BACC, Bangkok",
+      price: 450,
+      paymentDeadline: "2026-01-30",
+      details: "• Museum of Contemporary Art visit\n• Bangkok Art and Culture Centre\n• Guided art appreciation session\n• Sketch workshop included",
+      organizer: "Art Department",
+      status: "paid" as const
+    }
+  ]
+};
 
 export const getMockDataForStudent = (studentId: number) => {
   const invoices = mockInvoices.filter(inv => inv.student_id === studentId);
@@ -1130,6 +1378,9 @@ export const getMockDataForStudent = (studentId: number) => {
     creditBalance: creditNote?.balance || 0,
     courses: mockCoursesData[studentId] || mockCoursesData[1],
     summerActivities: mockSummerActivitiesData[studentId] || mockSummerActivitiesData[1],
+    eventActivities: mockEventActivitiesData[studentId] || mockEventActivitiesData[1],
+    examActivities: mockExamActivitiesData[studentId] || mockExamActivitiesData[1],
+    tripActivities: mockTripActivitiesData[studentId] || mockTripActivitiesData[1],
     receipts: mockReceipts
   };
 };

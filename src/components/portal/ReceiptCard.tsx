@@ -8,7 +8,7 @@ interface Receipt {
   id: string;
   invoice_id: string;
   amount: number;
-  payment_method: 'credit_card' | 'bank_transfer' | 'credit_note' | 'cash' | 'promptpay';
+  payment_method: 'credit_card' | 'bank_transfer' | 'credit_note' | 'cash';
   paid_at: string;
   receipt_url: string;
   status: 'completed' | 'processing' | 'failed';
@@ -28,7 +28,6 @@ export const ReceiptCard = ({ receipt, onDownload }: ReceiptCardProps) => {
     bank_transfer: { label: 'Bank Transfer', icon: DollarSign, color: 'bg-finance-green/20 text-finance-green' },
     credit_note: { label: 'Credit Note', icon: FileText, color: 'bg-info-cyan/20 text-info-cyan' },
     cash: { label: 'Cash', icon: DollarSign, color: 'bg-warning-orange/20 text-warning-orange' },
-    promptpay: { label: 'PromptPay', icon: CreditCard, color: 'bg-violet-100 text-violet-600' },
   };
 
   const statusConfig = {

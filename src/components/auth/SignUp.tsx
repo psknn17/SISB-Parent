@@ -2,29 +2,26 @@ import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Trash2 } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Plus, Trash2, CalendarIcon } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 interface SignUpProps {
   onSignUp: () => void;
   onBackToLogin: () => void;
 }
 
-const campuses = [
-  { code: "CM", name: "SISB Chiang Mai" },
-  { code: "NB", name: "SISB Nonthaburi" },
-  { code: "PU", name: "SISB Pracha Uthit" },
-  { code: "RY", name: "SISB Rayong" },
-  { code: "SV", name: "SISB Suvarnabhumi" },
-  { code: "TB", name: "SISB Thonburi" },
-];
+const campuses = ["Main Campus", "North Campus", "South Campus", "International Campus"];
 
 export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -38,21 +35,6 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
     { value: "prof", label: t('auth.titles.prof') }
   ];
 
-  const grades = [
-    { value: "kindergarten", label: t('auth.grades.kindergarten') },
-    { value: "grade1", label: t('auth.grades.grade1') },
-    { value: "grade2", label: t('auth.grades.grade2') },
-    { value: "grade3", label: t('auth.grades.grade3') },
-    { value: "grade4", label: t('auth.grades.grade4') },
-    { value: "grade5", label: t('auth.grades.grade5') },
-    { value: "grade6", label: t('auth.grades.grade6') },
-    { value: "grade7", label: t('auth.grades.grade7') },
-    { value: "grade8", label: t('auth.grades.grade8') },
-    { value: "grade9", label: t('auth.grades.grade9') },
-    { value: "grade10", label: t('auth.grades.grade10') },
-    { value: "grade11", label: t('auth.grades.grade11') },
-    { value: "grade12", label: t('auth.grades.grade12') }
-  ];
 
   const signUpSchema = z.object({
     title: z.string().min(1, t('auth.errors.titleRequired')),
@@ -60,12 +42,16 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
     lastName: z.string().min(1, t('auth.errors.lastNameRequired')),
     phoneNumber: z.string().min(1, t('auth.errors.phoneRequired')),
     email: z.string().email(t('auth.errors.emailInvalid')),
+    confirmEmail: z.string().email(t('auth.errors.emailInvalid')),
+    wechatLineId: z.string().optional(),
+    agentName: z.string().optional(),
     password: z.string().min(6, t('auth.errors.passwordMin')),
     confirmPassword: z.string().min(1, t('auth.errors.passwordConfirmRequired')),
     children: z.array(z.object({
       firstName: z.string().min(1, t('auth.errors.firstNameRequired')),
       lastName: z.string().min(1, t('auth.errors.lastNameRequired')),
-      grade: z.string().min(1, "Grade is required"),
+      nickname: z.string().min(1, t('auth.errors.nicknameRequired')),
+      dateOfBirth: z.date({ required_error: "Date of birth is required" }),
       campus: z.string().min(1, "Campus is required"),
     })).min(1, "At least one child is required"),
     agreeTerms: z.boolean().refine(val => val === true, {
@@ -77,6 +63,9 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
   }).refine((data) => data.password === data.confirmPassword, {
     message: t('auth.errors.passwordMismatch'),
     path: ["confirmPassword"],
+  }).refine((data) => data.email === data.confirmEmail, {
+    message: t('auth.errors.emailMismatch'),
+    path: ["confirmEmail"],
   });
 
   type SignUpData = z.infer<typeof signUpSchema>;
@@ -92,9 +81,11 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
   } = useForm<SignUpData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      children: [{ firstName: "", lastName: "", grade: "", campus: "" }],
+      children: [{ firstName: "", lastName: "", nickname: "", dateOfBirth: undefined, campus: "" }],
       agreeTerms: false,
       agreePDPA: false,
+      wechatLineId: "",
+      agentName: "",
     },
   });
 
@@ -117,7 +108,8 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
   const nextStep = async () => {
     const isValid = await trigger([
       "title", "firstName", "lastName", "phoneNumber", 
-      "email", "password", "confirmPassword"
+      "email", "confirmEmail", "wechatLineId", "agentName",
+      "password", "confirmPassword"
     ]);
     
     if (isValid) {
@@ -127,7 +119,7 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
 
   const addChild = () => {
     if (fields.length < 5) {
-      append({ firstName: "", lastName: "", grade: "", campus: "" });
+      append({ firstName: "", lastName: "", nickname: "", dateOfBirth: undefined, campus: "" });
     }
   };
 
@@ -225,6 +217,38 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="confirmEmail">{t('auth.confirmEmail')}*</Label>
+              <Input
+                id="confirmEmail"
+                type="email"
+                placeholder={t('auth.confirmEmailPlaceholder')}
+                {...register("confirmEmail")}
+                className={errors.confirmEmail ? "border-red-500" : ""}
+              />
+              {errors.confirmEmail && (
+                <p className="text-sm text-red-500">{errors.confirmEmail.message}</p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="wechatLineId">{t('auth.wechatLineId')}</Label>
+              <Input
+                id="wechatLineId"
+                placeholder={t('auth.wechatLineIdPlaceholder')}
+                {...register("wechatLineId")}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="agentName">{t('auth.agentName')}</Label>
+              <Input
+                id="agentName"
+                placeholder={t('auth.agentNamePlaceholder')}
+                {...register("agentName")}
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="password">{t('auth.password')}*</Label>
               <Input
                 id="password"
@@ -278,7 +302,11 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
             </div>
 
             {fields.map((field, index) => (
-              <div key={field.id} className="p-4 border rounded-lg space-y-3">
+              <div 
+                key={field.id} 
+                className="p-4 border rounded-lg space-y-3 animate-fade-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <div className="flex items-center justify-between">
                   <h5 className="font-medium text-sm">{t('auth.child')} {index + 1}</h5>
                   {fields.length > 1 && (
@@ -318,40 +346,54 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
                    </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                  <Label>{t('auth.grade')}*</Label>
-                  <Select onValueChange={(value) => setValue(`children.${index}.grade`, value)}>
-                    <SelectTrigger className={errors.children?.[index]?.grade ? "border-red-500" : ""}>
-                      <SelectValue placeholder={t('auth.selectGrade')} />
-                    </SelectTrigger>
-                        <SelectContent>
-                          {grades.map((grade) => (
-                            <SelectItem key={grade.value} value={grade.value}>{grade.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                    </Select>
-                    {errors.children?.[index]?.grade && (
-                      <p className="text-xs text-red-500">{errors.children[index]?.grade?.message}</p>
-                    )}
-                  </div>
+                <div className="space-y-1">
+                  <Label>{t('auth.nickname')}*</Label>
+                  <Input
+                    placeholder={t('auth.nicknamePlaceholder')}
+                    {...register(`children.${index}.nickname`)}
+                    className={errors.children?.[index]?.nickname ? "border-red-500" : ""}
+                  />
+                  {errors.children?.[index]?.nickname && (
+                    <p className="text-xs text-red-500">{errors.children[index]?.nickname?.message}</p>
+                  )}
+                </div>
 
-                  <div className="space-y-1">
-                  <Label>{t('auth.campus')}*</Label>
+                <div className="space-y-1">
+                  <Label>Date of Birth*</Label>
+                  <Input
+                    type="date"
+                    max={format(new Date(), "yyyy-MM-dd")}
+                    min="1900-01-01"
+                    className={cn(
+                      "w-full h-10",
+                      errors.children?.[index]?.dateOfBirth && "border-red-500"
+                    )}
+                    value={watch(`children.${index}.dateOfBirth`) ? format(watch(`children.${index}.dateOfBirth`), "yyyy-MM-dd") : ""}
+                    onChange={(e) => {
+                      const dateValue = e.target.value ? new Date(e.target.value) : undefined;
+                      setValue(`children.${index}.dateOfBirth`, dateValue);
+                    }}
+                  />
+                  {errors.children?.[index]?.dateOfBirth && (
+                    <p className="text-xs text-red-500">{errors.children[index]?.dateOfBirth?.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium">{t('auth.campus')}*</Label>
                   <Select onValueChange={(value) => setValue(`children.${index}.campus`, value)}>
-                    <SelectTrigger className={errors.children?.[index]?.campus ? "border-red-500" : ""}>
+                    <SelectTrigger className={cn("h-10", errors.children?.[index]?.campus && "border-red-500")}>
                       <SelectValue placeholder={t('auth.selectCampus')} />
                     </SelectTrigger>
-                      <SelectContent>
-                        {campuses.map((campus) => (
-                          <SelectItem key={campus.code} value={campus.code}>{campus.code} - {campus.name}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.children?.[index]?.campus && (
-                      <p className="text-xs text-red-500">{errors.children[index]?.campus?.message}</p>
-                    )}
-                  </div>
+                    <SelectContent>
+                      {campuses.map((campus) => (
+                        <SelectItem key={campus} value={campus}>{campus}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.children?.[index]?.campus && (
+                    <p className="text-xs text-red-500">{errors.children[index]?.campus?.message}</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -372,12 +414,12 @@ export const SignUp = ({ onSignUp, onBackToLogin }: SignUpProps) => {
                     <Dialog>
                       <DialogTrigger asChild>
                         <button type="button" className="text-primary hover:underline font-medium">
-                          {t('auth.termsOfService')}
+                          Media consent
                         </button>
                       </DialogTrigger>
                       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                         <DialogHeader>
-                          <DialogTitle>{t('auth.termsOfService')}</DialogTitle>
+                          <DialogTitle>Media consent</DialogTitle>
                         </DialogHeader>
                         <div className="space-y-4 text-sm">
                           <h3 className="font-semibold">1. Acceptance of Terms</h3>

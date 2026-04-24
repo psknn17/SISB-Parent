@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Download, ArrowLeft, Calendar, CreditCard, ShoppingBag } from "lucide-react";
+import { CheckCircle2, Download, ArrowLeft, Calendar, CreditCard, ShoppingBag, MapPin } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { downloadReceiptPDF } from "@/lib/downloadUtils";
 import { PaymentProgressBar } from "./PaymentProgressBar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
@@ -18,9 +18,12 @@ interface ActivityPaymentSuccessProps {
       id: string;
       name: string;
       price: number;
-      type: 'course' | 'summer';
+      type: 'course' | 'summer' | 'trip';
+      date?: string;
+      location?: string;
     }>;
     type: string;
+    itemType?: 'activities' | 'trips';
   };
   onBackToMain: () => void;
   onBackToCart?: () => void;
@@ -38,21 +41,19 @@ export const ActivityPaymentSuccess = ({ studentName, paymentData, onBackToMain,
   };
 
   const handleDownloadReceipt = () => {
-    downloadReceiptPDF({
-      title: 'Activity Payment Receipt',
-      receiptId: paymentData.receiptId,
-      studentName,
-      amount: formatCurrency(paymentData.amount),
-      paymentDate: formatDate(paymentData.paymentDate),
-      paymentMethod: paymentData.paymentMethod,
-      items: paymentData.items.map(item => ({
-        name: item.name,
-        price: formatCurrency(item.price),
-      })),
+    toast({
+      title: language === 'th' ? 'ดาวน์โหลดใบเสร็จ' : language === 'zh' ? '下载收据' : 'Download Receipt',
+      description: language === 'th' ? 'เริ่มดาวน์โหลดแล้ว' : language === 'zh' ? '下载已开始' : 'Download started',
     });
   };
 
   const getActivityTypeText = () => {
+    // Check if it's a trip payment
+    if (paymentData.itemType === 'trips' || paymentData.items.some(item => item.type === 'trip')) {
+      return language === 'th' ? "ทัศนศึกษา" :
+             language === 'zh' ? "旅行" : "Field Trips";
+    }
+    
     const courseCount = paymentData.items.filter(item => item.type === 'course').length;
     const summerCount = paymentData.items.filter(item => item.type === 'summer').length;
     
@@ -66,6 +67,13 @@ export const ActivityPaymentSuccess = ({ studentName, paymentData, onBackToMain,
       return language === 'th' ? "กิจกรรมช่วงปิดเทอม" :
              language === 'zh' ? "夏令营活动" : "Summer Activities";
     }
+  };
+
+  const getRegisteredTitle = () => {
+    if (paymentData.itemType === 'trips' || paymentData.items.some(item => item.type === 'trip')) {
+      return language === 'th' ? 'ทัศนศึกษาที่ลงทะเบียน' : language === 'zh' ? '已注册的旅行' : 'Registered Trips';
+    }
+    return language === 'th' ? 'กิจกรรมที่ลงทะเบียน' : language === 'zh' ? '已注册活动' : 'Registered Activities';
   };
 
   return (
@@ -114,30 +122,49 @@ export const ActivityPaymentSuccess = ({ studentName, paymentData, onBackToMain,
           <h1 className={`text-2xl font-bold mb-2 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
             {language === 'th' ? 'ชำระเงินสำเร็จ!' : language === 'zh' ? '支付成功！' : 'Payment Complete!'}
           </h1>
+          <p className={`text-lg mb-2 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+            {language === 'th' ? 'ขอบคุณสำหรับการชำระเงิน' : language === 'zh' ? '感谢您的付款' : 'Thank you for your payment'}
+          </p>
           <p className={`text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
             {language === 'th' ? 'การลงทะเบียนเสร็จสิ้น' : language === 'zh' ? '注册完成' : 'Registration Complete'} {studentName} - {getActivityTypeText()}
           </p>
         </CardContent>
       </Card>
 
-      {/* Registered Activities */}
+      {/* Registered Activities/Trips */}
       <Card>
         <CardHeader>
           <CardTitle className={`flex items-center gap-2 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
             <ShoppingBag className="h-5 w-5" />
-            {language === 'th' ? 'กิจกรรมที่ลงทะเบียน' : language === 'zh' ? '已注册活动' : 'Registered Activities'}
+            {getRegisteredTitle()}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {paymentData.items.map((item) => (
             <div key={item.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-              <div>
+              <div className="flex-1">
                 <h4 className={`font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>{item.name}</h4>
-                <Badge variant="outline" className={`text-xs mt-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                  {item.type === 'course' ? 
-                    (language === 'th' ? 'หลังเลิกเรียน' : language === 'zh' ? '课后活动' : 'After School') : 
-                    (language === 'th' ? 'ช่วงปิดเทอม' : language === 'zh' ? '夏令营' : 'Summer')}
-                </Badge>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <Badge variant="outline" className={`text-xs ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                    {item.type === 'trip' ? 
+                      (language === 'th' ? 'ทัศนศึกษา' : language === 'zh' ? '旅行' : 'Trip') :
+                      item.type === 'course' ? 
+                        (language === 'th' ? 'หลังเลิกเรียน' : language === 'zh' ? '课后活动' : 'After School') : 
+                        (language === 'th' ? 'ช่วงปิดเทอม' : language === 'zh' ? '夏令营' : 'Summer')}
+                  </Badge>
+                  {item.type === 'trip' && item.date && (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Calendar className="h-3 w-3" />
+                      <span>{item.date}</span>
+                    </div>
+                  )}
+                  {item.type === 'trip' && item.location && (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="h-3 w-3" />
+                      <span>{item.location}</span>
+                    </div>
+                  )}
+                </div>
               </div>
               <span className={`font-bold ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>{formatCurrency(item.price)}</span>
             </div>

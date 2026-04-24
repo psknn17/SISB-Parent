@@ -6,11 +6,17 @@ import { Button } from "@/components/ui/button";
 interface CountdownTimerProps {
   onTimeExpired: () => void;
   onCancel: () => void;
+  additionalCourses?: number; // Number of additional courses added
 }
 
-export const CountdownTimer = ({ onTimeExpired, onCancel }: CountdownTimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(10 * 60); // 10 minutes in seconds
+export const CountdownTimer = ({ onTimeExpired, onCancel, additionalCourses = 0 }: CountdownTimerProps) => {
+  const [timeLeft, setTimeLeft] = useState(10 * 60 + (additionalCourses * 5 * 60)); // 10 minutes + 5 minutes per course
   const { t, language } = useLanguage();
+
+  // Update time when additional courses are added
+  useEffect(() => {
+    setTimeLeft(prev => prev + (5 * 60)); // Add 5 minutes when course count increases
+  }, [additionalCourses]);
 
   useEffect(() => {
     if (timeLeft <= 0) {

@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Download, ArrowLeft, Calendar, CreditCard } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { downloadReceiptPDF } from "@/lib/downloadUtils";
 
 interface PaymentSuccessProps {
   studentName: string;
@@ -30,14 +30,9 @@ export const PaymentSuccess = ({ studentName, paymentData, onBackToMain }: Payme
   };
 
   const handleDownloadReceipt = () => {
-    downloadReceiptPDF({
-      title: 'Payment Receipt',
-      receiptId: paymentData.receiptId,
-      studentName,
-      amount: formatCurrency(paymentData.amount),
-      paymentDate: formatDate(paymentData.paymentDate),
-      paymentMethod: paymentData.paymentMethod,
-      description: paymentData.paymentType,
+    toast({
+      title: t('payment.downloadReceipt'),
+      description: t('payment.downloadStarted'),
     });
   };
 

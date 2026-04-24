@@ -8,11 +8,13 @@ interface CartItem {
   id: string;
   name: string;
   price: number;
-  type: 'course' | 'summer';
+  type: 'course' | 'summer' | 'trip';
+  date?: string;
+  location?: string;
 }
 
 interface CheckoutPageProps {
-  type: 'tuition' | 'activities';
+  type: 'tuition' | 'activities' | 'trips';
   invoice?: {
     id: string;
     type: 'Yearly' | 'Termly' | 'Monthly';
@@ -44,6 +46,9 @@ export const CheckoutPage = ({
     if (type === 'tuition') {
       return t('portal.tuitionFees');
     }
+    if (type === 'trips') {
+      return language === 'th' ? 'ตะกร้าทัศนศึกษา' : 'Trip Cart';
+    }
     return t('portal.cart');
   };
 
@@ -62,7 +67,7 @@ export const CheckoutPage = ({
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
-            {type === 'activities' && (
+            {(type === 'activities' || type === 'trips') && (
               <>
                 <BreadcrumbItem>
                   <BreadcrumbLink 
@@ -93,6 +98,7 @@ export const CheckoutPage = ({
         ) : (
           <ActivityCheckout
             items={items}
+            itemType={type === 'trips' ? 'trips' : 'activities'}
             creditBalance={creditBalance}
             onPaymentSuccess={onPaymentSuccess}
             onCancel={onCancel}

@@ -3,46 +3,34 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Agentation } from "agentation";
 import { Login } from "./pages/Login";
-import { Register } from "./pages/Register";
 import { ParentPortal } from "./pages/ParentPortal";
 import { CartPage } from "./pages/Cart";
+import { TripCartPage } from "./pages/TripCart";
 import { CheckoutPage } from "./pages/Checkout";
 import { ActivityPaymentSuccess } from "./components/portal/ActivityPaymentSuccess";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { mockCreditNotes } from "./data/mockData";
+import { TripCartItem } from "./components/portal/TripCartView";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'login' | 'register' | 'portal' | 'cart' | 'checkout' | 'success'>('login');
+  const [currentPage, setCurrentPage] = useState<'portal' | 'cart' | 'checkout' | 'success' | 'tripCart' | 'tripCheckout'>('portal');
   const [checkoutData, setCheckoutData] = useState<any>(null);
   const [paymentSuccessData, setPaymentSuccessData] = useState<any>(null);
   const [cartItems, setCartItems] = useState<any[]>([]);
+  const [tripCartItems, setTripCartItems] = useState<TripCartItem[]>([]);
   const [showCountdown, setShowCountdown] = useState(false);
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-    setCurrentPage('portal');
   };
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setCurrentPage('login');
-  };
-
-  const handleGoToRegister = () => {
-    setCurrentPage('register');
-  };
-
-  const handleBackToLogin = () => {
-    setCurrentPage('login');
-  };
-
-  const handleRegister = () => {
-    // For demo purposes, we'll redirect to login after registration
-    setCurrentPage('login');
+    setCurrentPage('portal');
   };
 
   const handleGoToCart = () => {
@@ -107,11 +95,45 @@ const App = () => {
     setCurrentPage('cart');
   };
 
+  const handleBackToTripCart = () => {
+    setCurrentPage('tripCart');
+  };
+
+  // Trip cart handlers
+  const handleGoToTripCart = (items: TripCartItem[]) => {
+    setTripCartItems(items);
+    setCurrentPage('tripCart');
+  };
+
+  const handleTripCheckout = (items: TripCartItem[]) => {
+    // Convert trip items to checkout format
+    const checkoutItems = items.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      type: 'trip' as const,
+      studentName: item.studentName,
+      studentId: item.studentId,
+      date: item.date,
+      location: item.location
+    }));
+    setCheckoutData({ type: 'trips', items: checkoutItems });
+    setCurrentPage('tripCheckout');
+  };
+
+  const handleRemoveTripFromCart = (tripId: string) => {
+    setTripCartItems(prev => prev.filter(item => item.id !== tripId));
+  };
+
   const handlePaymentSuccess = (paymentData: any) => {
     setPaymentSuccessData(paymentData);
     setCurrentPage('success');
     // Clear cart items after successful payment
-    setCartItems([]);
+    if (checkoutData?.type === 'trips') {
+      setTripCartItems([]);
+    } else {
+      setCartItems([]);
+    }
     // Hide countdown
     setShowCountdown(false);
   };
@@ -144,18 +166,14 @@ const App = () => {
         <LanguageProvider>
           <Toaster />
           <Sonner />
-          <Agentation />
           {!isLoggedIn ? (
-            currentPage === 'login' ? (
-              <Login onLogin={handleLogin} onGoToRegister={handleGoToRegister} />
-            ) : currentPage === 'register' ? (
-              <Register onRegister={handleRegister} onBackToLogin={handleBackToLogin} />
-            ) : null
+            <Login onLogin={handleLogin} />
           ) : currentPage === 'portal' ? (
             <ParentPortal 
               onLogout={handleLogout} 
               onGoToCart={handleGoToCart}
               onGoToCheckout={handleGoToCheckout}
+              onGoToTripCart={handleGoToTripCart}
               cartItems={cartItems}
               onAddToCart={handleAddToCart}
               onRemoveFromCart={handleRemoveFromCart}
@@ -167,8 +185,8 @@ const App = () => {
           ) : currentPage === 'cart' ? (
             <CartPage 
               items={cartItems}
+              creditNotes={mockCreditNotes}
               onRemoveItem={(itemId: string) => {
-                // Find the item to get its studentId
                 const itemToRemove = cartItems.find(item => item.id === itemId);
                 if (itemToRemove) {
                   handleRemoveFromCart(itemId, itemToRemove.studentId);
@@ -177,16 +195,31 @@ const App = () => {
               onCheckout={(items: any[]) => handleGoToCheckout({ type: 'activities', items })}
               onBackToPortal={handleBackToPortal}
             />
-          ) : currentPage === 'checkout' ? (
+          ) : currentPage === 'tripCart' ? (
+            <TripCartPage 
+              items={tripCartItems}
+              onRemoveItem={handleRemoveTripFromCart}
+              onCheckout={handleTripCheckout}
+              onBackToPortal={handleBackToPortal}
+            />
+          ) : currentPage === 'checkout' || currentPage === 'tripCheckout' ? (
             <CheckoutPage
               type={checkoutData?.type || 'activities'}
               invoice={checkoutData?.invoice}
               items={checkoutData?.items || cartItems}
               creditBalance={1500}
               onPaymentSuccess={handlePaymentSuccess}
-              onCancel={checkoutData?.type === 'activities' ? handleBackToCart : handleBackToPortal}
+              onCancel={
+                checkoutData?.type === 'trips' 
+                  ? handleBackToTripCart 
+                  : checkoutData?.type === 'activities' 
+                    ? handleBackToCart 
+                    : handleBackToPortal
+              }
               onRemoveItem={(itemId: string) => {
-                if (checkoutData?.type === 'activities') {
+                if (checkoutData?.type === 'trips') {
+                  handleRemoveTripFromCart(itemId);
+                } else if (checkoutData?.type === 'activities') {
                   const itemToRemove = cartItems.find(item => item.id === itemId);
                   if (itemToRemove) {
                     handleRemoveFromCart(itemId, itemToRemove.studentId);

@@ -45,8 +45,8 @@ export const StudentFilter = ({ onStudentChange, selectedStudent, showAllOption 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2 h-auto px-3 py-2">
-          <Avatar className="h-6 w-6">
+        <Button variant="outline" className="flex items-center gap-2 h-10 px-3 min-w-[200px] max-w-[280px] w-auto">
+          <Avatar className="h-6 w-6 flex-shrink-0">
             <AvatarFallback className="text-xs font-medium bg-primary/10 text-primary">
               {showAllOption && !selected ? 
                 <Users className="h-3 w-3" /> : 
@@ -54,17 +54,17 @@ export const StudentFilter = ({ onStudentChange, selectedStudent, showAllOption 
               }
             </AvatarFallback>
           </Avatar>
-          <div className="flex flex-col items-start">
-            <span className={`text-sm font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+          <div className="flex flex-col items-start flex-1 min-w-0">
+            <span className={`text-sm font-medium truncate max-w-full ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
               {showAllOption && !selected ? allOption.name : selected?.name}
             </span>
             {selected && (
-              <span className={`text-xs text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+              <span className={`text-xs text-muted-foreground truncate max-w-full ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                 {selected.class}
               </span>
             )}
           </div>
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-56 bg-background/95 backdrop-blur-sm border">

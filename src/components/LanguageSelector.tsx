@@ -30,8 +30,20 @@ export const LanguageSelector = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className={`gap-2 hover:bg-primary/10 ${getFontClassForLanguage(currentLanguage.code)}`}>
-          <Languages className="h-5 w-5" />
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className={`
+            gap-2 hover:bg-primary/10
+            bg-white/80 backdrop-blur-sm border border-white/30 shadow-lg 
+            rounded-full px-3 py-2 h-auto min-w-[44px] min-h-[44px]
+            lg:bg-transparent lg:backdrop-blur-none lg:border-0 lg:shadow-none 
+            lg:rounded-md lg:px-2 lg:py-1 lg:min-w-0 lg:min-h-0 lg:h-auto
+            ${getFontClassForLanguage(currentLanguage.code)}
+          `}
+        >
+          <span className="text-xl lg:hidden">{currentLanguage.flag}</span>
+          <Languages className="hidden lg:block h-5 w-5" />
           <span className="hidden sm:inline text-sm">{currentLanguage.nativeName}</span>
         </Button>
       </DropdownMenuTrigger>

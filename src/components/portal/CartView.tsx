@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { X, CheckCircle2, ArrowLeft } from "lucide-react";
+import { X, CheckCircle2, ArrowLeft, Ticket } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { PaymentProgressBar } from "./PaymentProgressBar";
 
@@ -13,20 +15,30 @@ interface CartItem {
   id: string;
   name: string;
   price: number;
-  type: 'course' | 'activity' | 'exam' | 'tuition' | 'trip';
+  type: 'course' | 'activity';
   studentName?: string;
+}
+
+interface CreditNote {
+  id: number;
+  student_id: number;
+  balance: number;
+  items: { title: string; amount: number; }[];
 }
 
 interface CartViewProps {
   items: CartItem[];
+  creditNotes: CreditNote[];
   onRemoveItem: (itemId: string) => void;
   onCheckout: (selectedItems: CartItem[]) => void;
   onBack: () => void;
 }
 
-export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewProps) => {
+export const CartView = ({ items, creditNotes, onRemoveItem, onCheckout, onBack }: CartViewProps) => {
   const { t, language, formatCurrency } = useLanguage();
   const [selectedItems, setSelectedItems] = useState<string[]>(items.map(item => item.id));
+  const [useCreditNote, setUseCreditNote] = useState(true);
+  const [selectedCreditNotes, setSelectedCreditNotes] = useState<number[]>([]);
 
   const handleSelectAll = () => {
     if (selectedItems.length === items.length) {
@@ -46,6 +58,53 @@ export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewPr
 
   const selectedCartItems = items.filter(item => selectedItems.includes(item.id));
   const subtotal = selectedCartItems.reduce((sum, item) => sum + item.price, 0);
+  
+  // Calculate total available credit
+  const totalAvailableCredit = creditNotes.reduce((sum, note) => sum + note.balance, 0);
+  
+  // Determine if auto-apply all credits (when subtotal >= total credit)
+  const shouldAutoApplyAll = subtotal >= totalAvailableCredit;
+  
+  // Calculate total credit applied
+  const totalCreditApplied = useCreditNote 
+    ? (shouldAutoApplyAll 
+        ? totalAvailableCredit  // Auto-apply all if subtotal is greater
+        : selectedCreditNotes.reduce((sum, noteId) => {
+            const note = creditNotes.find(n => n.id === noteId);
+            return sum + (note?.balance || 0);
+          }, 0)
+      )
+    : 0;
+  
+  const finalTotal = Math.max(0, subtotal - totalCreditApplied);
+  
+  // Auto-select all credit notes when subtotal >= total credit
+  useState(() => {
+    if (shouldAutoApplyAll && useCreditNote) {
+      setSelectedCreditNotes(creditNotes.filter(cn => cn.balance > 0).map(cn => cn.id));
+    }
+  });
+  
+  const handleUseCreditNoteToggle = (checked: boolean) => {
+    setUseCreditNote(checked);
+    if (!checked) {
+      setSelectedCreditNotes([]);
+    } else if (shouldAutoApplyAll) {
+      // Auto-select all when toggled on and subtotal >= total credit
+      setSelectedCreditNotes(creditNotes.filter(cn => cn.balance > 0).map(cn => cn.id));
+    }
+  };
+  
+  const toggleCreditNote = (noteId: number) => {
+    // Only allow manual selection if subtotal < total credit
+    if (!shouldAutoApplyAll) {
+      setSelectedCreditNotes(prev => 
+        prev.includes(noteId)
+          ? prev.filter(id => id !== noteId)
+          : [...prev, noteId]
+      );
+    }
+  };
 
   // Group items by student
   const groupedItems = items.reduce((groups, item) => {
@@ -126,9 +185,20 @@ export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewPr
                     {selectedItems.length}/{items.length} {t('portal.itemsSelected')}
                   </label>
                 </div>
-                <Button variant="ghost" size="sm" onClick={handleSelectAll} className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
-                  {t('portal.selectAll')}
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => items.forEach(item => onRemoveItem(item.id))}
+                    className={`text-destructive hover:text-destructive ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    {language === 'th' ? 'ล้างทั้งหมด' : 'Clear All'}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleSelectAll} className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+                    {t('portal.selectAll')}
+                  </Button>
+                </div>
               </div>
 
               {/* Items by Student */}
@@ -158,7 +228,7 @@ export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewPr
                               </h4>
                               <div className="flex items-center gap-2 mb-2">
                                 <Badge variant="secondary" className={`text-xs ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                                  {item.type === 'tuition' ? t('portal.tuition') : item.type === 'course' ? t('portal.afterSchool') : item.type === 'trip' ? (language === 'th' ? 'ทัศนศึกษา' : language === 'zh' ? '旅行' : 'Trip') : t('portal.summerActivity')}
+                                  {item.type === 'course' ? t('portal.afterSchool') : t('portal.summerActivity')}
                                 </Badge>
                               </div>
                               <div className={`text-lg font-bold text-primary ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
@@ -182,6 +252,108 @@ export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewPr
                   </CardContent>
                 </Card>
               ))}
+              
+              {/* Credit Notes Card */}
+              {creditNotes.filter(cn => cn.balance > 0).length > 0 && (
+                <Card className="border-2 border-primary/20">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className={`text-base flex items-center gap-2 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                        <Ticket className="h-5 w-5 text-primary" />
+                        {language === 'th' ? 'ใบลดหนี้ (Credit Note)' : 'Credit Notes'}
+                      </CardTitle>
+                      <div className="flex items-center gap-2">
+                        <Switch
+                          id="use-credit"
+                          checked={useCreditNote}
+                          onCheckedChange={handleUseCreditNoteToggle}
+                        />
+                        <Label 
+                          htmlFor="use-credit" 
+                          className={`text-sm cursor-pointer ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+                        >
+                          {language === 'th' ? 'ใช้ใบลดหนี้' : 'Use Credit'}
+                        </Label>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  {useCreditNote && (
+                    <CardContent className="pt-0 space-y-3">
+                      {/* Auto-apply message */}
+                      {shouldAutoApplyAll && (
+                        <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                          <p className={`text-xs text-primary font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                            {language === 'th' 
+                              ? '✓ ยอดชำระมากกว่าใบลดหนี้ - ใช้ทั้งหมดอัตโนมัติ'
+                              : '✓ Auto-applied all credit notes'}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {/* Manual selection message */}
+                      {!shouldAutoApplyAll && (
+                        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                          <p className={`text-xs text-blue-700 font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                            {language === 'th' 
+                              ? 'เลือกใบลดหนี้ที่ต้องการใช้'
+                              : 'Select credit notes to apply'}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {creditNotes.filter(cn => cn.balance > 0).map((note) => (
+                        <div 
+                          key={note.id}
+                          className={`p-3 rounded-lg border-2 transition-all ${
+                            shouldAutoApplyAll 
+                              ? 'border-primary bg-primary/5 cursor-not-allowed opacity-90'
+                              : selectedCreditNotes.includes(note.id)
+                                ? 'border-primary bg-primary/5 cursor-pointer'
+                                : 'border-muted hover:border-primary/50 cursor-pointer'
+                          }`}
+                          onClick={() => !shouldAutoApplyAll && toggleCreditNote(note.id)}
+                        >
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <Checkbox
+                                  checked={selectedCreditNotes.includes(note.id)}
+                                  onCheckedChange={() => !shouldAutoApplyAll && toggleCreditNote(note.id)}
+                                  onClick={(e) => e.stopPropagation()}
+                                  disabled={shouldAutoApplyAll}
+                                />
+                                <span className={`text-sm font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                                  {language === 'th' ? 'ใบลดหนี้' : 'Credit Note'} #{note.id}
+                                </span>
+                              </div>
+                            </div>
+                            <div className={`text-right ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                              <div className="text-lg font-bold text-primary">
+                                {formatCurrency(note.balance)}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {note.items.length > 0 && (
+                            <div className="mt-2 pt-2 border-t border-muted space-y-1">
+                              {note.items.map((item, idx) => (
+                                <div key={idx} className="flex justify-between text-xs">
+                                  <span className={`text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                                    {item.title}
+                                  </span>
+                                  <span className={`font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                                    {formatCurrency(item.amount)}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </CardContent>
+                  )}
+                </Card>
+              )}
             </div>
 
             {/* Right Side - Summary */}
@@ -204,6 +376,17 @@ export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewPr
                       </span>
                     </div>
                     
+                    {totalCreditApplied > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className={`text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                          {language === 'th' ? 'ใบลดหนี้' : 'Credit Applied'}
+                        </span>
+                        <span className={`font-medium text-green-600 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                          - {formatCurrency(totalCreditApplied)}
+                        </span>
+                      </div>
+                    )}
+                    
                     <Separator />
                     
                     <div className="flex justify-between items-center">
@@ -211,7 +394,7 @@ export const CartView = ({ items, onRemoveItem, onCheckout, onBack }: CartViewPr
                         {t('portal.totalAmount')}
                       </span>
                       <span className={`text-xl font-bold text-primary ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                        {formatCurrency(subtotal)}
+                        {formatCurrency(finalTotal)}
                       </span>
                     </div>
                   </div>

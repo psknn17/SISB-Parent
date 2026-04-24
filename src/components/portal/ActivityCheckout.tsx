@@ -23,12 +23,15 @@ interface ActivityCheckoutProps {
     id: string;
     name: string;
     price: number;
-    type: 'course' | 'summer' | 'exam' | 'tuition' | 'trip';
+    type: 'course' | 'summer' | 'trip';
+    date?: string;
+    location?: string;
   }>;
+  itemType?: 'activities' | 'trips';
   creditBalance: number;
   onPaymentSuccess: (paymentData: any) => void;
   onCancel: () => void;
-  onRemoveItem: (itemId: string) => void;
+  onRemoveItem?: (itemId: string) => void;
 }
 
 const paymentMethods = [
@@ -41,6 +44,7 @@ const paymentMethods = [
 
 export const ActivityCheckout = ({ 
   items, 
+  itemType = 'activities',
   creditBalance, 
   onPaymentSuccess, 
   onCancel,
@@ -53,7 +57,8 @@ export const ActivityCheckout = ({
 
   // Calculate amounts
   const subtotalAmount = items.reduce((sum, item) => sum + item.price, 0);
-  const creditApplied = useCreditNote ? Math.min(creditBalance, subtotalAmount) : 0;
+  // Credit notes only apply to activities, not trips
+  const creditApplied = (useCreditNote && itemType === 'activities') ? Math.min(creditBalance, subtotalAmount) : 0;
   const amountAfterCredit = subtotalAmount - creditApplied;
   
   const paymentFee = selectedPaymentMethod.currency === '%' 
@@ -71,12 +76,13 @@ export const ActivityCheckout = ({
       const completePaymentData = {
         ...paymentData,
         items: items,
+        itemType: itemType,
         subtotalAmount,
         creditApplied,
         paymentFee,
         studentName: language === 'th' ? "นักเรียน" : 
                      language === 'zh' ? "学生" : 
-                     "Student" // This should come from props in real implementation
+                     "Student"
       };
       onPaymentSuccess(completePaymentData);
     }
@@ -161,8 +167,8 @@ export const ActivityCheckout = ({
             </div>
           </div>
 
-          {/* Credit Note Application */}
-          {creditBalance > 0 && (
+          {/* Credit Note Application - Only for activities, not for trips */}
+          {creditBalance > 0 && itemType === 'activities' && (
             <div className="space-y-4">
               <h2 className={`text-2xl font-bold ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                 {t('portal.applyCreditNote')}

@@ -149,6 +149,10 @@ All colors MUST be HSL.
   html {
     scroll-behavior: smooth;
   }
+
+  #lovable-badge {
+    display: none !important;
+  }
 }
 
 @layer components {
@@ -199,7 +203,6 @@ All colors MUST be HSL.
   .animate-pulse-glow {
     animation: pulse-glow 2s ease-in-out infinite alternate;
   }
-  
 }
 
 @layer utilities {
@@ -224,4 +227,83 @@ All colors MUST be HSL.
   100% {
     box-shadow: 0 0 30px hsl(var(--primary) / 0.6);
   }
+}
+
+/* Mobile Animation Utilities */
+.animate-collapsible-down {
+  animation: collapsible-down 0.3s ease-out;
+}
+
+.animate-collapsible-up {
+  animation: collapsible-up 0.3s ease-out;
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* Touch Feedback */
+.touch-active {
+  @apply transition-transform duration-100;
+}
+
+.touch-active:active {
+  transform: scale(0.98);
+}
+
+/* Stagger Animation Delays */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
+.stagger-9 { animation-delay: 0.45s; }
+.stagger-10 { animation-delay: 0.5s; }
+
+/* Mobile Card Animations */
+.mobile-card-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.mobile-card-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+/* Safe Area for Bottom Navigation */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Smooth Height Transition */
+.transition-height {
+  transition: height 0.3s ease-out;
+}
+
+/* Badge Pulse */
+.badge-pulse {
+  animation: pulse-soft 2s ease-in-out infinite;
 }

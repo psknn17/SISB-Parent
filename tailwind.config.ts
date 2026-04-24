@@ -68,28 +68,81 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
-			keyframes: {
-				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
-				},
-				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
-				}
+		keyframes: {
+			'accordion-down': {
+				from: { height: '0' },
+				to: { height: 'var(--radix-accordion-content-height)' }
 			},
-			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+			'accordion-up': {
+				from: { height: 'var(--radix-accordion-content-height)' },
+				to: { height: '0' }
+			},
+			'collapsible-down': {
+				from: { height: '0', opacity: '0' },
+				to: { height: 'var(--radix-collapsible-content-height)', opacity: '1' }
+			},
+			'collapsible-up': {
+				from: { height: 'var(--radix-collapsible-content-height)', opacity: '1' },
+				to: { height: '0', opacity: '0' }
+			},
+			'fade-in-up': {
+				from: { opacity: '0', transform: 'translateY(10px)' },
+				to: { opacity: '1', transform: 'translateY(0)' }
+			},
+			'fade-out-down': {
+				from: { opacity: '1', transform: 'translateY(0)' },
+				to: { opacity: '0', transform: 'translateY(10px)' }
+			},
+			'scale-bounce': {
+				'0%, 100%': { transform: 'scale(1)' },
+				'50%': { transform: 'scale(1.1)' }
+			},
+			'slide-in-bottom': {
+				from: { transform: 'translateY(100%)' },
+				to: { transform: 'translateY(0)' }
+			},
+			'slide-out-bottom': {
+				from: { transform: 'translateY(0)' },
+				to: { transform: 'translateY(100%)' }
+			},
+			'stagger-in': {
+				from: { opacity: '0', transform: 'translateY(20px)' },
+				to: { opacity: '1', transform: 'translateY(0)' }
+			},
+			'pulse-soft': {
+				'0%, 100%': { opacity: '1' },
+				'50%': { opacity: '0.7' }
+			},
+			'tap-bounce': {
+				'0%': { transform: 'scale(1)' },
+				'50%': { transform: 'scale(0.95)' },
+				'100%': { transform: 'scale(1)' }
+			},
+			'slide-indicator': {
+				from: { transform: 'scaleX(0)' },
+				to: { transform: 'scaleX(1)' }
+			},
+			'count-up': {
+				from: { opacity: '0', transform: 'translateY(8px)' },
+				to: { opacity: '1', transform: 'translateY(0)' }
 			}
+		},
+		animation: {
+			'accordion-down': 'accordion-down 0.2s ease-out',
+			'accordion-up': 'accordion-up 0.2s ease-out',
+			'collapsible-down': 'collapsible-down 0.3s ease-out',
+			'collapsible-up': 'collapsible-up 0.3s ease-out',
+			'fade-in-up': 'fade-in-up 0.3s ease-out forwards',
+			'fade-out-down': 'fade-out-down 0.3s ease-out forwards',
+			'scale-bounce': 'scale-bounce 0.3s ease-out',
+			'slide-in-bottom': 'slide-in-bottom 0.3s ease-out',
+			'slide-out-bottom': 'slide-out-bottom 0.3s ease-out',
+			'stagger-in': 'stagger-in 0.4s ease-out forwards',
+			'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+			'tap-bounce': 'tap-bounce 0.15s ease-out',
+			'slide-indicator': 'slide-indicator 0.2s ease-out forwards',
+			'count-up': 'count-up 0.3s ease-out forwards'
+		}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

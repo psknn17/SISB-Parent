@@ -12,6 +12,7 @@ interface SummaryBoxProps {
     value: number;
     isPositive: boolean;
   };
+  onClick?: () => void;
 }
 
 export const SummaryBox = ({ 
@@ -20,7 +21,8 @@ export const SummaryBox = ({
   subtitle, 
   icon: Icon, 
   color = 'primary',
-  trend 
+  trend,
+  onClick 
 }: SummaryBoxProps) => {
   const { language } = useLanguage();
   const colorClasses = {
@@ -44,20 +46,18 @@ export const SummaryBox = ({
   };
 
   return (
-    <Card className={`relative overflow-hidden transition-all hover:shadow-md border-2 ${colorClasses[color]}`}>
+    <Card 
+      className={`relative overflow-hidden transition-all hover:shadow-md border-2 ${colorClasses[color]} ${onClick ? 'cursor-pointer' : ''}`}
+      onClick={onClick}
+    >
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className={`text-sm font-medium text-muted-foreground mb-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+            <p className={`text-2xl font-bold mb-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
               {title}
             </p>
-            {subtitle && (
-              <p className={`text-2xl font-bold text-muted-foreground mb-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                {subtitle}
-              </p>
-            )}
             <div className="flex items-baseline gap-2">
-              <p className={`text-lg font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+              <p className={`text-2xl font-bold ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                 {typeof value === 'number' ? value.toLocaleString() : value}
               </p>
               {trend && (
@@ -68,6 +68,11 @@ export const SummaryBox = ({
                 </span>
               )}
             </div>
+            {subtitle && (
+              <p className={`text-xs text-muted-foreground mt-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                {subtitle}
+              </p>
+            )}
           </div>
           
           <div className={`w-12 h-12 rounded-lg ${iconBgClasses[color]} flex items-center justify-center`}>
