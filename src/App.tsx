@@ -21,7 +21,6 @@ const App = () => {
   const [checkoutData, setCheckoutData] = useState<any>(null);
   const [paymentSuccessData, setPaymentSuccessData] = useState<any>(null);
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [tripCartItems, setTripCartItems] = useState<TripCartItem[]>([]);
   const [showCountdown, setShowCountdown] = useState(false);
 
   const handleLogin = () => {
@@ -100,13 +99,11 @@ const App = () => {
   };
 
   // Trip cart handlers
-  const handleGoToTripCart = (items: TripCartItem[]) => {
-    setTripCartItems(items);
+  const handleGoToTripCart = () => {
     setCurrentPage('tripCart');
   };
 
   const handleTripCheckout = (items: TripCartItem[]) => {
-    // Convert trip items to checkout format
     const checkoutItems = items.map(item => ({
       id: item.id,
       name: item.name,
@@ -122,19 +119,17 @@ const App = () => {
   };
 
   const handleRemoveTripFromCart = (tripId: string) => {
-    setTripCartItems(prev => prev.filter(item => item.id !== tripId));
+    setCartItems(prev => prev.filter(item => !(item.type === 'trip' && item.id === tripId)));
   };
 
   const handlePaymentSuccess = (paymentData: any) => {
     setPaymentSuccessData(paymentData);
     setCurrentPage('success');
-    // Clear cart items after successful payment
     if (checkoutData?.type === 'trips') {
-      setTripCartItems([]);
+      setCartItems(prev => prev.filter(item => item.type !== 'trip'));
     } else {
       setCartItems([]);
     }
-    // Hide countdown
     setShowCountdown(false);
   };
 
@@ -196,8 +191,8 @@ const App = () => {
               onBackToPortal={handleBackToPortal}
             />
           ) : currentPage === 'tripCart' ? (
-            <TripCartPage 
-              items={tripCartItems}
+            <TripCartPage
+              items={cartItems.filter(item => item.type === 'trip')}
               onRemoveItem={handleRemoveTripFromCart}
               onCheckout={handleTripCheckout}
               onBackToPortal={handleBackToPortal}

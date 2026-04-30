@@ -49,7 +49,7 @@ export const MobileCartDrawer = ({
         if (activeCartType === 'tuition') return item.type === 'tuition';
         if (activeCartType === 'course') return item.type === 'course' || item.type === 'activity';
         if (activeCartType === 'camp') return item.category === 'summer';
-        if (activeCartType === 'trip') return item.category === 'trip';
+        if (activeCartType === 'trip') return item.type === 'trip';
         if (activeCartType === 'exam') return item.type === 'exam';
         return true;
       });
@@ -70,6 +70,7 @@ export const MobileCartDrawer = ({
       course: { en: 'ECA & EAS', th: 'ECA & EAS', zh: 'ECA & EAS' },
       activity: { en: 'Activities', th: 'กิจกรรม', zh: '活动' },
       exam: { en: 'Exams', th: 'ข้อสอบ', zh: '考试' },
+      trip: { en: 'Trips', th: 'ทัศนศึกษา', zh: '旅行' },
       event: { en: 'Events', th: 'กิจกรรมพิเศษ', zh: '活动' },
     };
     const label = labels[type] || { en: type, th: type, zh: type };

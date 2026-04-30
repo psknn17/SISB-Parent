@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, AlertCircle, CheckCircle, ChevronDown, ChevronUp, DollarSign } from "lucide-react";
+import { Calendar, AlertCircle, CheckCircle, ChevronDown, ChevronUp, DollarSign, Lock } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface LineItem {
@@ -27,11 +27,14 @@ interface InvoiceCardProps {
   onAddToCart?: (invoiceId: string, amount?: number) => void;
   onRemoveFromCart?: (invoiceId: string) => void;
   isInCart?: boolean;
+  isLocked?: boolean;
+  lockedReason?: string;
+  isOnHold?: boolean;
   studentName?: string;
   remainingAmount?: number;
 }
 
-export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveFromCart, isInCart, studentName, remainingAmount }: InvoiceCardProps) => {
+export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveFromCart, isInCart, isLocked, lockedReason, isOnHold, studentName, remainingAmount }: InvoiceCardProps) => {
   const isOverdue = new Date(invoice.due_date) < new Date() && invoice.status !== 'paid';
   const canPayWithCredit = creditBalance >= invoice.amount_due;
   const { language, formatCurrency, t } = useLanguage();
@@ -56,7 +59,7 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
 
 
   const isPaid = invoice.status === 'paid';
-  const accentColor = isPaid ? 'bg-finance-green' : isOverdue ? 'bg-destructive' : 'bg-primary';
+  const accentColor = isOnHold ? 'bg-muted' : isPaid ? 'bg-finance-green' : isOverdue ? 'bg-destructive' : 'bg-primary';
 
   return (
     <Card className={`overflow-hidden transition-all ${isOverdue ? 'border-destructive/50' : ''}`}>
@@ -78,8 +81,8 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
               )}
             </div>
           </div>
-          <Badge variant="outline" className={`shrink-0 text-xs ${isInCart ? 'bg-primary/10 text-primary border-primary/30' : statusConfig[invoice.status].color} ${fontClass}`}>
-            {isInCart ? (language === 'th' ? 'ในตะกร้า' : language === 'zh' ? '已加入购物车' : 'In Cart') : statusConfig[invoice.status].label}
+          <Badge variant="outline" className={`shrink-0 text-xs ${isOnHold ? 'bg-muted text-muted-foreground' : isInCart ? 'bg-primary/10 text-primary border-primary/30' : statusConfig[invoice.status].color} ${fontClass}`}>
+            {isOnHold ? (language === 'th' ? 'พักไว้ชั่วคราว' : language === 'zh' ? '暂停' : 'On Hold') : isInCart ? (language === 'th' ? 'ในตะกร้า' : language === 'zh' ? '已加入购物车' : 'In Cart') : statusConfig[invoice.status].label}
           </Badge>
         </div>
         <div className="flex items-center justify-between">
@@ -171,14 +174,30 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
 
         {invoice.status !== 'paid' && (
           <div className="pt-2 space-y-2">
-            {canPayWithCredit && !isInCart && (
+            {canPayWithCredit && !isInCart && !isLocked && (
               <div className={`flex items-center gap-2 text-sm text-finance-green bg-finance-green/10 p-2 rounded ${fontClass}`}>
                 <CheckCircle className="h-4 w-4" />
                 <span>{t('invoice.canPayWithCredit')}</span>
               </div>
             )}
 
-            {isInCart ? (
+            {isOnHold ? (
+              <div className={`flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 border border-border p-3 rounded-lg ${fontClass}`}>
+                <Lock className="h-4 w-4 shrink-0" />
+                <span>
+                  {language === 'th'
+                    ? 'ใบแจ้งชำระนี้ถูกพักไว้ชั่วคราว กรุณาติดต่อโรงเรียนเพื่อข้อมูลเพิ่มเติม'
+                    : language === 'zh'
+                    ? '此发票暂时搁置，请联系学校了解更多信息。'
+                    : 'This invoice is currently on hold. Please contact the school for more information.'}
+                </span>
+              </div>
+            ) : isLocked ? (
+              <div className={`flex items-center gap-2 text-sm text-muted-foreground bg-muted/50 border border-border p-3 rounded-lg ${fontClass}`}>
+                <AlertCircle className="h-4 w-4 shrink-0" />
+                <span>{lockedReason}</span>
+              </div>
+            ) : isInCart ? (
               <Button
                 variant="destructive"
                 className={`w-full ${fontClass}`}
@@ -190,9 +209,7 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
               <Button
                 className={`w-full ${fontClass}`}
                 onClick={() => onAddToCart?.(invoice.id, remainingAmount)}
-                variant={isOverdue ? "destructive" : "default"}
               >
-                <span className="mr-2 font-bold">฿</span>
                 {language === 'th' ? 'เพิ่มเข้าตะกร้า' : language === 'zh' ? '加入购物车' : 'Add to Cart'}
               </Button>
             )}

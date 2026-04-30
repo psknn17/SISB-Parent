@@ -9,7 +9,7 @@ import { ExamCard } from "@/components/portal/ExamCard";
 import { TripCard, Trip } from "@/components/portal/TripCard";
 import { TuitionCartSidebar } from "@/components/portal/TuitionCartSidebar";
 import { CourseCartSidebar } from "@/components/portal/CourseCartSidebar";
-import { TripCartSidebar, TripCartItem } from "@/components/portal/TripCartSidebar";
+import { TripCartSidebar } from "@/components/portal/TripCartSidebar";
 import { CampCheckout } from "@/components/portal/CampCheckout";
 import { ReceiptList } from "@/components/portal/ReceiptList";
 import { StudentFilter } from "@/components/portal/StudentFilter";
@@ -67,7 +67,7 @@ interface ParentPortalProps {
   onLogout: () => void;
   onGoToCart: () => void;
   onGoToCheckout: (data: any) => void;
-  onGoToTripCart: (items: TripCartItem[]) => void;
+  onGoToTripCart: () => void;
   cartItems: any[];
   onAddToCart: (item: any) => boolean;
   onRemoveFromCart: (itemId: string, studentId?: string) => void;
@@ -92,7 +92,7 @@ export const ParentPortal = ({
 }: ParentPortalProps) => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'tuition' | 'afterschool' | 'summer' | 'event' | 'transaction'>('dashboard');
   const [transactionSubTab, setTransactionSubTab] = useState<'receipts' | 'creditNote'>('receipts');
-  const [eventSubTab, setEventSubTab] = useState<'exam' | 'trip' | 'carnival'>('exam');
+  const [eventSubTab, setEventSubTab] = useState<'event' | 'trip' | 'carnival'>('event');
   const [selectedStudent, setSelectedStudent] = useState<string>(mockStudents[0]?.id.toString() || '1');
   const [currentCampus, setCurrentCampus] = useState<string>(mockStudents[0]?.campus || 'Pracha Uthit');
   const [paymentPeriod, setPaymentPeriod] = useState<'Yearly' | 'Termly'>('Yearly');
@@ -106,11 +106,6 @@ export const ParentPortal = ({
   const [searchTrip, setSearchTrip] = useState('');
   const [filterDay, setFilterDay] = useState<string>("all");
   
-  // Trip status management
-  const [tripStatuses, setTripStatuses] = useState<Record<string, 'pending' | 'accepted' | 'declined' | 'paid'>>({});
-  
-  // Trip cart items
-  const [tripCartItems, setTripCartItems] = useState<TripCartItem[]>([]);
   
   // Mobile cart drawer state
   const [mobileCartOpen, setMobileCartOpen] = useState(false);
@@ -290,12 +285,6 @@ export const ParentPortal = ({
     setCurrentCampus(student.campus);
   };
 
-  // Auto-switch tab when switching to non-SISB student
-  useEffect(() => {
-    if (!isSISBStudent && !['summer', 'event'].includes(activeTab)) {
-      setActiveTab('summer');
-    }
-  }, [isSISBStudent, activeTab]);
 
   const handleRemoveFromCart = (itemId: string, studentId?: string) => {
     onRemoveFromCart(itemId, studentId);
@@ -523,25 +512,19 @@ export const ParentPortal = ({
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'dashboard' | 'tuition' | 'afterschool' | 'summer' | 'event' | 'transaction')} className="space-y-6">
           {/* Desktop Navigation - Tabs */}
-          <TabsList className={`hidden md:grid w-full gap-1 ${isSISBStudent ? 'grid-cols-6' : 'grid-cols-3'}`}>
-            {isSISBStudent && (
-              <TabsTrigger value="dashboard" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
-                <GraduationCap className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">{t('portal.dashboard')}</span>
-              </TabsTrigger>
-            )}
-            {isSISBStudent && (
-              <TabsTrigger value="tuition" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
-                <DollarSign className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">{t('portal.tuition')}</span>
-              </TabsTrigger>
-            )}
-            {isSISBStudent && (
-              <TabsTrigger value="afterschool" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
-                <Clock className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">ECA & EAS</span>
-              </TabsTrigger>
-            )}
+          <TabsList className="hidden md:grid w-full gap-1 grid-cols-6">
+            <TabsTrigger value="dashboard" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+              <GraduationCap className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">{t('portal.dashboard')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="tuition" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+              <DollarSign className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">{t('portal.tuition')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="afterschool" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+              <Clock className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">ECA & EAS</span>
+            </TabsTrigger>
             <TabsTrigger value="summer" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
               <Sun className="h-4 w-4 md:mr-2" />
               <span className="hidden md:inline">{t('portal.summer')}</span>
@@ -550,61 +533,53 @@ export const ParentPortal = ({
               <Calendar className="h-4 w-4 md:mr-2" />
               <span className="hidden md:inline">{language === 'th' ? 'กิจกรรม' : language === 'zh' ? '活动' : 'Event'}</span>
             </TabsTrigger>
-            {isSISBStudent && (
-              <TabsTrigger value="transaction" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
-                <Receipt className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">{t('portal.transactionHistory')}</span>
-              </TabsTrigger>
-            )}
+            <TabsTrigger value="transaction" className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+              <Receipt className="h-4 w-4 md:mr-2" />
+              <span className="hidden md:inline">{t('portal.transactionHistory')}</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Mobile Horizontal Scrollable Tabs */}
           <div className="md:hidden overflow-x-auto pb-2 -mx-4 px-4">
             <div className="flex gap-2 min-w-max">
-              {isSISBStudent && (
-                <button
-                  onClick={() => setActiveTab('dashboard')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeTab === 'dashboard' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
-                >
-                  <GraduationCap className="h-4 w-4" />
-                  Dashboard
-                </button>
-              )}
-              {isSISBStudent && (
-                <button
-                  onClick={() => setActiveTab('tuition')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeTab === 'tuition' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
-                >
-                  <DollarSign className="h-4 w-4" />
-                  {t('portal.tuition')}
-                </button>
-              )}
-              {isSISBStudent && (
-                <button
-                  onClick={() => setActiveTab('afterschool')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeTab === 'afterschool' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
-                >
-                  <Clock className="h-4 w-4" />
-                  ECA & EAS
-                </button>
-              )}
+              <button
+                onClick={() => setActiveTab('dashboard')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  activeTab === 'dashboard'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+              >
+                <GraduationCap className="h-4 w-4" />
+                Dashboard
+              </button>
+              <button
+                onClick={() => setActiveTab('tuition')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  activeTab === 'tuition'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+              >
+                <DollarSign className="h-4 w-4" />
+                {t('portal.tuition')}
+              </button>
+              <button
+                onClick={() => setActiveTab('afterschool')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  activeTab === 'afterschool'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+              >
+                <Clock className="h-4 w-4" />
+                ECA & EAS
+              </button>
               <button
                 onClick={() => setActiveTab('summer')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeTab === 'summer' 
-                    ? 'bg-primary text-primary-foreground' 
+                  activeTab === 'summer'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
               >
@@ -614,27 +589,25 @@ export const ParentPortal = ({
               <button
                 onClick={() => setActiveTab('event')}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                  activeTab === 'event' 
-                    ? 'bg-primary text-primary-foreground' 
+                  activeTab === 'event'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-muted text-muted-foreground hover:bg-muted/80'
                 } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
               >
                 <Calendar className="h-4 w-4" />
                 Event
               </button>
-              {isSISBStudent && (
-                <button
-                  onClick={() => setActiveTab('transaction')}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                    activeTab === 'transaction' 
-                      ? 'bg-primary text-primary-foreground' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                  } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
-                >
-                  <Receipt className="h-4 w-4" />
-                  {language === 'th' ? 'ประวัติ' : 'History'}
-                </button>
-              )}
+              <button
+                onClick={() => setActiveTab('transaction')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                  activeTab === 'transaction'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+              >
+                <Receipt className="h-4 w-4" />
+                {language === 'th' ? 'ประวัติ' : 'History'}
+              </button>
             </div>
           </div>
 
@@ -909,12 +882,51 @@ export const ParentPortal = ({
                   </CardContent>
                 </Card>
 
-                {allInvoices.filter(invoice => invoice.type === paymentPeriod).map(invoice => {
+                {/* Student Filter */}
+                <div className="flex items-center gap-4">
+                  <span className={`text-sm font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                    {t('portal.studentFilter')}:
+                  </span>
+                  <StudentFilter
+                    onStudentChange={handleStudentChange}
+                    selectedStudent={mockStudents.find(s => s.id.toString() === selectedStudent) || mockStudents[0]}
+                  />
+                </div>
+
+                {allInvoices
+                  .filter(invoice => invoice.type === paymentPeriod && invoice.student_id === parseInt(selectedStudent))
+                  .sort((a, b) => {
+                    const aPaid = a.status === 'paid' ? 1 : 0;
+                    const bPaid = b.status === 'paid' ? 1 : 0;
+                    if (aPaid !== bPaid) return aPaid - bPaid;
+                    return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
+                  })
+                  .map(invoice => {
                   const student = mockStudents.find(s => s.id === invoice.student_id);
                   const creditNote = allCreditNotes.find(cn => cn.student_id === invoice.student_id);
+
+                  // Lock logic: extract academic year, check if opposite type is paid or in cart
+                  const yearMatch = invoice.term?.match(/(\d{4}-\d{4})/);
+                  const academicYear = yearMatch?.[1];
+                  const oppositeType = invoice.type === 'Yearly' ? 'Termly' : 'Yearly';
+                  const conflictingInvoices = academicYear
+                    ? allInvoices.filter(inv =>
+                        inv.student_id === invoice.student_id &&
+                        inv.type === oppositeType &&
+                        inv.term?.includes(academicYear)
+                      )
+                    : [];
+                  const hasConflict = conflictingInvoices.some(
+                    inv => inv.status === 'paid' || isInCart(inv.id, student?.id.toString())
+                  );
+                  const lockedReason = hasConflict
+                    ? invoice.type === 'Yearly'
+                      ? (language === 'th' ? `ชำระแบบ Termly สำหรับปี ${academicYear} ไปแล้ว` : `Termly payment for ${academicYear} already active`)
+                      : (language === 'th' ? `ชำระแบบ Yearly สำหรับปี ${academicYear} ไปแล้ว` : `Yearly payment for ${academicYear} already active`)
+                    : undefined;
+
                   return (
                     <div key={invoice.id} className="space-y-2">
-                      {/* Student identification tag */}
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className={`${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                           {student?.name} - {student?.class}
@@ -924,6 +936,11 @@ export const ParentPortal = ({
                         invoice={invoice}
                         creditBalance={creditNote?.balance || 0}
                         onAddToCart={(invoiceId) => handleAddToCart(invoiceId, 'tuition')}
+                        onRemoveFromCart={(invoiceId) => handleRemoveFromCart(invoiceId, student?.id.toString())}
+                        isInCart={isInCart(invoice.id, student?.id.toString())}
+                        isLocked={hasConflict}
+                        lockedReason={lockedReason}
+                        isOnHold={invoice.isOnHold}
                         studentName={student?.name}
                       />
                     </div>
@@ -1065,7 +1082,6 @@ export const ParentPortal = ({
                   onRemoveItem={handleRemoveFromCart}
                   onCheckout={handleGoToCart}
                   onClearAll={() => handleClearAllCart('course')}
-                  campus={currentCampus}
                   cartType="course"
                 />
               </div>
@@ -1165,7 +1181,6 @@ export const ParentPortal = ({
                   onRemoveItem={handleRemoveFromCart}
                   onCheckout={handleGoToCart}
                   onClearAll={() => handleClearAllCart('activity')}
-                  campus={currentCampus}
                   cartType="camp"
                 />
               </div>
@@ -1177,24 +1192,24 @@ export const ParentPortal = ({
             {/* Submenu Tabs - Mobile Scrollable */}
             <div className="flex gap-1 border-b overflow-x-auto pb-0.5">
               <button
-                onClick={() => setEventSubTab('exam')}
+                onClick={() => setEventSubTab('event')}
                 className={`px-4 py-2 text-sm font-medium transition-colors relative flex items-center gap-2 ${
-                  eventSubTab === 'exam' 
-                    ? 'text-primary' 
+                  eventSubTab === 'event'
+                    ? 'text-primary'
                     : 'text-muted-foreground hover:text-foreground'
                 } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
               >
-                <FileText className="h-4 w-4" />
-                {t('portal.eventExam')}
-                {eventSubTab === 'exam' && (
+                <Ticket className="h-4 w-4" />
+                {language === 'th' ? 'กิจกรรม' : 'Event'}
+                {eventSubTab === 'event' && (
                   <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
                 )}
               </button>
               <button
                 onClick={() => setEventSubTab('trip')}
                 className={`px-4 py-2 text-sm font-medium transition-colors relative flex items-center gap-2 ${
-                  eventSubTab === 'trip' 
-                    ? 'text-primary' 
+                  eventSubTab === 'trip'
+                    ? 'text-primary'
                     : 'text-muted-foreground hover:text-foreground'
                 } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
               >
@@ -1207,8 +1222,8 @@ export const ParentPortal = ({
               <button
                 onClick={() => setEventSubTab('carnival')}
                 className={`px-4 py-2 text-sm font-medium transition-colors relative flex items-center gap-2 ${
-                  eventSubTab === 'carnival' 
-                    ? 'text-primary' 
+                  eventSubTab === 'carnival'
+                    ? 'text-primary'
                     : 'text-muted-foreground hover:text-foreground'
                 } ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
               >
@@ -1220,88 +1235,78 @@ export const ParentPortal = ({
               </button>
             </div>
 
-            {/* Exam Sub-tab */}
-            {eventSubTab === 'exam' && (
+            {/* Event Sub-tab */}
+            {eventSubTab === 'event' && (
               <div className="grid grid-cols-1 lg:grid-cols-10 gap-6">
-                {/* Left 70% - Exam List */}
                 <div className="lg:col-span-7 space-y-4">
-                  {/* Student Filter and Search - Desktop */}
+                  {/* Desktop Filter */}
                   {!isMobile && (
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                       <div className="flex items-center gap-4">
                         <span className={`text-sm font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                           {t('portal.studentFilter')}:
                         </span>
-                        <StudentFilter 
+                        <StudentFilter
                           onStudentChange={handleStudentChange}
                           selectedStudent={mockStudents.find(s => s.id.toString() === selectedStudent) || mockStudents[0]}
                         />
                       </div>
-                      
-                      {/* Search Input */}
                       <div className="relative flex-1 w-full sm:max-w-xs">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                           type="text"
-                          placeholder={language === 'th' ? 'ค้นหาการสอบ...' : 'Search exams...'}
-                          value={searchExam}
-                          onChange={(e) => setSearchExam(e.target.value)}
+                          placeholder={language === 'th' ? 'ค้นหากิจกรรม...' : 'Search events...'}
+                          value={searchEvent}
+                          onChange={(e) => setSearchEvent(e.target.value)}
                           className={`pl-10 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
                         />
                       </div>
                     </div>
                   )}
-
-                  {/* Mobile Filter Section */}
+                  {/* Mobile Filter */}
                   {isMobile && (
                     <MobileFilterSection
-                      searchValue={searchExam}
-                      onSearchChange={setSearchExam}
+                      searchValue={searchEvent}
+                      onSearchChange={setSearchEvent}
                       selectedStudent={mockStudents.find(s => s.id.toString() === selectedStudent)}
                       onStudentChange={handleStudentChange}
                       showDayFilter={false}
                       showStudentFilter={true}
-                      searchPlaceholder={language === 'th' ? 'ค้นหาการสอบ...' : 'Search exams...'}
+                      searchPlaceholder={language === 'th' ? 'ค้นหากิจกรรม...' : 'Search events...'}
                     />
                   )}
-                  
-                  {/* Exam Cards with Loading State */}
-                  {isLoading && isMobile ? (
-                    <MobileCardSkeleton variant="exam" count={4} />
-                  ) : (
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {filterCourses(getMockDataForStudent(parseInt(selectedStudent)).examActivities, searchExam).map((exam: any, index: number) => (
-                        <div 
-                          key={exam.id}
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {getMockDataForStudent(parseInt(selectedStudent)).eventActivities
+                      .filter((ev: any) => filterCourses([ev], searchEvent).length > 0)
+                      .map((ev: any, index: number) => (
+                        <div
+                          key={ev.id}
                           className={isMobile ? "animate-stagger-in opacity-0" : ""}
                           style={isMobile ? { animationDelay: `${index * 50}ms` } : undefined}
                         >
-                          <ExamCard
-                            exam={exam}
-                            isInCart={isInCart(exam.id, selectedStudent)}
-                            onAddToCart={(id, registrationData) => handleAddToCart(id, 'exam', selectedStudent, registrationData)}
-                            onRemoveFromCart={() => handleRemoveFromCart(exam.id, selectedStudent)}
+                          <CourseCard
+                            course={ev}
+                            isCamp={false}
+                            isInCart={isInCart(ev.id, selectedStudent)}
+                            onAddToCart={(id) => handleAddToCart(id, 'event', selectedStudent)}
+                            onRemoveFromCart={() => handleRemoveFromCart(ev.id, selectedStudent)}
                           />
                         </div>
                       ))}
-                    </div>
-                  )}
-                  
-                  {/* No results message */}
-                  {searchExam && filterCourses(getMockDataForStudent(parseInt(selectedStudent)).examActivities, searchExam).length === 0 && (
-                    <div className="text-center py-12">
-                      <Search className="h-12 w-12 mx-auto text-muted-foreground mb-3 opacity-50" />
-                      <p className={`text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                        {language === 'th' ? 'ไม่พบการสอบที่ค้นหา' : 'No exams found'}
-                      </p>
-                    </div>
-                  )}
+                    {getMockDataForStudent(parseInt(selectedStudent)).eventActivities
+                      .filter((ev: any) => filterCourses([ev], searchEvent).length > 0).length === 0 && (
+                      <div className="text-center py-12">
+                        <Search className="h-12 w-12 mx-auto text-muted-foreground mb-3 opacity-50" />
+                        <p className={`text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                          {language === 'th' ? 'ไม่พบกิจกรรมที่ค้นหา' : 'No events found'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-
-                {/* Right 30% - Exam Cart Sidebar - Hidden on Mobile */}
                 <div className="hidden lg:block lg:col-span-3">
                   <CourseCartSidebar
-                    items={cartItems.filter(item => item.type === 'exam').map(item => ({
+                    items={cartItems.filter(item => item.type === 'event').map(item => ({
                       id: item.id,
                       name: item.name,
                       price: item.price,
@@ -1311,9 +1316,8 @@ export const ParentPortal = ({
                     }))}
                     onRemoveItem={handleRemoveFromCart}
                     onCheckout={handleGoToCart}
-                    onClearAll={() => handleClearAllCart('exam' as any)}
-                    campus={currentCampus}
-                    cartType="exam"
+                    onClearAll={() => handleClearAllCart('event')}
+                    cartType="event"
                   />
                 </div>
               </div>
@@ -1370,54 +1374,40 @@ export const ParentPortal = ({
                   ) : (
                     <div className="grid gap-4 sm:grid-cols-2">
                       {filterCourses(getMockDataForStudent(parseInt(selectedStudent)).tripActivities, searchTrip).map((trip: any, index: number) => {
-                        const tripStatus = tripStatuses[trip.id] || trip.status;
                         const currentStudent = mockStudents.find(s => s.id.toString() === selectedStudent);
-                        
+                        const inCart = isInCart(trip.id, selectedStudent);
+
                         return (
-                          <div 
+                          <div
                             key={trip.id}
                             className={isMobile ? "animate-stagger-in opacity-0" : ""}
                             style={isMobile ? { animationDelay: `${index * 50}ms` } : undefined}
                           >
                             <TripCard
-                              trip={{ ...trip, status: tripStatus } as Trip}
-                              onAccept={(tripId) => {
-                                setTripStatuses(prev => ({ ...prev, [tripId]: 'accepted' }));
-                                // Add to trip cart
-                                setTripCartItems(prev => [
-                                  ...prev.filter(item => item.id !== tripId), // Remove if exists
-                                  {
-                                    id: tripId,
-                                    name: trip.name,
-                                    price: trip.price,
-                                    studentName: currentStudent?.name || '',
-                                    studentId: selectedStudent,
-                                    date: trip.date,
-                                    location: trip.location
-                                  }
-                                ]);
+                              trip={trip as Trip}
+                              isInCart={inCart}
+                              onAddToCart={() => {
+                                onAddToCart({
+                                  id: trip.id,
+                                  name: trip.name,
+                                  price: trip.price,
+                                  type: 'trip',
+                                  studentName: currentStudent?.name || '',
+                                  studentId: selectedStudent,
+                                  date: trip.date,
+                                  location: trip.location,
+                                });
                                 toast({
-                                  title: language === 'th' ? 'ยืนยันเข้าร่วมแล้ว' : 'Trip Accepted',
-                                  description: language === 'th' ? 'เพิ่มในตะกร้าทัศนศึกษาแล้ว' : 'Added to Trip Cart',
+                                  title: language === 'th' ? 'เพิ่มในตะกร้าแล้ว' : 'Added to Cart',
+                                  description: trip.name,
                                 });
                               }}
-                              onDecline={(tripId) => {
-                                setTripStatuses(prev => ({ ...prev, [tripId]: 'declined' }));
+                              onRemoveFromCart={() => {
+                                onRemoveFromCart(trip.id, selectedStudent);
                                 toast({
-                                  title: language === 'th' ? 'ไม่เข้าร่วม' : 'Trip Declined',
-                                  description: language === 'th' ? 'คุณสามารถเปลี่ยนใจได้ก่อนวันกำหนด' : 'You can change your decision before the deadline',
+                                  title: language === 'th' ? 'ลบออกจากตะกร้าแล้ว' : 'Removed from Cart',
+                                  description: trip.name,
                                 });
-                              }}
-                              onCancel={(tripId) => {
-                                setTripStatuses(prev => ({ ...prev, [tripId]: 'pending' }));
-                                setTripCartItems(prev => prev.filter(item => item.id !== tripId));
-                                toast({
-                                  title: language === 'th' ? 'ยกเลิกแล้ว' : 'Trip Cancelled',
-                                  description: language === 'th' ? 'ลบออกจากตะกร้าทัศนศึกษาแล้ว' : 'Removed from Trip Cart',
-                                });
-                              }}
-                              onChangeDecision={(tripId) => {
-                                setTripStatuses(prev => ({ ...prev, [tripId]: 'pending' }));
                               }}
                             />
                           </div>
@@ -1440,27 +1430,24 @@ export const ParentPortal = ({
                 {/* Right 30% - Trip Cart Sidebar - Hidden on Mobile */}
                 <div className="hidden lg:block lg:col-span-3">
                   <TripCartSidebar
-                    items={tripCartItems}
+                    items={cartItems.filter(item => item.type === 'trip')}
                     onRemoveItem={(tripId) => {
-                      setTripStatuses(prev => ({ ...prev, [tripId]: 'pending' }));
-                      setTripCartItems(prev => prev.filter(item => item.id !== tripId));
-                      toast({
-                        title: language === 'th' ? 'ยกเลิกแล้ว' : 'Trip Cancelled',
-                        description: language === 'th' ? 'ลบออกจากตะกร้าทัศนศึกษาแล้ว' : 'Removed from Trip Cart',
-                      });
+                      const item = cartItems.find(i => i.type === 'trip' && i.id === tripId);
+                      onRemoveFromCart(tripId, item?.studentId);
+                      toast({ title: language === 'th' ? 'ลบออกจากตะกร้าแล้ว' : 'Removed from Cart' });
                     }}
                     onCheckout={() => {
+                      const tripItems = cartItems.filter(item => item.type === 'trip');
                       toast({
                         title: language === 'th' ? 'กำลังไปหน้าชำระเงิน' : 'Proceeding to Payment',
-                        description: `${tripCartItems.length} ${language === 'th' ? 'รายการ' : 'trips selected'}`,
+                        description: `${tripItems.length} ${language === 'th' ? 'รายการ' : 'trips selected'}`,
                       });
-                      onGoToTripCart(tripCartItems);
+                      onGoToTripCart();
                     }}
                     onClearAll={() => {
-                      tripCartItems.forEach(item => {
-                        setTripStatuses(prev => ({ ...prev, [item.id]: 'pending' }));
+                      cartItems.filter(item => item.type === 'trip').forEach(item => {
+                        onRemoveFromCart(item.id, item.studentId);
                       });
-                      setTripCartItems([]);
                       toast({
                         title: language === 'th' ? 'ล้างรายการสำเร็จ' : 'Cart Cleared',
                         description: language === 'th' ? 'ลบรายการทั้งหมดออกจากตะกร้าแล้ว' : 'All trips removed from cart',

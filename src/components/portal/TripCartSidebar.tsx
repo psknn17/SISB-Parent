@@ -71,7 +71,7 @@ export const TripCartSidebar = ({ items, onRemoveItem, onCheckout, onClearAll, c
                 {language === 'th' ? 'ยังไม่มีทัศนศึกษาในตะกร้า' : 'No trips in cart'}
               </p>
               <p className={`text-xs text-muted-foreground mt-1 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                {language === 'th' ? 'Accept ทัศนศึกษาเพื่อเพิ่มลงตะกร้า' : 'Accept trips to add them to cart'}
+                {language === 'th' ? 'กด Register เพื่อเพิ่มทัศนศึกษาลงตะกร้า' : 'Register a trip to add it to cart'}
               </p>
             </div>
           ) : (

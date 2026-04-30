@@ -192,36 +192,704 @@ export const campusList = [
 ];
 
 export const mockInvoices = [
+  // ── Student 1 (Emma Johnson) ──────────────────────────────────────────────
   {
     id: "INV-2024-001",
     student_id: 1,
     type: "Yearly" as const,
-    amount_due: 15500,
+    amount_due: 185000,
     due_date: "2024-12-15",
     status: "pending" as const,
     description: "Tuition Fee 2024-2025",
-    term: "Academic Year 2024-2025"
+    term: "Academic Year 2024-2025",
+    isOnHold: true,
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 165000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 10000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 10000, category: "Fees" },
+    ]
   },
+  {
+    id: "INV-2023-001",
+    student_id: 1,
+    type: "Yearly" as const,
+    amount_due: 178000,
+    due_date: "2023-12-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024",
+    term: "Academic Year 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 158000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 10000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 10000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-001-T1",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2024-08-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2024-2025 — Term 1",
+    term: "Term 1 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-001-T2",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2024-12-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2024-2025 — Term 2",
+    term: "Term 2 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-001-T3",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2025-04-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2024-2025 — Term 3",
+    term: "Term 3 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2023-001-T1",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 60000,
+    due_date: "2023-08-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024 — Term 1",
+    term: "Term 1 / 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 52000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2023-001-T2",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 60000,
+    due_date: "2023-12-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024 — Term 2",
+    term: "Term 2 / 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 52000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2023-001-T3",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 60000,
+    due_date: "2024-04-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024 — Term 3",
+    term: "Term 3 / 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 52000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // ── Student 2 (Liam Johnson) ──────────────────────────────────────────────
   {
     id: "INV-2024-005",
     student_id: 2,
     type: "Yearly" as const,
-    amount_due: 15500,
+    amount_due: 185000,
     due_date: "2024-12-15",
     status: "paid" as const,
     description: "Tuition Fee 2024-2025",
-    term: "Academic Year 2024-2025"
+    term: "Academic Year 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 165000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 10000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 10000, category: "Fees" },
+    ]
   },
+  {
+    id: "INV-2023-005",
+    student_id: 2,
+    type: "Yearly" as const,
+    amount_due: 178000,
+    due_date: "2023-12-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024",
+    term: "Academic Year 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 158000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 10000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 10000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-005-T1",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2024-08-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2024-2025 — Term 1",
+    term: "Term 1 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-005-T2",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2024-12-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2024-2025 — Term 2",
+    term: "Term 2 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-005-T3",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2025-04-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2024-2025 — Term 3",
+    term: "Term 3 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2023-005-T1",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 60000,
+    due_date: "2023-08-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024 — Term 1",
+    term: "Term 1 / 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 52000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2023-005-T2",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 60000,
+    due_date: "2023-12-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024 — Term 2",
+    term: "Term 2 / 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 52000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2023-005-T3",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 60000,
+    due_date: "2024-04-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024 — Term 3",
+    term: "Term 3 / 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 52000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // ── Student 3 ─────────────────────────────────────────────────────────────
   {
     id: "INV-2024-006",
     student_id: 3,
     type: "Yearly" as const,
-    amount_due: 15500,
+    amount_due: 185000,
     due_date: "2024-12-15",
     status: "pending" as const,
     description: "Tuition Fee 2024-2025",
-    term: "Academic Year 2024-2025"
-  }
+    term: "Academic Year 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 165000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 10000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 10000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2023-006",
+    student_id: 3,
+    type: "Yearly" as const,
+    amount_due: 178000,
+    due_date: "2023-12-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2023-2024",
+    term: "Academic Year 2023-2024",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 158000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 10000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 10000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-006-T1",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2024-08-15",
+    status: "paid" as const,
+    description: "Tuition Fee 2024-2025 — Term 1",
+    term: "Term 1 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-006-T2",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2024-11-01",
+    status: "overdue" as const,
+    description: "Tuition Fee 2024-2025 — Term 2",
+    term: "Term 2 / 2024-2025",
+    isOnHold: true,
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2024-006-T3",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 63000,
+    due_date: "2025-04-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2024-2025 — Term 3",
+    term: "Term 3 / 2024-2025",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // ── Academic Year 2025-2026 ──────────────────────────────────────────────────
+
+  // Emma (student 1)
+  {
+    id: "INV-2025-001-Y",
+    student_id: 1,
+    type: "Yearly" as const,
+    amount_due: 192000,
+    due_date: "2025-08-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2025-2026 — Full Year",
+    term: "Full Year / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 178000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 7000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 7000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-001-T1",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2025-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2025-2026 — Term 1",
+    term: "Term 1 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-001-T2",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2026-01-01",
+    status: "overdue" as const,
+    description: "Tuition Fee 2025-2026 — Term 2",
+    term: "Term 2 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-001-T3",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2026-05-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2025-2026 — Term 3",
+    term: "Term 3 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // Liam (student 2)
+  {
+    id: "INV-2025-002-Y",
+    student_id: 2,
+    type: "Yearly" as const,
+    amount_due: 192000,
+    due_date: "2025-08-01",
+    status: "partial" as const,
+    description: "Tuition Fee 2025-2026 — Full Year",
+    term: "Full Year / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 178000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 7000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 7000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-002-T1",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2025-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2025-2026 — Term 1",
+    term: "Term 1 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-002-T2",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2026-01-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2025-2026 — Term 2",
+    term: "Term 2 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-002-T3",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2026-05-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2025-2026 — Term 3",
+    term: "Term 3 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // Sophia (student 3)
+  {
+    id: "INV-2025-003-Y",
+    student_id: 3,
+    type: "Yearly" as const,
+    amount_due: 192000,
+    due_date: "2025-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2025-2026 — Full Year",
+    term: "Full Year / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 178000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 7000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 7000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-003-T1",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2025-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2025-2026 — Term 1",
+    term: "Term 1 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-003-T2",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2026-01-01",
+    status: "partial" as const,
+    description: "Tuition Fee 2025-2026 — Term 2",
+    term: "Term 2 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2025-003-T3",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 65000,
+    due_date: "2026-05-01",
+    status: "pending" as const,
+    description: "Tuition Fee 2025-2026 — Term 3",
+    term: "Term 3 / 2025-2026",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 57000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // ── Academic Year 2022-2023 ──────────────────────────────────────────────────
+
+  // Emma (student 1) — all paid
+  {
+    id: "INV-2022-001-Y",
+    student_id: 1,
+    type: "Yearly" as const,
+    amount_due: 172000,
+    due_date: "2022-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Full Year",
+    term: "Full Year / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 158000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 7000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 7000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-001-T1",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2022-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 1",
+    term: "Term 1 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-001-T2",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2023-01-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 2",
+    term: "Term 2 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-001-T3",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2023-05-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 3",
+    term: "Term 3 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // Liam (student 2) — yearly overdue, T1 paid, T2 paid, T3 overdue
+  {
+    id: "INV-2022-002-Y",
+    student_id: 2,
+    type: "Yearly" as const,
+    amount_due: 172000,
+    due_date: "2022-08-01",
+    status: "overdue" as const,
+    description: "Tuition Fee 2022-2023 — Full Year",
+    term: "Full Year / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 158000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 7000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 7000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-002-T1",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2022-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 1",
+    term: "Term 1 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-002-T2",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2023-01-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 2",
+    term: "Term 2 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-002-T3",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2023-05-01",
+    status: "overdue" as const,
+    description: "Tuition Fee 2022-2023 — Term 3",
+    term: "Term 3 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+
+  // Sophia (student 3) — all paid
+  {
+    id: "INV-2022-003-Y",
+    student_id: 3,
+    type: "Yearly" as const,
+    amount_due: 172000,
+    due_date: "2022-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Full Year",
+    term: "Full Year / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 158000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 7000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 7000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-003-T1",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2022-08-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 1",
+    term: "Term 1 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-003-T2",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2023-01-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 2",
+    term: "Term 2 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-003-T3",
+    student_id: 3,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2023-05-01",
+    status: "paid" as const,
+    description: "Tuition Fee 2022-2023 — Term 3",
+    term: "Term 3 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
 ];
 
 export const mockCreditNotes = [
@@ -917,9 +1585,9 @@ export const mockEventActivitiesData = {
       schedule: "Nov 8-9, 9:00 AM - 3:00 PM",
       location: "Main Hall & Science Building",
       price: 120,
-      duration: "2 days", 
+      duration: "2 days",
       vendor: "Science Department",
-      discount: "Early Registration: $20 off"
+      discount: "Early Registration: 20% off"
     },
     {
       id: "event-003",
@@ -932,6 +1600,42 @@ export const mockEventActivitiesData = {
       price: 100,
       duration: "1 evening",
       vendor: "Music Department"
+    },
+    {
+      id: "event-010",
+      name: "International Food Festival",
+      description: "Celebrate world cultures through food, music, and crafts",
+      capacity: 200,
+      enrolled: 145,
+      schedule: "Jan 20, 10:00 AM - 5:00 PM",
+      location: "School Campus Grounds",
+      price: 80,
+      duration: "1 day",
+      vendor: "Student Council"
+    },
+    {
+      id: "event-011",
+      name: "Reading Marathon Challenge",
+      description: "12-hour reading relay event to promote literacy",
+      capacity: 60,
+      enrolled: 30,
+      schedule: "Feb 8, 8:00 AM - 8:00 PM",
+      location: "School Library",
+      price: 50,
+      duration: "1 day",
+      vendor: "Library Department"
+    },
+    {
+      id: "event-012",
+      name: "Earth Day Eco Fair",
+      description: "Environmental awareness fair with workshops and activities",
+      capacity: 120,
+      enrolled: 112,
+      schedule: "Apr 22, 9:00 AM - 3:00 PM",
+      location: "Outdoor Garden & Courtyard",
+      price: 0,
+      duration: "1 day",
+      vendor: "Green Club"
     }
   ],
   2: [ // Liam Johnson - Grade 8B
@@ -972,6 +1676,42 @@ export const mockEventActivitiesData = {
       duration: "1 day",
       vendor: "Cultural Activities Team",
       discount: "Group Discount: 10% off"
+    },
+    {
+      id: "event-013",
+      name: "Debate Championship",
+      description: "Inter-house English debate competition",
+      capacity: 48,
+      enrolled: 40,
+      schedule: "Jan 18, 1:00 PM - 6:00 PM",
+      location: "Main Hall",
+      price: 120,
+      duration: "1 day",
+      vendor: "English Department"
+    },
+    {
+      id: "event-014",
+      name: "STEM Expo 2025",
+      description: "Showcase student-built technology and innovation projects",
+      capacity: 100,
+      enrolled: 72,
+      schedule: "Feb 21-22, 9:00 AM - 4:00 PM",
+      location: "Innovation Hub",
+      price: 300,
+      duration: "2 days",
+      vendor: "STEM Faculty"
+    },
+    {
+      id: "event-015",
+      name: "Photography Workshop",
+      description: "Hands-on digital photography and editing masterclass",
+      capacity: 25,
+      enrolled: 25,
+      schedule: "Mar 8, 10:00 AM - 4:00 PM",
+      location: "Media Lab",
+      price: 350,
+      duration: "1 day",
+      vendor: "Visual Arts Department"
     }
   ],
   3: [ // Sophia Johnson - Grade 11C
@@ -986,7 +1726,7 @@ export const mockEventActivitiesData = {
       price: 350,
       duration: "3 days",
       vendor: "Social Studies Department",
-      discount: "Delegate Scholarship: $50 off"
+      discount: "Delegate Scholarship: 10% off"
     },
     {
       id: "event-008",
@@ -997,9 +1737,9 @@ export const mockEventActivitiesData = {
       schedule: "Dec 1-3, 1:00 PM - 5:00 PM",
       location: "Art Gallery & Studios",
       price: 220,
-      duration: "3 days", 
+      duration: "3 days",
       vendor: "Art Department",
-      discount: "Portfolio Package: $30 off"
+      discount: "Portfolio Package: 15% off"
     },
     {
       id: "event-009",
@@ -1012,6 +1752,42 @@ export const mockEventActivitiesData = {
       price: 150,
       duration: "1 evening",
       vendor: "Academic Affairs"
+    },
+    {
+      id: "event-016",
+      name: "College Prep Seminar",
+      description: "University application guidance and interview workshops",
+      capacity: 50,
+      enrolled: 48,
+      schedule: "Jan 25, 9:00 AM - 5:00 PM",
+      location: "Guidance Center",
+      price: 500,
+      duration: "1 day",
+      vendor: "Counseling Department"
+    },
+    {
+      id: "event-017",
+      name: "Leadership Summit",
+      description: "Student leaders conference with guest speakers and workshops",
+      capacity: 80,
+      enrolled: 55,
+      schedule: "Feb 14-15, 8:00 AM - 5:00 PM",
+      location: "Conference Hall",
+      price: 400,
+      duration: "2 days",
+      vendor: "Student Affairs Office"
+    },
+    {
+      id: "event-018",
+      name: "TEDx SISB Student Talks",
+      description: "Student-organized ideas worth spreading — apply to present or attend",
+      capacity: 150,
+      enrolled: 98,
+      schedule: "Mar 22, 2:00 PM - 7:00 PM",
+      location: "Main Auditorium",
+      price: 200,
+      duration: "1 afternoon",
+      vendor: "Student Council"
     }
   ]
 };
@@ -1288,27 +2064,52 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       id: "trip-001",
       name: "Ayutthaya Historical Trip",
       description: "Educational trip to explore Thailand's ancient capital",
-      date: "January 25, 2026",
+      date: "May 30, 2026",
       time: "7:00 AM - 5:00 PM",
       location: "Ayutthaya Province",
       price: 1200,
-      paymentDeadline: "2026-01-15",
+      paymentDeadline: "2026-05-20",
       details: "• Transportation by air-conditioned bus\n• Includes lunch and snacks\n• Visit 3 historical temples\n• English/Thai speaking guide",
       organizer: "History Department",
-      status: "pending" as const
+      status: "pending" as const,
+      campus: "Thonburi",
+      participants: ["Grade 5 (Class A)", "Grade 5 (Class B)"],
+      consentFormLink: "https://forms.google.com/d/trip001-consent",
+      tripStatus: "open" as const
     },
     {
       id: "trip-002",
       name: "Science Museum Field Trip",
       description: "Interactive learning experience at Bangkok Science Museum",
-      date: "February 20, 2026",
+      date: "June 15, 2026",
       time: "8:30 AM - 3:00 PM",
       location: "National Science Museum, Pathumthani",
       price: 650,
-      paymentDeadline: "2026-02-10",
+      paymentDeadline: "2026-06-05",
       details: "• Bus transportation included\n• Museum entry fee included\n• Planetarium show\n• Lunch provided",
       organizer: "Science Department",
-      status: "accepted" as const
+      status: "pending" as const,
+      campus: "Thonburi",
+      participants: ["Grade 5 (Class A)"],
+      consentFormLink: "https://forms.google.com/d/trip002-consent",
+      tripStatus: "open" as const
+    },
+    {
+      id: "trip-007",
+      name: "Chiang Mai Cultural Immersion",
+      description: "3-day cultural trip to northern Thailand",
+      date: "July 10-12, 2026",
+      time: "5:30 AM Day 1 - 8:00 PM Day 3",
+      location: "Chiang Mai Province",
+      price: 5800,
+      paymentDeadline: "2026-06-30",
+      details: "• Round-trip flights included\n• 2 nights hotel accommodation\n• Temple and market tours\n• Thai cooking class\n• All meals provided",
+      organizer: "Social Studies Department",
+      status: "pending" as const,
+      campus: "Thonburi",
+      participants: ["Grade 4 (Class A)", "Grade 5 (Class A)", "Grade 5 (Class B)"],
+      consentFormLink: "https://forms.google.com/d/trip007-consent",
+      tripStatus: "open" as const
     }
   ],
   2: [ // Liam Johnson - Grade 8B
@@ -1316,27 +2117,51 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       id: "trip-003",
       name: "Khao Yai Nature Camp",
       description: "Outdoor adventure and nature exploration at Khao Yai National Park",
-      date: "January 28-30, 2026",
+      date: "June 5-7, 2026",
       time: "6:00 AM Day 1 - 6:00 PM Day 3",
       location: "Khao Yai National Park",
       price: 4500,
-      paymentDeadline: "2026-01-20",
+      paymentDeadline: "2026-05-25",
       details: "• 3 days 2 nights camping\n• Wildlife watching tours\n• Waterfall trekking\n• Night safari included\n• All meals provided",
       organizer: "Outdoor Education",
-      status: "pending" as const
+      status: "pending" as const,
+      campus: "Suvarnabhumi",
+      participants: ["Grade 8 (Class B)", "Grade 9 (Class A)"],
+      consentFormLink: "https://forms.google.com/d/trip003-consent",
+      tripStatus: "full" as const
     },
     {
       id: "trip-004",
       name: "Tech Company Visit",
       description: "Visit to leading tech companies in Bangkok",
-      date: "February 15, 2026",
+      date: "June 20, 2026",
       time: "9:00 AM - 4:00 PM",
       location: "True Digital Park, Bangkok",
       price: 350,
-      paymentDeadline: "2026-02-05",
+      paymentDeadline: "2026-06-10",
       details: "• Tour of tech startup offices\n• Workshop on coding basics\n• Meet tech professionals\n• Lunch included",
       organizer: "IT Department",
-      status: "declined" as const
+      status: "pending" as const,
+      campus: "Suvarnabhumi",
+      participants: ["Grade 8 (Class B)"],
+      tripStatus: "open" as const
+    },
+    {
+      id: "trip-008",
+      name: "KVIS Science Olympiad Visit",
+      description: "Visit Kamnoetvidya Science Academy and KVIS science labs",
+      date: "July 18, 2026",
+      time: "7:30 AM - 5:00 PM",
+      location: "KVIS, Rayong",
+      price: 900,
+      paymentDeadline: "2026-07-08",
+      details: "• Air-conditioned coach transport\n• Lab tour and hands-on experiments\n• Meet KVIS students and faculty\n• Lunch and snacks provided",
+      organizer: "Science Department",
+      status: "pending" as const,
+      campus: "Suvarnabhumi",
+      participants: ["Grade 8 (Class B)", "Grade 8 (Class C)"],
+      consentFormLink: "https://forms.google.com/d/trip008-consent",
+      tripStatus: "open" as const
     }
   ],
   3: [ // Sophia Johnson - Grade 11C
@@ -1344,27 +2169,51 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       id: "trip-005",
       name: "University Campus Tour",
       description: "Visit top universities in Bangkok for college preparation",
-      date: "February 20, 2026",
+      date: "May 25, 2026",
       time: "8:00 AM - 5:00 PM",
       location: "Multiple Universities, Bangkok",
       price: 500,
-      paymentDeadline: "2026-02-10",
+      paymentDeadline: "2026-05-15",
       details: "• Visit Chulalongkorn University\n• Visit Thammasat University\n• Meet admissions officers\n• Information sessions\n• Transportation and lunch included",
       organizer: "Guidance Counseling",
-      status: "pending" as const
+      status: "pending" as const,
+      campus: "Thonburi",
+      participants: ["Grade 11 (Class C)", "Grade 12 (Class A)"],
+      tripStatus: "open" as const
     },
     {
       id: "trip-006",
       name: "Art Museum & Gallery Tour",
       description: "Cultural exploration at Bangkok's finest art venues",
-      date: "February 5, 2026",
+      date: "June 10, 2026",
       time: "10:00 AM - 4:00 PM",
       location: "MOCA & BACC, Bangkok",
       price: 450,
-      paymentDeadline: "2026-01-30",
+      paymentDeadline: "2026-05-30",
       details: "• Museum of Contemporary Art visit\n• Bangkok Art and Culture Centre\n• Guided art appreciation session\n• Sketch workshop included",
       organizer: "Art Department",
-      status: "paid" as const
+      status: "paid" as const,
+      campus: "Thonburi",
+      participants: ["Grade 11 (Class C)"],
+      consentFormLink: "https://forms.google.com/d/trip006-consent",
+      tripStatus: "completed" as const
+    },
+    {
+      id: "trip-009",
+      name: "Singapore STEM Exchange",
+      description: "International exchange program with Raffles Institution Singapore",
+      date: "August 4-7, 2026",
+      time: "6:00 AM Day 1 - 10:00 PM Day 4",
+      location: "Singapore",
+      price: 18500,
+      paymentDeadline: "2026-07-15",
+      details: "• Return flights Bangkok–Singapore\n• 3 nights accommodation\n• School exchange activities\n• City and science centre tour\n• All meals included",
+      organizer: "International Programs Office",
+      status: "pending" as const,
+      campus: "Suvarnabhumi",
+      participants: ["Grade 11 (Class C)", "Grade 11 (Class D)", "Grade 12 (Class A)"],
+      consentFormLink: "https://forms.google.com/d/trip009-consent",
+      tripStatus: "open" as const
     }
   ]
 };

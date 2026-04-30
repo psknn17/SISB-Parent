@@ -1,8 +1,7 @@
-import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, MapPin, DollarSign, AlertCircle, Check, X, Bus, ShoppingCart } from "lucide-react";
+import { Calendar, Clock, MapPin, AlertCircle, Bus, FileText, School, Users } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export interface Trip {
@@ -17,31 +16,30 @@ export interface Trip {
   details: string;
   organizer: string;
   status: 'pending' | 'accepted' | 'declined' | 'paid';
+  campus?: string;
+  participants?: string[];
+  consentFormLink?: string;
+  tripStatus?: 'open' | 'full' | 'completed' | 'draft';
 }
 
 interface TripCardProps {
   trip: Trip;
-  onAccept: (tripId: string) => void;
-  onDecline: (tripId: string) => void;
-  onCancel: (tripId: string) => void;
-  onChangeDecision: (tripId: string) => void;
+  isInCart?: boolean;
+  onAddToCart: (tripId: string) => void;
+  onRemoveFromCart: (tripId: string) => void;
 }
 
-export const TripCard = ({ 
-  trip, 
-  onAccept, 
-  onDecline, 
-  onCancel,
-  onChangeDecision 
+export const TripCard = ({
+  trip,
+  isInCart,
+  onAddToCart,
+  onRemoveFromCart,
 }: TripCardProps) => {
   const { t, language, formatCurrency } = useLanguage();
-  
+
   // Check if deadline has passed
   const isDeadlinePassed = new Date(trip.paymentDeadline) < new Date();
-  const isDeclined = trip.status === 'declined';
-  const isAccepted = trip.status === 'accepted';
   const isPaid = trip.status === 'paid';
-  const isPending = trip.status === 'pending';
 
   const formatDeadline = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -53,28 +51,12 @@ export const TripCard = ({
   };
 
   return (
-    <Card className={`relative overflow-hidden transition-all ${
-      isDeclined ? 'opacity-60 bg-muted/50' : ''
-    } ${isPaid ? 'border-green-500/50 bg-green-50/30' : ''}`}>
+    <Card className={`relative overflow-hidden transition-all ${isPaid ? 'border-green-500/50 bg-green-50/30' : ''}`}>
       {/* Status Badge */}
-      {isDeclined && (
-        <div className="absolute top-3 right-3">
-          <Badge variant="secondary" className="bg-muted text-muted-foreground">
-            {t('trip.notAttending')}
-          </Badge>
-        </div>
-      )}
       {isPaid && (
         <div className="absolute top-3 right-3">
           <Badge className="bg-green-500 text-white">
             {t('trip.paid')}
-          </Badge>
-        </div>
-      )}
-      {isAccepted && !isPaid && (
-        <div className="absolute top-3 right-3">
-          <Badge className="bg-primary text-primary-foreground">
-            {t('trip.accepted')}
           </Badge>
         </div>
       )}
@@ -129,6 +111,43 @@ export const TripCard = ({
           </span>
         </div>
 
+        {/* Campus & Participants */}
+        {(trip.campus || trip.participants?.length) && (
+          <div className="grid grid-cols-2 gap-3 text-sm">
+            {trip.campus && (
+              <div className="flex items-center gap-2">
+                <School className="h-4 w-4 text-muted-foreground" />
+                <span className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+                  {trip.campus}
+                </span>
+              </div>
+            )}
+            {trip.participants && trip.participants.length > 0 && (
+              <div className="flex items-start gap-2 col-span-2">
+                <Users className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                <span className={`text-xs text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                  {trip.participants.join(', ')}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Consent Form Link */}
+        {trip.consentFormLink && (
+          <a
+            href={trip.consentFormLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-sm text-primary hover:underline"
+          >
+            <FileText className="h-4 w-4" />
+            <span className={language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}>
+              {language === 'th' ? 'แบบฟอร์มยินยอม' : 'Consent Form'}
+            </span>
+          </a>
+        )}
+
         {/* Trip Details Bullet Points */}
         <div className="p-3 bg-muted/50 rounded-lg">
           <p className={`text-sm font-medium mb-2 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
@@ -142,7 +161,6 @@ export const TripCard = ({
         {/* Price and Organizer */}
         <div className="flex items-center justify-between pt-2 border-t">
           <div className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4 text-primary" />
             <span className={`text-lg font-bold text-primary ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
               {formatCurrency(trip.price)}
             </span>
@@ -154,72 +172,33 @@ export const TripCard = ({
 
         {/* Action Buttons */}
         <div className="pt-2">
-          {isPending && !isDeadlinePassed && (
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
-                onClick={() => onAccept(trip.id)}
-                className="gap-2"
-              >
-                <Check className="h-4 w-4" />
-                {t('trip.acceptTrip')}
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => onDecline(trip.id)}
-                className="gap-2"
-              >
-                <X className="h-4 w-4" />
-                {t('trip.declineTrip')}
-              </Button>
-            </div>
-          )}
-
-          {isAccepted && !isPaid && !isDeadlinePassed && (
-            <div className="flex flex-col gap-2">
-              {/* Added to Cart indicator */}
-              <div className="flex items-center gap-2 p-2 bg-green-100 dark:bg-green-900/30 rounded-md">
-                <ShoppingCart className="h-4 w-4 text-green-600 dark:text-green-400" />
-                <span className={`text-sm text-green-700 dark:text-green-300 ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                  {language === 'th' ? 'เพิ่มในตะกร้าทัศนศึกษาแล้ว' : 'Added to Trip Cart'}
-                </span>
-              </div>
-              
-              {/* Cancel Button */}
-              <Button 
-                variant="outline"
-                onClick={() => onCancel(trip.id)}
-                className="w-full gap-2 text-destructive border-destructive/50 hover:bg-destructive/10"
-              >
-                <X className="h-4 w-4" />
-                {language === 'th' ? 'ยกเลิก' : 'Cancel'}
-              </Button>
-            </div>
-          )}
-
-          {isDeclined && !isDeadlinePassed && (
-            <Button 
-              variant="outline"
-              onClick={() => onChangeDecision(trip.id)}
-              className="w-full gap-2"
-            >
-              {t('trip.changeDecision')}
-            </Button>
-          )}
-
-          {isDeadlinePassed && !isPaid && (
-            <div className="text-center py-2">
-              <p className={`text-sm text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
-                {t('trip.deadlinePassed')}
-              </p>
-            </div>
-          )}
-
-          {isPaid && (
+          {isPaid ? (
             <div className="text-center py-2">
               <p className={`text-sm text-green-600 font-medium ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
                 ✓ {t('trip.paymentConfirmed')}
               </p>
             </div>
+          ) : isDeadlinePassed ? (
+            <div className="text-center py-2">
+              <p className={`text-sm text-muted-foreground ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}>
+                {t('trip.deadlinePassed')}
+              </p>
+            </div>
+          ) : isInCart ? (
+            <Button
+              variant="destructive"
+              className={`w-full ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+              onClick={() => onRemoveFromCart(trip.id)}
+            >
+              {t('portal.removeFromCart')}
+            </Button>
+          ) : (
+            <Button
+              className={`w-full ${language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato'}`}
+              onClick={() => onAddToCart(trip.id)}
+            >
+              {language === 'th' ? 'ลงทะเบียน' : 'Register'}
+            </Button>
           )}
         </div>
       </CardContent>
