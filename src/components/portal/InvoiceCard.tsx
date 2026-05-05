@@ -18,7 +18,7 @@ interface InvoiceCardProps {
     type: 'Yearly' | 'Termly' | 'Monthly';
     amount_due: number;
     due_date: string;
-    status: 'pending' | 'overdue' | 'paid' | 'partial';
+    status: 'paid' | 'unpaid' | 'overdue' | 'cancelled' | 'on_hold';
     description: string;
     term?: string;
     line_items?: LineItem[];
@@ -35,17 +35,19 @@ interface InvoiceCardProps {
 }
 
 export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveFromCart, isInCart, isLocked, lockedReason, isOnHold, studentName, remainingAmount }: InvoiceCardProps) => {
-  const isOverdue = new Date(invoice.due_date) < new Date() && invoice.status !== 'paid';
+  const isOverdue = invoice.status === 'overdue';
+  const canPay = invoice.status === 'unpaid' || invoice.status === 'overdue';
   const canPayWithCredit = creditBalance >= invoice.amount_due;
   const { language, formatCurrency, t } = useLanguage();
   const [showDetails, setShowDetails] = useState(false);
   const fontClass = language === 'th' ? 'font-sukhumvit' : language === 'zh' ? 'font-noto-sc' : 'font-lato';
   
   const statusConfig = {
-    pending: { label: t('invoice.pending'), color: 'bg-warning-orange/20 text-warning-orange' },
-    overdue: { label: t('invoice.overdue'), color: 'bg-destructive/20 text-destructive' },
-    paid: { label: t('invoice.paid'), color: 'bg-finance-green/20 text-finance-green' },
-    partial: { label: t('invoice.partial'), color: 'bg-info-cyan/20 text-info-cyan' },
+    paid: { label: language === 'th' ? 'ชำระแล้ว' : language === 'zh' ? '已付款' : 'Paid', color: 'bg-finance-green/20 text-finance-green' },
+    unpaid: { label: language === 'th' ? 'ยังไม่ชำระ' : language === 'zh' ? '未付款' : 'Unpaid', color: 'bg-warning-orange/20 text-warning-orange' },
+    overdue: { label: language === 'th' ? 'เกินกำหนด' : language === 'zh' ? '逾期' : 'Overdue', color: 'bg-destructive/20 text-destructive' },
+    cancelled: { label: language === 'th' ? 'ยกเลิกแล้ว' : language === 'zh' ? '已取消' : 'Cancelled', color: 'bg-muted text-muted-foreground' },
+    on_hold: { label: language === 'th' ? 'พักไว้ชั่วคราว' : language === 'zh' ? '暂停' : 'On Hold', color: 'bg-muted text-muted-foreground' },
   };
 
   const formatDate = (dateString: string) => {
@@ -59,7 +61,7 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
 
 
   const isPaid = invoice.status === 'paid';
-  const accentColor = isOnHold ? 'bg-muted' : isPaid ? 'bg-finance-green' : isOverdue ? 'bg-destructive' : 'bg-primary';
+  const accentColor = invoice.status === 'on_hold' || isOnHold ? 'bg-muted' : isPaid ? 'bg-finance-green' : isOverdue ? 'bg-destructive' : invoice.status === 'cancelled' ? 'bg-muted' : 'bg-warning-orange';
 
   return (
     <Card className={`overflow-hidden transition-all ${isOverdue ? 'border-destructive/50' : ''}`}>
@@ -81,8 +83,8 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
               )}
             </div>
           </div>
-          <Badge variant="outline" className={`shrink-0 text-xs ${isOnHold ? 'bg-muted text-muted-foreground' : isInCart ? 'bg-primary/10 text-primary border-primary/30' : statusConfig[invoice.status].color} ${fontClass}`}>
-            {isOnHold ? (language === 'th' ? 'พักไว้ชั่วคราว' : language === 'zh' ? '暂停' : 'On Hold') : isInCart ? (language === 'th' ? 'ในตะกร้า' : language === 'zh' ? '已加入购物车' : 'In Cart') : statusConfig[invoice.status].label}
+          <Badge variant="outline" className={`shrink-0 text-xs ${isInCart ? 'bg-primary/10 text-primary border-primary/30' : statusConfig[invoice.status].color} ${fontClass}`}>
+            {isInCart ? (language === 'th' ? 'ในตะกร้า' : language === 'zh' ? '已加入购物车' : 'In Cart') : statusConfig[invoice.status].label}
           </Badge>
         </div>
         <div className="flex items-center justify-between">
@@ -101,7 +103,7 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
             </span>
           </div>
 
-          {remainingAmount !== undefined && invoice.status !== 'paid' && (
+          {remainingAmount !== undefined && canPay && (
             <div className="rounded-lg border border-border bg-muted/30 px-3 py-2.5 space-y-1.5 text-sm">
               <div className="flex items-center justify-between">
                 <span className={`text-muted-foreground ${fontClass}`}>
@@ -124,7 +126,7 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
             </div>
           )}
 
-          {creditBalance > 0 && invoice.status !== 'paid' && (
+          {creditBalance > 0 && canPay && (
             <div className="flex items-center justify-between text-sm">
               <span className={`text-muted-foreground ${fontClass}`}>{t('invoice.availableCredit')}:</span>
               <span className={`text-finance-green font-medium ${fontClass}`}>
@@ -172,7 +174,7 @@ export const InvoiceCard = ({ invoice, creditBalance = 0, onAddToCart, onRemoveF
           </div>
         )}
 
-        {invoice.status !== 'paid' && (
+        {canPay && (
           <div className="pt-2 space-y-2">
             {canPayWithCredit && !isInCart && !isLocked && (
               <div className={`flex items-center gap-2 text-sm text-finance-green bg-finance-green/10 p-2 rounded ${fontClass}`}>

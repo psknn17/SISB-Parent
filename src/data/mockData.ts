@@ -199,10 +199,9 @@ export const mockInvoices = [
     type: "Yearly" as const,
     amount_due: 185000,
     due_date: "2024-12-15",
-    status: "pending" as const,
+    status: "on_hold" as const,
     description: "Tuition Fee 2024-2025",
     term: "Academic Year 2024-2025",
-    isOnHold: true,
     line_items: [
       { id: "li-1", description: "Tuition Fee", amount: 165000, category: "Tuition" },
       { id: "li-2", description: "School Activity Fee", amount: 10000, category: "Fees" },
@@ -245,7 +244,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 63000,
     due_date: "2024-12-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2024-2025 — Term 2",
     term: "Term 2 / 2024-2025",
     line_items: [
@@ -260,7 +259,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 63000,
     due_date: "2025-04-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2024-2025 — Term 3",
     term: "Term 3 / 2024-2025",
     line_items: [
@@ -382,7 +381,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 63000,
     due_date: "2025-04-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2024-2025 — Term 3",
     term: "Term 3 / 2024-2025",
     line_items: [
@@ -444,7 +443,7 @@ export const mockInvoices = [
     type: "Yearly" as const,
     amount_due: 185000,
     due_date: "2024-12-15",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2024-2025",
     term: "Academic Year 2024-2025",
     line_items: [
@@ -489,10 +488,9 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 63000,
     due_date: "2024-11-01",
-    status: "overdue" as const,
+    status: "on_hold" as const,
     description: "Tuition Fee 2024-2025 — Term 2",
     term: "Term 2 / 2024-2025",
-    isOnHold: true,
     line_items: [
       { id: "li-1", description: "Tuition Fee", amount: 55000, category: "Tuition" },
       { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
@@ -505,7 +503,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 63000,
     due_date: "2025-04-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2024-2025 — Term 3",
     term: "Term 3 / 2024-2025",
     line_items: [
@@ -524,7 +522,7 @@ export const mockInvoices = [
     type: "Yearly" as const,
     amount_due: 192000,
     due_date: "2025-08-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2025-2026 — Full Year",
     term: "Full Year / 2025-2026",
     line_items: [
@@ -569,7 +567,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 65000,
     due_date: "2026-05-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2025-2026 — Term 3",
     term: "Term 3 / 2025-2026",
     line_items: [
@@ -586,7 +584,7 @@ export const mockInvoices = [
     type: "Yearly" as const,
     amount_due: 192000,
     due_date: "2025-08-01",
-    status: "partial" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2025-2026 — Full Year",
     term: "Full Year / 2025-2026",
     line_items: [
@@ -631,7 +629,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 65000,
     due_date: "2026-05-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2025-2026 — Term 3",
     term: "Term 3 / 2025-2026",
     line_items: [
@@ -678,7 +676,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 65000,
     due_date: "2026-01-01",
-    status: "partial" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2025-2026 — Term 2",
     term: "Term 2 / 2025-2026",
     line_items: [
@@ -693,7 +691,7 @@ export const mockInvoices = [
     type: "Termly" as const,
     amount_due: 65000,
     due_date: "2026-05-01",
-    status: "pending" as const,
+    status: "unpaid" as const,
     description: "Tuition Fee 2025-2026 — Term 3",
     term: "Term 3 / 2025-2026",
     line_items: [
@@ -886,6 +884,37 @@ export const mockInvoices = [
     term: "Term 3 / 2022-2023",
     line_items: [
       { id: "li-1", description: "Tuition Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  // Cancelled examples
+  {
+    id: "INV-2022-001-C",
+    student_id: 1,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2022-09-01",
+    status: "cancelled" as const,
+    description: "Tuition Fee 2022-2023 — Additional Fee (Cancelled)",
+    term: "Term 1 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Supplementary Program Fee", amount: 50000, category: "Tuition" },
+      { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
+      { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
+    ]
+  },
+  {
+    id: "INV-2022-002-C",
+    student_id: 2,
+    type: "Termly" as const,
+    amount_due: 58000,
+    due_date: "2022-09-01",
+    status: "cancelled" as const,
+    description: "Tuition Fee 2022-2023 — Additional Fee (Cancelled)",
+    term: "Term 1 / 2022-2023",
+    line_items: [
+      { id: "li-1", description: "Supplementary Program Fee", amount: 50000, category: "Tuition" },
       { id: "li-2", description: "School Activity Fee", amount: 4000, category: "Fees" },
       { id: "li-3", description: "Facility & Resources Fee", amount: 4000, category: "Fees" },
     ]
@@ -2340,7 +2369,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-05-20",
       details: "• Transportation by air-conditioned bus\n• Includes lunch and snacks\n• Visit 3 historical temples\n• English/Thai speaking guide",
       organizer: "History Department",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Thonburi",
       participants: ["Grade 5 (Class A)", "Grade 5 (Class B)"],
       consentFormLink: "https://forms.google.com/d/trip001-consent",
@@ -2357,7 +2386,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-06-05",
       details: "• Bus transportation included\n• Museum entry fee included\n• Planetarium show\n• Lunch provided",
       organizer: "Science Department",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Thonburi",
       participants: ["Grade 5 (Class A)"],
       consentFormLink: "https://forms.google.com/d/trip002-consent",
@@ -2374,7 +2403,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-06-30",
       details: "• Round-trip flights included\n• 2 nights hotel accommodation\n• Temple and market tours\n• Thai cooking class\n• All meals provided",
       organizer: "Social Studies Department",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Thonburi",
       participants: ["Grade 4 (Class A)", "Grade 5 (Class A)", "Grade 5 (Class B)"],
       consentFormLink: "https://forms.google.com/d/trip007-consent",
@@ -2393,7 +2422,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-05-25",
       details: "• 3 days 2 nights camping\n• Wildlife watching tours\n• Waterfall trekking\n• Night safari included\n• All meals provided",
       organizer: "Outdoor Education",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Suvarnabhumi",
       participants: ["Grade 8 (Class B)", "Grade 9 (Class A)"],
       consentFormLink: "https://forms.google.com/d/trip003-consent",
@@ -2410,7 +2439,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-06-10",
       details: "• Tour of tech startup offices\n• Workshop on coding basics\n• Meet tech professionals\n• Lunch included",
       organizer: "IT Department",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Suvarnabhumi",
       participants: ["Grade 8 (Class B)"],
       tripStatus: "open" as const
@@ -2426,7 +2455,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-07-08",
       details: "• Air-conditioned coach transport\n• Lab tour and hands-on experiments\n• Meet KVIS students and faculty\n• Lunch and snacks provided",
       organizer: "Science Department",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Suvarnabhumi",
       participants: ["Grade 8 (Class B)", "Grade 8 (Class C)"],
       consentFormLink: "https://forms.google.com/d/trip008-consent",
@@ -2445,7 +2474,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-05-15",
       details: "• Visit Chulalongkorn University\n• Visit Thammasat University\n• Meet admissions officers\n• Information sessions\n• Transportation and lunch included",
       organizer: "Guidance Counseling",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Thonburi",
       participants: ["Grade 11 (Class C)", "Grade 12 (Class A)"],
       tripStatus: "open" as const
@@ -2478,7 +2507,7 @@ export const mockTripActivitiesData: Record<number, any[]> = {
       paymentDeadline: "2026-07-15",
       details: "• Return flights Bangkok–Singapore\n• 3 nights accommodation\n• School exchange activities\n• City and science centre tour\n• All meals included",
       organizer: "International Programs Office",
-      status: "pending" as const,
+      status: "unpaid" as const,
       campus: "Suvarnabhumi",
       participants: ["Grade 11 (Class C)", "Grade 11 (Class D)", "Grade 12 (Class A)"],
       consentFormLink: "https://forms.google.com/d/trip009-consent",

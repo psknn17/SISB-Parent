@@ -150,14 +150,16 @@ export const ParentPortal = ({
   
   // Calculate combined statistics
   const stats = {
-    outstandingInvoices: allInvoices.filter(inv => inv.status === 'pending').length,
+    outstandingInvoices: allInvoices.filter(inv => inv.status === 'unpaid' || inv.status === 'overdue').length,
     paidThisTerm: allInvoices.filter(inv => inv.status === 'paid').length,
     creditBalance: allCreditNotes.reduce((sum, cn) => sum + cn.balance, 0),
     availableCourses: 15,
   };
   
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const outstandingAmount = allInvoices
-    .filter(inv => inv.status === 'pending')
+    .filter(inv => (inv.status === 'unpaid' || inv.status === 'overdue') && new Date(inv.dueDate) <= today)
     .reduce((sum, inv) => sum + inv.amount_due, 0);
     
   const paidThisTerm = allReceipts
@@ -627,10 +629,10 @@ export const ParentPortal = ({
                       id: 'total-due',
                       title: language === 'th' ? 'รวมยอดค้างชำระ' : 'Total Due',
                       value: formatCurrency(outstandingAmount),
-                      subtitle: `${allInvoices.filter(i => i.status === 'pending').length} ${t('portal.pending')}`,
+                      subtitle: `${allInvoices.filter(i => i.status === 'unpaid' || i.status === 'overdue').length} ${t('portal.pending')}`,
                       icon: DollarSign,
                       color: overdueCount > 0 ? 'destructive' : 'warning',
-                      badge: allInvoices.filter(i => i.status === 'pending').length || undefined,
+                      badge: allInvoices.filter(i => i.status === 'unpaid' || i.status === 'overdue').length || undefined,
                       onClick: () => setActiveTab('tuition')
                     },
                     {
@@ -659,7 +661,7 @@ export const ParentPortal = ({
                 <SummaryBox
                   title={language === 'th' ? 'รวมยอดค้างชำระ' : language === 'zh' ? '总应付' : 'Total Due'}
                   value={formatCurrency(outstandingAmount)}
-                  subtitle={`${allInvoices.filter(i => i.status === 'pending').length} ${t('portal.pending')}`}
+                  subtitle={`${allInvoices.filter(i => i.status === 'unpaid' || i.status === 'overdue').length} ${t('portal.pending')}`}
                   icon={FileText}
                   color={overdueCount > 0 ? 'destructive' : 'warning'}
                   onClick={() => setActiveTab('tuition')}
@@ -692,7 +694,7 @@ export const ParentPortal = ({
               onRegisterCamp={() => setActiveTab('summer')}
               onViewEvents={() => setActiveTab('event')}
               onViewReceipts={() => setActiveTab('transaction')}
-              hasPendingPayments={allInvoices.filter(i => i.status === 'pending').length > 0}
+              hasPendingPayments={allInvoices.filter(i => i.status === 'unpaid' || i.status === 'overdue').length > 0}
               isMobile={isMobile}
             />
 
@@ -949,9 +951,16 @@ export const ParentPortal = ({
                 {allInvoices
                   .filter(invoice => invoice.type === paymentPeriod && invoice.student_id === parseInt(selectedStudent))
                   .sort((a, b) => {
-                    const aPaid = a.status === 'paid' ? 1 : 0;
-                    const bPaid = b.status === 'paid' ? 1 : 0;
-                    if (aPaid !== bPaid) return aPaid - bPaid;
+                    const statusOrder: Record<string, number> = {
+                      overdue: 0,
+                      unpaid: 1,
+                      on_hold: 2,
+                      cancelled: 3,
+                      paid: 4,
+                    };
+                    const aOrder = statusOrder[a.status] ?? 5;
+                    const bOrder = statusOrder[b.status] ?? 5;
+                    if (aOrder !== bOrder) return aOrder - bOrder;
                     return new Date(a.due_date).getTime() - new Date(b.due_date).getTime();
                   })
                   .map(invoice => {
