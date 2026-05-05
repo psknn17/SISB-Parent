@@ -85,7 +85,7 @@ export const mockUpcomingDeadlines = [
   },
   {
     id: "deadline-exam-001",
-    type: "exam" as const,
+    type: undefined,
     title: "IELTS Registration",
     studentName: "Sophia Johnson",
     studentId: 3,
@@ -95,7 +95,7 @@ export const mockUpcomingDeadlines = [
   },
   {
     id: "deadline-exam-002",
-    type: "exam" as const,
+    type: undefined,
     title: "Cambridge English B2",
     studentName: "Liam Johnson",
     studentId: 2,
@@ -992,6 +992,105 @@ export const mockCreditNoteHistory = [
     status: "used" as const,
     academicYear: "2023",
     usedAmount: 1800
+  },
+  // Sophia Johnson (student 3) credit notes
+  {
+    id: "CN-2025-001",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    amount: 1500,
+    description: "Early payment discount - Term 1 2025",
+    issued_at: "2024-12-20",
+    type: "discount" as const,
+    status: "used" as const,
+    academicYear: "2025",
+    usedAmount: 1500
+  },
+  {
+    id: "CN-2024-006",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    amount: 2200,
+    description: "Drama Club course cancellation refund",
+    issued_at: "2024-09-30",
+    type: "cancellation" as const,
+    status: "active" as const,
+    academicYear: "2024",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2024-007",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    amount: 800,
+    description: "Overpayment from Term 3 tuition",
+    issued_at: "2024-07-15",
+    type: "overpayment" as const,
+    status: "active" as const,
+    academicYear: "2024",
+    usedAmount: 0
+  },
+  // Expired credit notes
+  {
+    id: "CN-2022-008",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    amount: 1200,
+    description: "Swimming course refund - pool renovation",
+    issued_at: "2022-10-01",
+    type: "refund" as const,
+    status: "expired" as const,
+    academicYear: "2022",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2022-009",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    amount: 600,
+    description: "Activity cancellation discount voucher",
+    issued_at: "2022-11-15",
+    type: "discount" as const,
+    status: "expired" as const,
+    academicYear: "2022",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2022-010",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    amount: 950,
+    description: "Camp refund - weather cancellation",
+    issued_at: "2022-08-20",
+    type: "refund" as const,
+    status: "expired" as const,
+    academicYear: "2022",
+    usedAmount: 0
+  },
+  // 2025 active credit notes
+  {
+    id: "CN-2025-002",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    amount: 2800,
+    description: "After-school course withdrawal refund",
+    issued_at: "2025-02-10",
+    type: "cancellation" as const,
+    status: "active" as const,
+    academicYear: "2025",
+    usedAmount: 0
+  },
+  {
+    id: "CN-2025-003",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    amount: 1600,
+    description: "Loyalty discount - 3rd consecutive year",
+    issued_at: "2025-01-05",
+    type: "discount" as const,
+    status: "active" as const,
+    academicYear: "2025",
+    usedAmount: 0
   }
 ];
 
@@ -1798,90 +1897,7 @@ export const mockSummerActivities = mockSummerActivitiesData[1];
 export const mockEventActivities = mockEventActivitiesData[1];
 
 export const mockReceipts = [
-  {
-    id: "REC-2024-001",
-    type: "tuition" as const,
-    usedCreditNotes: [
-      {
-        id: "CN-2024-001",
-        amount: 500,
-        appliedTo: "September Tuition",
-        used_at: "2024-08-28T17:30:00Z"
-      },
-      {
-        id: "CN-2024-002",
-        amount: 300,
-        appliedTo: "September Tuition",
-        used_at: "2024-08-28T17:30:00Z"
-      }
-    ],
-    invoice_id: "INV-2024-004",
-    student_id: 1,
-    studentName: "Emma Johnson",
-    year: "2024",
-    amount: 3200,
-    payment_method: "credit_card" as const,
-    paid_at: "2024-08-28T10:30:00Z",
-    receipt_url: "#",
-    status: "completed" as const,
-    description: "September Tuition Payment",
-    reference_number: "TXN-20240828-001"
-  },
-  {
-    id: "REC-2024-002",
-    type: "activity" as const,
-    usedCreditNotes: [
-      {
-        id: "CN-2024-003",
-        amount: 200,
-        appliedTo: "Art Class Registration",
-        used_at: "2024-08-25T14:00:00Z"
-      }
-    ],
-    invoice_id: "INV-2024-005",
-    student_id: 2,
-    studentName: "Liam Johnson",
-    year: "2024",
-    amount: 850,
-    payment_method: "bank_transfer" as const,
-    paid_at: "2024-08-25T14:15:00Z",
-    receipt_url: "#",
-    status: "completed" as const,
-    description: "Activity Registration Fee",
-    reference_number: "TXN-20240825-002"
-  },
-  {
-    id: "REC-2024-003",
-    type: "camp" as const,
-    usedCreditNotes: [],
-    invoice_id: "INV-2024-006",
-    student_id: 3,
-    studentName: "Sophia Johnson",
-    year: "2024",
-    amount: 450,
-    payment_method: "credit_note" as const,
-    paid_at: "2024-08-20T09:45:00Z",
-    receipt_url: "#",
-    status: "completed" as const,
-    description: "Summer Camp Registration",
-    reference_number: "TXN-20240820-003"
-  },
-  {
-    id: "REC-2024-004",
-    type: "tuition" as const,
-    usedCreditNotes: [],
-    invoice_id: "INV-2024-007",
-    student_id: 1,
-    studentName: "Emma Johnson",
-    year: "2024",
-    amount: 12800,
-    payment_method: "credit_card" as const,
-    paid_at: "2024-08-30T16:20:00Z",
-    receipt_url: "#",
-    status: "processing" as const,
-    description: "Tuition Fee",
-    reference_number: "TXN-20240830-004"
-  },
+  // 2023
   {
     id: "REC-2023-001",
     type: "tuition" as const,
@@ -1920,6 +1936,259 @@ export const mockReceipts = [
     status: "completed" as const,
     description: "Yearly Tuition Fee 2023-2024",
     reference_number: "TXN-20230720-002"
+  },
+  {
+    id: "REC-2023-003",
+    type: "camp" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2023-003",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2023",
+    amount: 3800,
+    payment_method: "credit_card" as const,
+    paid_at: "2023-06-10T09:00:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "Summer Camp 2023 Registration",
+    reference_number: "TXN-20230610-003"
+  },
+  // 2024
+  {
+    id: "REC-2024-001",
+    type: "tuition" as const,
+    usedCreditNotes: [
+      {
+        id: "CN-2024-001",
+        amount: 500,
+        appliedTo: "September Tuition",
+        used_at: "2024-08-28T17:30:00Z"
+      },
+      {
+        id: "CN-2024-002",
+        amount: 300,
+        appliedTo: "September Tuition",
+        used_at: "2024-08-28T17:30:00Z"
+      }
+    ],
+    invoice_id: "INV-2024-004",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2024",
+    amount: 3200,
+    payment_method: "credit_card" as const,
+    paid_at: "2024-08-28T10:30:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "September Tuition Payment",
+    reference_number: "TXN-20240828-001"
+  },
+  {
+    id: "REC-2024-003",
+    type: "camp" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2024-006",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    year: "2024",
+    amount: 450,
+    payment_method: "credit_note" as const,
+    paid_at: "2024-08-20T09:45:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "Summer Camp Registration",
+    reference_number: "TXN-20240820-003"
+  },
+  {
+    id: "REC-2024-004",
+    type: "tuition" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2024-007",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2024",
+    amount: 12800,
+    payment_method: "credit_card" as const,
+    paid_at: "2024-08-30T16:20:00Z",
+    receipt_url: "#",
+    status: "processing" as const,
+    description: "Tuition Fee",
+    reference_number: "TXN-20240830-004"
+  },
+  {
+    id: "REC-2024-005",
+    type: "event" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2024-010",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2024",
+    amount: 350,
+    payment_method: "credit_card" as const,
+    paid_at: "2024-09-12T11:00:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "Science Fair Registration Fee",
+    reference_number: "TXN-20240912-005"
+  },
+  {
+    id: "REC-2024-007",
+    type: "event" as const,
+    usedCreditNotes: [
+      {
+        id: "CN-2024-005",
+        amount: 200,
+        appliedTo: "Sports Day Registration",
+        used_at: "2024-10-18T10:00:00Z"
+      }
+    ],
+    invoice_id: "INV-2024-012",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    year: "2024",
+    amount: 500,
+    payment_method: "credit_note" as const,
+    paid_at: "2024-10-18T10:15:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "Sports Day Registration",
+    reference_number: "TXN-20241018-007"
+  },
+  {
+    id: "REC-2024-010",
+    type: "camp" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2024-015",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    year: "2024",
+    amount: 4800,
+    payment_method: "bank_transfer" as const,
+    paid_at: "2024-12-01T13:20:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "Winter Sports Camp Registration",
+    reference_number: "TXN-20241201-010"
+  },
+  // 2025
+  {
+    id: "REC-2025-001",
+    type: "tuition" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2025-001",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2025",
+    amount: 3200,
+    payment_method: "credit_card" as const,
+    paid_at: "2025-01-06T09:00:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "January Tuition Payment",
+    reference_number: "TXN-20250106-001"
+  },
+  {
+    id: "REC-2025-002",
+    type: "tuition" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2025-002",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    year: "2025",
+    amount: 3200,
+    payment_method: "bank_transfer" as const,
+    paid_at: "2025-01-08T10:30:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "January Tuition Payment",
+    reference_number: "TXN-20250108-002"
+  },
+  {
+    id: "REC-2025-003",
+    type: "tuition" as const,
+    usedCreditNotes: [
+      {
+        id: "CN-2025-001",
+        amount: 1500,
+        appliedTo: "January Tuition 2025",
+        used_at: "2025-01-10T09:00:00Z"
+      }
+    ],
+    invoice_id: "INV-2025-003",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    year: "2025",
+    amount: 1700,
+    payment_method: "credit_note" as const,
+    paid_at: "2025-01-10T09:15:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "January Tuition Payment",
+    reference_number: "TXN-20250110-003"
+  },
+  {
+    id: "REC-2025-006",
+    type: "event" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2025-006",
+    student_id: 2,
+    studentName: "Liam Johnson",
+    year: "2025",
+    amount: 450,
+    payment_method: "cash" as const,
+    paid_at: "2025-03-05T08:30:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "International Day Cultural Event",
+    reference_number: "TXN-20250305-006"
+  },
+  {
+    id: "REC-2025-007",
+    type: "camp" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2025-007",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2025",
+    amount: 5500,
+    payment_method: "credit_card" as const,
+    paid_at: "2025-03-20T13:00:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "Easter Science Camp Registration",
+    reference_number: "TXN-20250320-007"
+  },
+  {
+    id: "REC-2025-009",
+    type: "tuition" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2025-009",
+    student_id: 1,
+    studentName: "Emma Johnson",
+    year: "2025",
+    amount: 3200,
+    payment_method: "credit_card" as const,
+    paid_at: "2025-04-07T09:00:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "April Tuition Payment",
+    reference_number: "TXN-20250407-009"
+  },
+  {
+    id: "REC-2025-011",
+    type: "event" as const,
+    usedCreditNotes: [],
+    invoice_id: "INV-2025-011",
+    student_id: 3,
+    studentName: "Sophia Johnson",
+    year: "2025",
+    amount: 280,
+    payment_method: "credit_card" as const,
+    paid_at: "2025-05-01T12:00:00Z",
+    receipt_url: "#",
+    status: "completed" as const,
+    description: "Graduation Ceremony Ticket",
+    reference_number: "TXN-20250501-011"
   }
 ];
 

@@ -20,6 +20,10 @@ export interface TripCartItem {
   studentId?: string;
   date: string;
   location: string;
+  registrationData?: {
+    allergies: string;
+    medicalConditions: string;
+  };
 }
 
 interface TripCartSidebarProps {

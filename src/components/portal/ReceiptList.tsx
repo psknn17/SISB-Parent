@@ -39,7 +39,7 @@ interface Receipt {
   status: 'completed' | 'processing' | 'failed';
   description: string;
   reference_number: string;
-  type?: 'tuition' | 'activity' | 'camp' | 'event' | 'exam';
+  type?: 'tuition' | 'camp' | 'event';
   usedCreditNotes?: UsedCreditNote[];
 }
 
@@ -62,10 +62,8 @@ export const ReceiptList = ({ receipts, onDownload }: ReceiptListProps) => {
 
   const typeLabels: Record<string, string> = {
     tuition: t('receipt.typeTuition'),
-    activity: t('receipt.typeActivity'),
     camp: t('receipt.typeCamp'),
     event: t('receipt.typeEvent'),
-    exam: t('receipt.typeExam'),
   };
 
   // Filter receipts based on selected filters
@@ -201,10 +199,8 @@ export const ReceiptList = ({ receipts, onDownload }: ReceiptListProps) => {
             <SelectContent className="bg-background z-50">
               <SelectItem value="all">{t('receipt.allTypes')}</SelectItem>
               <SelectItem value="tuition">{t('receipt.typeTuition')}</SelectItem>
-              <SelectItem value="activity">{t('receipt.typeActivity')}</SelectItem>
               <SelectItem value="camp">{t('receipt.typeCamp')}</SelectItem>
               <SelectItem value="event">{t('receipt.typeEvent')}</SelectItem>
-              <SelectItem value="exam">{t('receipt.typeExam')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -243,7 +239,6 @@ export const ReceiptList = ({ receipts, onDownload }: ReceiptListProps) => {
                           variant="outline" 
                           className={`${getFontClass()} ${
                             receipt.type === 'tuition' ? 'border-blue-200 text-blue-700 bg-blue-50' :
-                            receipt.type === 'activity' ? 'border-purple-200 text-purple-700 bg-purple-50' :
                             receipt.type === 'camp' ? 'border-green-200 text-green-700 bg-green-50' :
                             receipt.type === 'event' ? 'border-orange-200 text-orange-700 bg-orange-50' :
                             'border-pink-200 text-pink-700 bg-pink-50'

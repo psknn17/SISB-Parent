@@ -7,6 +7,7 @@ import { InvoiceCard } from "@/components/portal/InvoiceCard";
 import { CourseCard } from "@/components/portal/CourseCard";
 import { ExamCard } from "@/components/portal/ExamCard";
 import { TripCard, Trip } from "@/components/portal/TripCard";
+import { TripRegistrationDialog } from "@/components/portal/TripRegistrationDialog";
 import { TuitionCartSidebar } from "@/components/portal/TuitionCartSidebar";
 import { CourseCartSidebar } from "@/components/portal/CourseCartSidebar";
 import { TripCartSidebar } from "@/components/portal/TripCartSidebar";
@@ -57,7 +58,7 @@ import {
   PartyPopper,
   ShoppingCart
 } from "lucide-react";
-import { mockStudents, getMockDataForStudent, mockInvoices, mockCreditNotes, mockReceipts, campusList, mandatoryCourses, mockEventActivitiesData, mockCreditNoteHistory, mockUpcomingDeadlines } from "@/data/mockData";
+import { mockStudents, getMockDataForStudent, mockInvoices, mockCreditNotes, mockReceipts, campusList, mandatoryCourses, mockEventActivitiesData, mockCreditNoteHistory } from "@/data/mockData";
 import { CreditNoteHistory } from "@/components/portal/CreditNoteHistory";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -105,6 +106,8 @@ export const ParentPortal = ({
   const [searchExam, setSearchExam] = useState('');
   const [searchTrip, setSearchTrip] = useState('');
   const [filterDay, setFilterDay] = useState<string>("all");
+  const [tripRegistrationDialogOpen, setTripRegistrationDialogOpen] = useState(false);
+  const [pendingTrip, setPendingTrip] = useState<any>(null);
   
   
   // Mobile cart drawer state
@@ -731,7 +734,7 @@ export const ParentPortal = ({
                   const getTypeLabel = (type: string) => {
                     switch (type) {
                       case 'tuition': return language === 'th' ? 'ค่าเทอม' : language === 'zh' ? '学费' : 'Tuition';
-                      case 'eca': return 'ECA';
+                      case 'eca': return 'ECA & EAS';
                       case 'trip': return language === 'th' ? 'ทริป' : language === 'zh' ? '旅行' : 'Trip';
                       case 'camp': return language === 'th' ? 'แคมป์' : language === 'zh' ? '夏令营' : 'Camp';
                       case 'exam': return language === 'th' ? 'สอบ' : language === 'zh' ? '考试' : 'Exam';
@@ -751,18 +754,68 @@ export const ParentPortal = ({
                     }
                   };
 
+                  // Compute overdue deadlines from real data
+                  const today = new Date();
+                  type DeadlineItem = {
+                    id: string;
+                    type: 'tuition' | 'eca' | 'trip' | 'camp' | 'exam' | 'event';
+                    title: string;
+                    studentName: string;
+                    studentId: number;
+                    dueDate: string;
+                    amount: number;
+                    description: string;
+                  };
+                  const computedDeadlines: DeadlineItem[] = [];
+
+                  // Tuition: invoices with status === 'overdue'
+                  mockInvoices
+                    .filter(inv => inv.status === 'overdue')
+                    .forEach(inv => {
+                      const student = mockStudents.find(s => s.id === inv.student_id);
+                      computedDeadlines.push({
+                        id: inv.id,
+                        type: 'tuition',
+                        title: inv.description,
+                        studentName: student?.name || '',
+                        studentId: inv.student_id,
+                        dueDate: inv.due_date,
+                        amount: inv.amount_due,
+                        description: inv.term || inv.description,
+                      });
+                    });
+
+                  // Trip: past paymentDeadline across all students
+                  mockStudents.forEach(student => {
+                    const data = getMockDataForStudent(student.id);
+                    (data.tripActivities as any[])
+                      .filter(trip => trip.paymentDeadline && new Date(trip.paymentDeadline) < today)
+                      .forEach(trip => {
+                        computedDeadlines.push({
+                          id: `trip-${student.id}-${trip.id}`,
+                          type: 'trip',
+                          title: trip.name,
+                          studentName: student.name,
+                          studentId: student.id,
+                          dueDate: trip.paymentDeadline,
+                          amount: trip.price,
+                          description: trip.description,
+                        });
+                      });
+                  });
+
                   // Group deadlines by type
-                  const groupedDeadlines = mockUpcomingDeadlines.reduce((acc, deadline) => {
+                  const groupedDeadlines = computedDeadlines.reduce((acc, deadline) => {
                     if (!acc[deadline.type]) {
                       acc[deadline.type] = [];
                     }
                     acc[deadline.type].push(deadline);
                     return acc;
-                  }, {} as Record<string, typeof mockUpcomingDeadlines>);
+                  }, {} as Record<string, DeadlineItem[]>);
 
                   // Sort each group by due date
                   Object.keys(groupedDeadlines).forEach(type => {
-                    groupedDeadlines[type].sort((a, b) => 
+                    groupedDeadlines[type].sort((a, b) =>
                       new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
                     );
                   });
@@ -771,7 +824,7 @@ export const ParentPortal = ({
                   const typeOrder = ['tuition', 'eca', 'trip', 'camp', 'exam', 'event'];
                   const sortedTypes = typeOrder.filter(type => groupedDeadlines[type]?.length > 0);
 
-                  if (mockUpcomingDeadlines.length === 0) {
+                  if (computedDeadlines.length === 0) {
                     return (
                       <div className="text-center py-8 text-muted-foreground">
                         <AlertCircle className="h-12 w-12 mx-auto mb-3 opacity-30" />
@@ -1387,20 +1440,8 @@ export const ParentPortal = ({
                               trip={trip as Trip}
                               isInCart={inCart}
                               onAddToCart={() => {
-                                onAddToCart({
-                                  id: trip.id,
-                                  name: trip.name,
-                                  price: trip.price,
-                                  type: 'trip',
-                                  studentName: currentStudent?.name || '',
-                                  studentId: selectedStudent,
-                                  date: trip.date,
-                                  location: trip.location,
-                                });
-                                toast({
-                                  title: language === 'th' ? 'เพิ่มในตะกร้าแล้ว' : 'Added to Cart',
-                                  description: trip.name,
-                                });
+                                setPendingTrip(trip);
+                                setTripRegistrationDialogOpen(true);
                               }}
                               onRemoveFromCart={() => {
                                 onRemoveFromCart(trip.id, selectedStudent);
@@ -1457,7 +1498,36 @@ export const ParentPortal = ({
                   />
                 </div>
               </div>
+
             )}
+
+            {/* Trip Registration Dialog */}
+            <TripRegistrationDialog
+              open={tripRegistrationDialogOpen}
+              onOpenChange={setTripRegistrationDialogOpen}
+              trip={pendingTrip}
+              studentName={mockStudents.find(s => s.id.toString() === selectedStudent)?.name || ''}
+              studentClass={mockStudents.find(s => s.id.toString() === selectedStudent)?.class || ''}
+              onConfirm={(registrationData) => {
+                const currentStudent = mockStudents.find(s => s.id.toString() === selectedStudent);
+                onAddToCart({
+                  id: pendingTrip.id,
+                  name: pendingTrip.name,
+                  price: pendingTrip.price,
+                  type: 'trip',
+                  studentName: currentStudent?.name || '',
+                  studentId: selectedStudent,
+                  date: pendingTrip.date,
+                  location: pendingTrip.location,
+                  registrationData,
+                });
+                toast({
+                  title: language === 'th' ? 'เพิ่มในตะกร้าแล้ว' : 'Added to Cart',
+                  description: pendingTrip.name,
+                });
+                setTripRegistrationDialogOpen(false);
+              }}
+            />
 
             {/* Carnivals & Concerts Sub-tab - Empty State */}
             {eventSubTab === 'carnival' && (
